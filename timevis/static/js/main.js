@@ -4,6 +4,7 @@ function viewModel(){
     self.activeOpt = ko.observable('exp');     // Active option
     self.activeFun = ko.observable('exp_old'); // Active function
     self.experiments = ko.observableArray(['AAA', 'BBB']);
+    self.layouts = ko.observableArray(['AAA', 'BBB']);
     self.exp_vars = ko.observableArray([new ExpVar()]);
     self.var_types = ['categorical', 'numerical (integer)', 'numerical (flat)'];
 

@@ -1,0 +1,26 @@
+<div class="container" data-bind="visible: activeOpt()=='layout'">
+    <div class="row">
+        <div class="col-md-6">
+          <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
+              <li role="presentation"><a aria-controls="well" role="tab"
+                  data-toggle="tab" href="#" data-bind="click:
+              function(){activeFun('lay_old')}">Update Existing</a></li>
+              <li role="presentation"><a aria-controls="well" role="tab"
+                  data-toggle="tab" href="#" data-bind="click:
+              function(){activeFun('lay_new')}">Add New</a></li>
+          </ul>
+        </div>
+    </div> <!-- row -->
+
+    <div class="row">
+        <div class="col-md-4">
+            <select class="form-control pull-left auto-width" data-bind="options: layouts, optionsCaption: 'Select...', enable: activeFun()=='lay_old'"></select>
+            <select class="form-control pull-left auto-width" data-bind="options: exp_vars, optionsCaption: 'Select...'"></select>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+
+
+    <button data-bind="visible:activeFun()=='lay_old'">Update</button>
+    <button data-bind="visible:activeFun()=='lay_new'">Add</button>
+
+</div>
