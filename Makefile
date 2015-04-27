@@ -1,4 +1,4 @@
-.PHONY: clean install run uninstall
+.PHONY: clean install run uninstal devserver stopdevserver restart
 
 clean:
 	rm -rf TimeVis.egg-info/ build/ dist/
@@ -20,5 +20,4 @@ stopdevserver:
 	pkill timevis
 	pkill python
 
-restart: stopdevserver
-	timevis &>timevis.log &
+restart: stopdevserver run
