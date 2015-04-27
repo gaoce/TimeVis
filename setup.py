@@ -24,6 +24,9 @@ setup(
     package_data={
         "timevis": [
             "static/js/*.js",
+            "static/js/lib/*.js",
+            "static/css/*.css",
+            "static/css/lib/*.css",
             "templates/*.html",
         ]
     },
