@@ -16,6 +16,9 @@ setup(
     description=("TimeVis: An interactive tool to query and visualize "
                  "time series gene expression data"),
     license="MIT",
+    install_requires=[
+        "Flask>=0.10.1",
+    ],
     packages=['timevis'],
     package_dir={"timevis": "timevis"},
     package_data={
