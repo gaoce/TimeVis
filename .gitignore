@@ -1,0 +1,7 @@
+# Compiled files
+*.py[cod]
+
+# Distribution and packaging
+dist/
+build/
+*.egg-info/
