@@ -8,6 +8,6 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/OK')
-def OK():
-    return "OK"
+@app.route('/test')
+def test():
+    return render_template('control.html')
