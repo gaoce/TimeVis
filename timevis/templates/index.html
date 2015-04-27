@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
+    
+    <style>
+        a.function {
+            text-decoration: none;
+            display:block;
+            padding: 15px 0 15px 25px;
+            font-weight: bold;
+            font-size: 1.3em;
+            width: 100%;
+            color: white;
+        }
+        a.option {
+            text-decoration: none;
+            display:block;
+            padding: 5px 35px;
+            font-weight: bold;
+            font-size: 1.3em;
+            width: 100%;
+        }
+        
+        a.option:hover {
+            text-decoration: none;
+            display:block;
+            padding: 5px 0 5px 35px;
+            font-weight: bold;
+            font-size: 1.3em;
+            width: 100%;
+            color: white;
+            background-color: #999;
+        }
+        
+        li {
+            padding: 0px;
+        }
+        li.no-dec {
+            list-style-type: none;
+        }
+        
+        .no-padding {
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+<div style="height: 100px"></div>
+
+<div class='container'>
+<div class='row'>
+<div class='col-md-1'></div>
+<div class='col-md-2'>
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="panel panel-primary">
+        <div class="panel-heading no-padding" role="tab" id="headingOne">
+            <a class='panel-title function' data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              Campaign
+            </a>
+        </div>
+        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <ul class='list-group'>
+            <li class='no-dec'><a class='option' href="#" data-bind="click: activeAItem">Define</a></li>
+            <li class='no-dec'><a class='option' href="#" data-bind="click: activeBItem">Layout</a></li>
+            <li class='no-dec'><a class='option' href="#" data-bind="click: activeCItem">Google</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading no-padding" role="tab" id="headingTwo">
+            <a class='panel-title function' data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+              Experiment
+            </a>
+        </div>
+        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <ul class='list-group'>
+            <li class='no-dec'><a class='option' href="#">Define</a></li>
+            <li class='no-dec'><a class='option' href="#">Layout</a></li>
+            <li class='no-dec'><a class='option' href="#">Google</a></li>
+          </ul>
+        </div>
+      </div>
+
+      
+      <div class="panel panel-primary">
+        <div class="panel-heading no-padding" role="tab" id="headingThree">
+            <a class='panel-title function' data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
+              Import
+            </a>
+        </div>
+        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <ul class='list-group'>
+            <li class='no-dec'><a class='option' href="#">Define</a></li>
+            <li class='no-dec'><a class='option' href="#">Layout</a></li>
+            <li class='no-dec'><a class='option' href="#">Google</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="panel panel-primary">
+        <div class="panel-heading no-padding" role="tab" id="headingFour">
+            <a class='panel-title function' data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
+              Visualize
+            </a>
+        </div>
+        <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+          <ul class='list-group'>
+            <li class='no-dec'><a class='option' href="#">Define</a></li>
+            <li class='no-dec'><a class='option' href="#">Layout</a></li>
+            <li class='no-dec'><a class='option' href="#">Google</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading no-padding" role="tab" id="headingFive">
+            <a class='panel-title function' data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
+              Export
+            </a>
+        </div>
+        <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
+          <ul class='list-group'>
+            <li class='no-dec'><a class='option' href="#">Define</a></li>
+            <li class='no-dec'><a class='option' href="#">Layout</a></li>
+            <li class='no-dec'><a class='option' href="#">Google</a></li>
+          </ul>
+        </div>
+      </div>
+      
+    </div>
+
+
+</div>
+<div class='col-md-8' style="padding:0;">
+<div style="background-color:#999; height: 430px" data-bind="visible: active() == 'a'">Something A</div>
+<div style="background-color:#999; height: 430px" data-bind="visible: active() == 'b'">Something B</div>
+<div style="background-color:#999; height: 430px" data-bind="visible: active() == 'c'">Something C</div>
+</div>
+<div class='col-md-1'></div>
+</div>
+
+</div>
+</body>
+<script>
+function viewModel(){
+    var self = this;
+    self.active = ko.observable('');
+    self.activeA = ko.observable(false);
+    self.activeB = ko.observable(false);
+    self.activeC = ko.observable(false);
+    self.activeAItem = function(){self.active('a')};
+    self.activeBItem = function(){self.active('b')};
+    self.activeCItem = function(){self.active('c')};
+}
+ko.applyBindings(new viewModel());
+</script>
+</html>
