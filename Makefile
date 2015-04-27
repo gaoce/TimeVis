@@ -11,8 +11,13 @@ uninstall:
 	pip uninstall -y timevis
 
 run: install
-	timevis
+	timevis &>timevis.log &
 
 devserver:
 	python timevis/app.py
 
+stopdevserver:
+	pkill timevis
+
+restart: stopdevserver
+	timevis &>timevis.log &
