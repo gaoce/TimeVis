@@ -56,6 +56,16 @@ li.plain {
     list-style-type: none;
 }
 
+p.plain {
+    padding: 0px;
+    margin: 0px;
+}
+
 .no-padding {
     padding: 0;
-}       c
+}
+
+p.para-sep {
+    padding: 10px 0px 5px 0px;
+
+}
