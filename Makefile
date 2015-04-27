@@ -18,6 +18,7 @@ devserver:
 
 stopdevserver:
 	pkill timevis
+	pkill python
 
 restart: stopdevserver
 	timevis &>timevis.log &
