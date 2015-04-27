@@ -14,4 +14,5 @@ run: install
 	timevis
 
 devserver:
+	python timevis/app.py
 
