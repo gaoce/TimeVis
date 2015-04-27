@@ -1,42 +1,61 @@
+/*
+ * Clear the top of container
+ */
 div.clear {
     margin-top: 100px;
 }
-a.function {
-    text-decoration: none;
-    display:block;
-    padding: 15px 0 15px 25px;
-    font-weight: bold;
-    font-size: 1.3em;
-    width: 100%;
-    color: white;
-}
-a.option {
-    text-decoration: none;
-    display:block;
-    padding: 5px 35px;
-    font-weight: bold;
-    font-size: 1.3em;
-    width: 100%;
+
+div.plain {
+    padding: 0px;
 }
 
-a.option:hover {
+/*
+ * Plain link, without underline
+ */
+a.plain {
     text-decoration: none;
     display:block;
-    padding: 5px 0 5px 35px;
     font-weight: bold;
-    font-size: 1.3em;
     width: 100%;
+    font-size: 1.3em;
+}
+
+a.plain:hover {
+    text-decoration: none;
+    display:block;
+}
+
+/*
+ * Section title
+ */
+a.section {
+    padding: 15px 0 15px 25px;
     color: white;
-    background-color: #999;
+}
+/*
+ * Options within section
+ */
+a.option {
+    padding: 5px 25px;
+}
+
+/*
+ * list
+ */
+ul.plain {
+    border-top: 0px;
 }
 
 li {
     padding: 0px;
 }
-li.no-dec {
+/*
+ * Plain list: without stars
+ */
+li.plain {
     list-style-type: none;
 }
 
 .no-padding {
     padding: 0;
-}
+}       c

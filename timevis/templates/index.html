@@ -2,96 +2,75 @@
 {% block content %}
 
 <div class='row'>
-<div class='col-md-1'></div>
-<div class='col-md-2'>
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-      <div class="panel panel-primary">
-        <div class="panel-heading no-padding" role="tab" id="headingOne">
-            <a class='panel-title function' data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-              Campaign
-            </a>
-        </div>
-        <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-          <ul class='list-group'>
-            <li class='no-dec'><a class='option' href="#" data-bind="click: activeAItem">Define</a></li>
-            <li class='no-dec'><a class='option' href="#" data-bind="click: activeBItem">Layout</a></li>
-            <li class='no-dec'><a class='option' href="#" data-bind="click: activeCItem">Google</a></li>
-          </ul>
-        </div>
-      </div>
+    <div class='col-md-1'></div>
+    <div class='col-md-2'>
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-primary">
+                <div class="panel-heading plain" role="tab" id="heading1">
+                    <a class='panel-title plain section' data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                        Design
+                    </a>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading1">
+                    <ul class='list-group plain'>
+                        <li class='plain'><a class='plain option' href="#">Experiment</a></li>
+                        <li class='plain'><a class='plain option' href="#">Layout</a></li>
+                    </ul>
+                </div>
+            </div> <!-- div.panel -->
 
-      <div class="panel panel-primary">
-        <div class="panel-heading no-padding" role="tab" id="headingTwo">
-            <a class='panel-title function' data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-              Experiment
-            </a>
+            <div class="panel panel-primary">
+                <div class="panel-heading plain" role="tab" id="heading2">
+                    <a class='panel-title plain section' data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                        Import
+                    </a>
+                </div>
+                <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+                    <ul class='list-group plain'>
+                        <li class='plain'><a class='plain option' href="#">Files</a></li>
+                        <li class='plain'><a class='plain option' href="#">Manual</a></li>
+                    </ul>
+                </div>
+            </div> <!-- div.panel -->
+
+            <div class="panel panel-primary">
+                <div class="panel-heading plain" role="tab" id="heading3">
+                    <a class='panel-title plain section' data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                        Visualize
+                    </a>
+                </div>
+                <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+                    <ul class='list-group plain'>
+                        <li class='plain'><a class='plain option' href="#">Plate</a></li>
+                        <li class='plain'><a class='plain option' href="#">Genes</a></li>
+                    </ul>
+                </div>
+            </div> <!-- div.panel -->
+
+            <div class="panel panel-primary">
+                <div class="panel-heading plain" role="tab" id="heading4">
+                    <a class='panel-title plain section' data-toggle="collapse" data-parent="#accordion" href="#collapse4" aria-expanded="true" aria-controls="collapse4">
+                        Export
+                    </a>
+                </div>
+                <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
+                    <ul class='list-group plain'>
+                        <li class='plain'><a class='plain option' href="#">Data</a></li>
+                        <li class='plain'><a class='plain option' href="#">Plot</a></li>
+                    </ul>
+                </div>
+            </div> <!-- div.panel -->
         </div>
-        <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-          <ul class='list-group'>
-            <li class='no-dec'><a class='option' href="#">Define</a></li>
-            <li class='no-dec'><a class='option' href="#">Layout</a></li>
-            <li class='no-dec'><a class='option' href="#">Google</a></li>
-          </ul>
-        </div>
-      </div>
 
 
-      <div class="panel panel-primary">
-        <div class="panel-heading no-padding" role="tab" id="headingThree">
-            <a class='panel-title function' data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
-              Import
-            </a>
-        </div>
-        <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-          <ul class='list-group'>
-            <li class='no-dec'><a class='option' href="#">Define</a></li>
-            <li class='no-dec'><a class='option' href="#">Layout</a></li>
-            <li class='no-dec'><a class='option' href="#">Google</a></li>
-          </ul>
-        </div>
-      </div>
+    </div> <!-- .col-md-2 -->
 
-      <div class="panel panel-primary">
-        <div class="panel-heading no-padding" role="tab" id="headingFour">
-            <a class='panel-title function' data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="true" aria-controls="collapseFour">
-              Visualize
-            </a>
-        </div>
-        <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
-          <ul class='list-group'>
-            <li class='no-dec'><a class='option' href="#">Define</a></li>
-            <li class='no-dec'><a class='option' href="#">Layout</a></li>
-            <li class='no-dec'><a class='option' href="#">Google</a></li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="panel panel-primary">
-        <div class="panel-heading no-padding" role="tab" id="headingFive">
-            <a class='panel-title function' data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="true" aria-controls="collapseFive">
-              Export
-            </a>
-        </div>
-        <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
-          <ul class='list-group'>
-            <li class='no-dec'><a class='option' href="#">Define</a></li>
-            <li class='no-dec'><a class='option' href="#">Layout</a></li>
-            <li class='no-dec'><a class='option' href="#">Google</a></li>
-          </ul>
-        </div>
-      </div>
-
+    <div class='col-md-8' style="padding:0;">
+        <div style="background-color:#999; height: 430px" data-bind="visible: active() == 'a'">Something A</div>
+        <div style="background-color:#999; height: 430px" data-bind="visible: active() == 'b'">Something B</div>
+        <div style="background-color:#999; height: 430px" data-bind="visible: active() == 'c'">Something C</div>
     </div>
-
-
-</div> <!-- .col-md-2 -->
-
-<div class='col-md-8' style="padding:0;">
-    <div style="background-color:#999; height: 430px" data-bind="visible: active() == 'a'">Something A</div>
-    <div style="background-color:#999; height: 430px" data-bind="visible: active() == 'b'">Something B</div>
-    <div style="background-color:#999; height: 430px" data-bind="visible: active() == 'c'">Something C</div>
-</div>
-<div class='col-md-1'></div>
+    <div class='col-md-1'></div>
 
 </div> <!-- .row -->
 
