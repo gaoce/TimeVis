@@ -2,6 +2,7 @@
 
 clean:
 	rm -rf TimeVis.egg-info/ build/ dist/
+	find . -name '*.pyc' -delete
 
 install:
 	python setup.py install
@@ -11,4 +12,6 @@ uninstall:
 
 run: install
 	timevis
+
+devserver:
 
