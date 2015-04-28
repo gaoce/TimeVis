@@ -1,0 +1,19 @@
+<div class="container" data-bind="visible: opt()=='manu'">
+    <div class="row">
+        <div class="col-md-6">
+          <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
+              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('lay_old')}">Update Existing</a></li>
+              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('lay_new')}">Add New</a></li>
+          </ul>
+        </div>
+    </div> <!-- row -->
+
+    <div class="row">
+        <div class="col-md-4">
+            <select class="form-control pull-left auto-width" data-bind="options: layouts, optionsCaption: 'Select...', enable: fun()=='lay_old'"></select>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+
+    <button>Upload</button>
+
+</div>

@@ -2,11 +2,36 @@
  * Clear the top of container
  */
 div.clear {
-    margin-top: 100px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+div.sep {
+    margin-top: 10px;
 }
 
 div.plain {
     padding: 0px;
+}
+
+/*
+ * Fix div height to 500px with scroll
+ */
+div.fix-500 {
+    height: 500px;
+    overflow-y: auto;
+}
+
+div.fix-600 {
+    height: 600px;
+    overflow-y: auto;
+}
+
+/*
+ * Float title
+ */
+h3.table-title, p.table-title {
+    display: inline;
 }
 
 /*
@@ -23,6 +48,11 @@ a.plain {
 a.plain:hover {
     text-decoration: none;
     display:block;
+}
+
+a.plain:active {
+    text-decoration: none;
+    background-color: #999;
 }
 
 /*
@@ -56,6 +86,40 @@ li.plain {
     list-style-type: none;
 }
 
+/*
+ * Highlight an option when clicked
+ */
+li.high {
+    background-color: #D8D8D8;
+    color: white;
+}
+
+p.plain {
+    padding: 0px;
+    margin: 0px;
+}
+
 .no-padding {
     padding: 0;
-}       c
+}
+
+p.para-sep {
+    padding: 10px 0px 5px 0px;
+
+}
+
+/*
+ * td tag with input tag inside
+ */
+p.input {
+    margin: 10px 0px;
+    padding: 10px 0px;
+}
+/*
+ *
+ */
+select {
+    height: 26px;
+    padding: 1px 0px;
+    border-width: 1px;
+}

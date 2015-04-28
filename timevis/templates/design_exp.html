@@ -1,0 +1,96 @@
+<div class="container" data-bind="visible: opt()=='exp'">
+    <div class="row">
+        <div class="col-md-6">
+          <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
+              <li role="presentation" class="active"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('exp_old')}">Update Existing</a></li>
+              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('exp_new')}">Add New</a></li>
+          </ul>
+        </div>
+    </div> <!-- row -->
+
+    <div class="row">
+        <div class="col-md-6 fix-600">
+            <div class="sep"></div>
+            <h3>Experiment Information</h3>
+            <div class="plain">
+                <select class="form-control auto-width" data-bind="options: experiments, optionsCaption: 'Select Experiment...', visible: fun()=='exp_old'">
+                </select>
+            </div>
+            <div class="sep"></div>
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>Experiment Name</th>
+                        <td><input data-bind="value: exp_name" /></td>
+                    </tr>
+                    <tr>
+                        <td>User</th>
+                        <td><input data-bind="value: exp_people" /></td>
+                    </tr>
+                    <tr>
+                        <td>Plate Type</th>
+                        <td>
+                            <select data-bind='options: plate_types, optionsCaption: "Select Plate Type...", value: plate_type'> </select>
+                        </td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td>Date</th>
+                        <td><input data-bind="value: exp_date" /></td>
+                    </tr>
+                    -->
+                </tbody>
+            </table>
+
+            <h3 class="table-title">Channels</h3>
+            <p class="table-title">(Dependent Variables)</p>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th width="35%">Dep. Variable</th>
+                        <th width="35%">Variable Type</th>
+                        <th width="30%"><button data-bind='click: addChnl'>Add Channel</button></th>
+                    </tr>
+                </thead>
+                <tbody data-bind='foreach: exp_chnl'>
+                    <tr>
+                        <td>
+                            <p class="plain"><input data-bind="value: name" /></p>
+                        </td>
+                        <td> Decimal </td>
+                        <td>
+                            <a href='#' data-bind='click: $parent.delChnl'>Remove</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 class="table-title">Factors</h3>
+            <p class="table-title">(Independent Variables)</p>
+            <table class="table table-bordered" width="70%">
+                <thead>
+                    <tr>
+                        <th width="35%">Indep. Variable</th>
+                        <th width="35%">Variable Type</th>
+                        <th width="30%"><button data-bind='click: addFact'>Add Factor</button></th>
+                    </tr>
+                </thead>
+                <tbody data-bind='foreach: exp_fact'>
+                    <tr>
+                        <td>
+                            <p class="plain"><input data-bind="value: name" /></p>
+                        </td>
+                        <td>
+                            <select data-bind='options: $parent.var_types, optionsCaption: "Select...", value: $parent.type'> </select>
+                        </td>
+                        <td>
+                            <a href='#' data-bind='click: $parent.delFact'>Remove</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button data-bind="visible:fun()=='exp_old'">Update</button>
+            <button data-bind="visible:fun()=='exp_new'">Add</button>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+</div>
