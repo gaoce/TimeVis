@@ -9,14 +9,39 @@
     </div> <!-- row -->
 
     <div class="row">
-        <div class="col-md-4">
-            <select class="form-control pull-left auto-width" data-bind="options: layouts, optionsCaption: 'Select...', enable: fun()=='lay_old'"></select>
-            <select class="form-control pull-left auto-width" data-bind="options: exp_vars, optionsCaption: 'Select...'"></select>
+        <div class="col-md-6 fix-600">
+            <div class="sep"></div>
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>Experiment</th>
+                        <td>
+                            <select class="form-control pull-left auto-width" data-bind="options: layouts, optionsCaption: 'Select Experiment...'"></select>
+                        </td>
+                    </tr>
+                    <tr data-bind="visible: fun()=='lay_old'">
+                        <td>Layout</th>
+                        <td>
+                            <select class="form-control pull-left auto-width"
+                                data-bind="options: layouts, optionsCaption: 'Select Layout...'"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Factor</th>
+                        <td>
+                            <select class="form-control pull-left auto-width"
+                                data-bind="options: exp_fact, optionsText: 'name', optionsCaption: 'Select Layout...'"></select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="well"></div>
+            <div class="tab-content"><br>
+                <div role="tabpanel" class="tab-pane fade active" id="wwell"></div>
+            </div>
+
+            <button data-bind="visible:fun()=='lay_old'">Update</button>
+            <button data-bind="visible:fun()=='lay_new'">Add</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
-
-
-    <button data-bind="visible:fun()=='lay_old'">Update</button>
-    <button data-bind="visible:fun()=='lay_new'">Add</button>
-
 </div>
