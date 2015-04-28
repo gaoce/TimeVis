@@ -1,19 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-
 <div class='row'>
-    <div class='col-md-1'></div>
-    <div class='col-md-2'>
+    <div class="col-md-1"></div>
+    <div class="col-md-2 plain">
         {% include "control.html" %}
-    </div> <!-- .col-md-2 -->
-    <div class='col-md-8' style="padding:0;">
+    </div>
+    <div class="col-md-8 plain">
         {% include "design_exp.html" %}
         {% include "design_layout.html" %}
         {% include "import.html" %}
         {% include "vis.html" %}
         {% include "export.html" %}
     </div>
-    <div class='col-md-1'></div>
-</div> <!-- .row -->
-
+    <div class="col-md-1"></div>
+</div>
 {% endblock %}

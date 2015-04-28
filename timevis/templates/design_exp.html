@@ -10,13 +10,13 @@
 
     <div class="row">
         <div class="col-md-4">
-            <select class="form-control pull-left auto-width" 
+            <select class="form-control pull-left auto-width"
                 data-bind="options: experiments, optionsCaption: 'Existing Experiment...', enable: activeFun()=='exp_old'">
             </select>
             <p class="para-sep">Experiment Name: <input data-bind="value: 'firstName'" /></p>
             <p class="para-sep">Participants: <input data-bind="value: 'firstName'" /></p>
 
-            <table class="table" width="50%">
+            <table class="table table-bordered" width="50%">
                 <thead>
                     <tr>
                         <th>Variable Name</th>
@@ -41,9 +41,6 @@
             <button data-bind='click: addVar'>Add Variable</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
-
-
     <button data-bind="visible:activeFun()=='exp_old'">Update</button>
     <button data-bind="visible:activeFun()=='exp_new'">Add</button>
-
 </div>
