@@ -2,11 +2,36 @@
  * Clear the top of container
  */
 div.clear {
-    margin-top: 100px;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+div.sep {
+    margin-top: 10px;
 }
 
 div.plain {
     padding: 0px;
+}
+
+/*
+ * Fix div height to 500px with scroll
+ */
+div.fix-500 {
+    height: 500px;
+    overflow-y: auto;
+}
+
+div.fix-600 {
+    height: 600px;
+    overflow-y: auto;
+}
+
+/*
+ * Float title
+ */
+h3.table-title, p.table-title {
+    display: inline;
 }
 
 /*
