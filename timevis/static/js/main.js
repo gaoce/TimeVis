@@ -47,6 +47,7 @@ var setting = {
     startCols:24,
     minCols:24,
     maxCols:24,
+    colWidths: 28,
     startRows:16,
     manualColumnResize:true,
     manualRowResize:true,

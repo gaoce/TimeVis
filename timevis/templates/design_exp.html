@@ -11,31 +11,34 @@
     <div class="row">
         <div class="col-md-6 fix-600">
             <div class="sep"></div>
+
             <h3>Experiment Information</h3>
-            <div class="plain">
-                <select class="form-control auto-width" data-bind="options: experiments, optionsCaption: 'Select Experiment...', visible: fun()=='exp_old'">
-                </select>
-            </div>
             <div class="sep"></div>
             <table class="table table-striped">
                 <tbody>
+                    <tr data-bind=" visible: fun()=='exp_old' ">
+                        <td>Select Experiment</td>
+                        <td>
+                            <select class="form-control" data-bind="options: experiments"></select>
+                        </td>
+                    </tr>
                     <tr>
-                        <td>Experiment Name</th>
+                        <td>Experiment Name</td>
                         <td><input data-bind="value: exp_name" /></td>
                     </tr>
                     <tr>
-                        <td>User</th>
+                        <td>User</td>
                         <td><input data-bind="value: exp_people" /></td>
                     </tr>
                     <tr>
-                        <td>Plate Type</th>
+                        <td>Plate Type</td>
                         <td>
-                            <select data-bind='options: plate_types, optionsCaption: "Select Plate Type...", value: plate_type'> </select>
+                            <select class="form-control" data-bind='options: plate_types, optionsCaption: "Select Plate Type...", value: plate_type'> </select>
                         </td>
                     </tr>
                     <!--
                     <tr>
-                        <td>Date</th>
+                        <td>Date</td>
                         <td><input data-bind="value: exp_date" /></td>
                     </tr>
                     -->
@@ -47,8 +50,8 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th width="35%">Dep. Variable</th>
-                        <th width="35%">Variable Type</th>
+                        <th width="35%">Name</th>
+                        <th width="35%">Type</th>
                         <th width="30%"><button data-bind='click: addChnl'>Add Channel</button></th>
                     </tr>
                 </thead>
@@ -70,8 +73,8 @@
             <table class="table table-bordered" width="70%">
                 <thead>
                     <tr>
-                        <th width="35%">Indep. Variable</th>
-                        <th width="35%">Variable Type</th>
+                        <th width="35%">Name</th>
+                        <th width="35%">Type</th>
                         <th width="30%"><button data-bind='click: addFact'>Add Factor</button></th>
                     </tr>
                 </thead>
@@ -81,7 +84,7 @@
                             <p class="plain"><input data-bind="value: name" /></p>
                         </td>
                         <td>
-                            <select data-bind='options: $parent.var_types, optionsCaption: "Select...", value: $parent.type'> </select>
+                            <select class="form-control" data-bind='options: $parent.var_types, optionsCaption: "Select...", value: $parent.type'> </select>
                         </td>
                         <td>
                             <a href='#' data-bind='click: $parent.delFact'>Remove</a>
