@@ -109,13 +109,6 @@ p.para-sep {
 }
 
 /*
- * td tag with input tag inside
- */
-p.input {
-    margin: 10px 0px;
-    padding: 10px 0px;
-}
-/*
  *
  */
 select {

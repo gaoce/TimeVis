@@ -48,14 +48,11 @@ var setting = {
     minCols:24,
     maxCols:24,
     startRows:16,
-    minRows:16,
-    maxRows:16,
-    colWidths:42,
     manualColumnResize:true,
     manualRowResize:true,
     rowHeaders:function (i) { return String.fromCharCode(65 + i); },
     colHeaders:function (i) { return i+1; },
-    contextMenu: true,
+    contextMenu: true
 };
 
 var container1 = document.getElementById("well"); 
