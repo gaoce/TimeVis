@@ -7,8 +7,8 @@
         </div>
         <div id="collapse1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading1">
             <ul class='list-group plain'>
-                <li class='plain'><a class='plain option' href="#" data-bind="click: function(){activeSec('design'); activeOpt('exp')}">Experiment</a></li>
-                <li class='plain'><a class='plain option' href="#" data-bind="click: function(){activeSec('design'); activeOpt('layout')}">Layout</a></li>
+                <li class='plain' data-bind="css:{high:opt()=='exp'}, click:function(){opt('exp')}"><a class='plain option' href="#">Experiment</a></li>
+                <li class='plain' data-bind="css:{high:opt()=='lay'}, click:function(){opt('lay')}"><a class='plain option' href="#">Layout</a></li>
             </ul>
         </div>
     </div> <!-- div.panel -->
@@ -21,8 +21,8 @@
         </div>
         <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
             <ul class='list-group plain'>
-                <li class='plain'><a class='plain option' href="#" data-bind="click: function(){activeSec('import'); activeOpt('file')}">File</a></li>
-                <li class='plain'><a class='plain option' href="#" data-bind="click: function(){activeSec('import'); activeOpt('man')}">Manual</a></li>
+                <li class="plain" data-bind="css:{high:opt()=='file'}, click:function(){opt('file')}"><a class="plain option" href="#">File</a></li>
+                <li class="plain" data-bind="css:{high:opt()=='manu'}, click:function(){opt('manu')}"><a class="plain option" href="#">Manual</a></li>
             </ul>
         </div>
     </div> <!-- div.panel -->

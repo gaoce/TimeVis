@@ -61,6 +61,14 @@ li.plain {
     list-style-type: none;
 }
 
+/*
+ * Highlight an option when clicked
+ */
+li.high {
+    background-color: #D8D8D8;
+    color: white;
+}
+
 p.plain {
     padding: 0px;
     margin: 0px;
@@ -73,4 +81,20 @@ p.plain {
 p.para-sep {
     padding: 10px 0px 5px 0px;
 
+}
+
+/*
+ * td tag with input tag inside
+ */
+p.input {
+    margin: 10px 0px;
+    padding: 10px 0px;
+}
+/*
+ *
+ */
+select {
+    height: 26px;
+    padding: 1px 0px;
+    border-width: 1px;
 }

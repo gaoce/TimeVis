@@ -1,33 +1,69 @@
-<div class="container" data-bind="visible: activeOpt()=='exp'">
+<div class="container" data-bind="visible: opt()=='exp'">
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
-              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){activeFun('exp_old')}">Update Existing</a></li>
-              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){activeFun('exp_new')}">Add New</a></li>
+              <li role="presentation" class="active"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('exp_old')}">Update Existing</a></li>
+              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('exp_new')}">Add New</a></li>
           </ul>
         </div>
     </div> <!-- row -->
 
     <div class="row">
-        <div class="col-md-4">
-            <select class="form-control pull-left auto-width"
-                data-bind="options: experiments, optionsCaption: 'Existing Experiment...', enable: activeFun()=='exp_old'">
-            </select>
-            <p class="para-sep">Experiment Name: <input data-bind="value: 'firstName'" /></p>
-            <p class="para-sep">Participants: <input data-bind="value: 'firstName'" /></p>
-
-            <table class="table table-bordered" width="50%">
+        <div class="col-md-5">
+            <div>
+                <select class="form-control auto-width"
+                    data-bind="options: experiments, optionsCaption: 'Existing Experiment...', visible: fun()=='exp_old'">
+                </select>
+            </div>
+            <table>
+                <tbody>
+                    <tr>
+                        <td>Experiment Name</th>
+                        <td><input data-bind="value: 'firstName'" /></td>
+                    </tr>
+                    <tr>
+                        <td>Participants</th>
+                        <td><input data-bind="value: 'firstName'" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Dependent</p>
+            <table class="table table-bordered" width="70%">
                 <thead>
                     <tr>
-                        <th>Variable Name</th>
-                        <th>Variable Type</th>
+                        <th width="10%">Dep. Variable</th>
+                        <th width="50%">Variable Type</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody data-bind='foreach: exp_vars'>
                     <tr>
                         <td>
-                            <p class="plain"><input data-bind="value: 'Variable Name'" /></p>
+                            <p class="plain"><input data-bind="value: name" /></p>
+                        </td>
+                        <td>
+                            <select data-bind='options: $parent.var_types, optionsCaption: "Select...", value: $parent.type'> </select>
+                        </td>
+                        <td>
+                            <a href='#' data-bind='click: $parent.removeVar'>Remove</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Independent</p>
+            <table class="table table-bordered" width="70%">
+                <thead>
+                    <tr>
+                        <th width="10%">Indep. Variable</th>
+                        <th width="50%">Variable Type</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody data-bind='foreach: exp_vars'>
+                    <tr>
+                        <td>
+                            <p class="plain"><input data-bind="value: name" /></p>
                         </td>
                         <td>
                             <select data-bind='options: $parent.var_types, optionsCaption: "Select...", value: $parent.type'> </select>
@@ -41,6 +77,6 @@
             <button data-bind='click: addVar'>Add Variable</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
-    <button data-bind="visible:activeFun()=='exp_old'">Update</button>
-    <button data-bind="visible:activeFun()=='exp_new'">Add</button>
+    <button data-bind="visible:fun()=='exp_old'">Update</button>
+    <button data-bind="visible:fun()=='exp_new'">Add</button>
 </div>

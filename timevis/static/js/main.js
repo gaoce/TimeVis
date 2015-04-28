@@ -1,12 +1,13 @@
 function viewModel(){
     var self = this;
-    self.activeSec = ko.observable('design');  // Active section
-    self.activeOpt = ko.observable('exp');     // Active option
-    self.activeFun = ko.observable('exp_old'); // Active function
+    self.sec = ko.observable('design');  // Active section
+    self.opt = ko.observable('exp');     // Active option
+    self.fun = ko.observable('exp_old'); // Active function
+
     self.experiments = ko.observableArray(['AAA', 'BBB']);
     self.layouts = ko.observableArray(['AAA', 'BBB']);
     self.exp_vars = ko.observableArray([new ExpVar()]);
-    self.var_types = ['categorical', 'numerical (integer)', 'numerical (flat)'];
+    self.var_types = ['Category', 'Integer', 'Decimal'];
 
 	// Add a new variable
     self.addVar = function() { self.exp_vars.push(new ExpVar()) };
