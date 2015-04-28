@@ -9,58 +9,73 @@
     </div> <!-- row -->
 
     <div class="row">
-        <div class="col-md-5">
-            <div>
-                <select class="form-control auto-width"
-                    data-bind="options: experiments, optionsCaption: 'Existing Experiment...', visible: fun()=='exp_old'">
+        <div class="col-md-6 fix-600">
+            <div class="sep"></div>
+            <h3>Experiment Information</h3>
+            <div class="plain">
+                <select class="form-control auto-width" data-bind="options: experiments, optionsCaption: 'Select Experiment...', visible: fun()=='exp_old'">
                 </select>
             </div>
-            <table>
+            <div class="sep"></div>
+            <table class="table table-striped">
                 <tbody>
                     <tr>
                         <td>Experiment Name</th>
-                        <td><input data-bind="value: 'firstName'" /></td>
+                        <td><input data-bind="value: exp_name" /></td>
                     </tr>
                     <tr>
-                        <td>Participants</th>
-                        <td><input data-bind="value: 'firstName'" /></td>
+                        <td>User</th>
+                        <td><input data-bind="value: exp_people" /></td>
                     </tr>
+                    <tr>
+                        <td>Plate Type</th>
+                        <td>
+                            <select data-bind='options: plate_types, optionsCaption: "Select Plate Type...", value: plate_type'> </select>
+                        </td>
+                    </tr>
+                    <!--
+                    <tr>
+                        <td>Date</th>
+                        <td><input data-bind="value: exp_date" /></td>
+                    </tr>
+                    -->
                 </tbody>
             </table>
-            <p>Dependent</p>
-            <table class="table table-bordered" width="70%">
+
+            <h3 class="table-title">Channels</h3>
+            <p class="table-title">(Dependent Variables)</p>
+            <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th width="10%">Dep. Variable</th>
-                        <th width="50%">Variable Type</th>
-                        <th></th>
+                        <th width="35%">Dep. Variable</th>
+                        <th width="35%">Variable Type</th>
+                        <th width="30%"><button data-bind='click: addChnl'>Add Channel</button></th>
                     </tr>
                 </thead>
-                <tbody data-bind='foreach: exp_vars'>
+                <tbody data-bind='foreach: exp_chnl'>
                     <tr>
                         <td>
                             <p class="plain"><input data-bind="value: name" /></p>
                         </td>
+                        <td> Decimal </td>
                         <td>
-                            <select data-bind='options: $parent.var_types, optionsCaption: "Select...", value: $parent.type'> </select>
-                        </td>
-                        <td>
-                            <a href='#' data-bind='click: $parent.removeVar'>Remove</a>
+                            <a href='#' data-bind='click: $parent.delChnl'>Remove</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
 
-            <p>Independent</p>
+            <h3 class="table-title">Factors</h3>
+            <p class="table-title">(Independent Variables)</p>
             <table class="table table-bordered" width="70%">
                 <thead>
                     <tr>
-                        <th width="10%">Indep. Variable</th>
-                        <th width="50%">Variable Type</th>
-                        <th></th>
+                        <th width="35%">Indep. Variable</th>
+                        <th width="35%">Variable Type</th>
+                        <th width="30%"><button data-bind='click: addFact'>Add Factor</button></th>
                     </tr>
                 </thead>
-                <tbody data-bind='foreach: exp_vars'>
+                <tbody data-bind='foreach: exp_fact'>
                     <tr>
                         <td>
                             <p class="plain"><input data-bind="value: name" /></p>
@@ -69,14 +84,13 @@
                             <select data-bind='options: $parent.var_types, optionsCaption: "Select...", value: $parent.type'> </select>
                         </td>
                         <td>
-                            <a href='#' data-bind='click: $parent.removeVar'>Remove</a>
+                            <a href='#' data-bind='click: $parent.delFact'>Remove</a>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <button data-bind='click: addVar'>Add Variable</button>
+            <button data-bind="visible:fun()=='exp_old'">Update</button>
+            <button data-bind="visible:fun()=='exp_new'">Add</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
-    <button data-bind="visible:fun()=='exp_old'">Update</button>
-    <button data-bind="visible:fun()=='exp_new'">Add</button>
 </div>
