@@ -44,11 +44,11 @@ ko.applyBindings(new viewModel());
 
 // TODO oop setting, make it dynamic for all types of tables
 var setting = {
-    startCols:24,
-    minCols:24,
-    maxCols:24,
-    colWidths: 28,
-    startRows:16,
+    startCols:12,
+    minCols:12,
+    maxCols:12,
+    // colWidths: 28,
+    startRows:8,
     manualColumnResize:true,
     manualRowResize:true,
     rowHeaders:function (i) { return String.fromCharCode(65 + i); },
