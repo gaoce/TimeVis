@@ -1,31 +1,31 @@
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    {# Information Section #}
+    {# Information Section -#}
     <div class="panel panel-primary">
-        {# Section title #}
+        {# Section title -#}
         <div class="panel-heading plain" role="tab" id="heading1">
             <a class='panel-title plain section' data-toggle="collapse" data-parent="#accordion" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
                 Information
             </a>
         </div>
-        {# Section options #}
+        {# Section options -#}
         <div id="collapse1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading1">
             <ul class='list-group plain'>
-                {# Options #}
+                {# Options -#}
                 <li class='plain' data-bind="css:{highlight:opt()=='exp'}, click:function(){opt('exp'), fun('exp_old')}"><a class='plain option' href="#">Experiment</a></li>
                 <li class='plain' data-bind="css:{highlight:opt()=='lay'}, click:function(){opt('lay'), fun('lay_old')}"><a class='plain option' href="#">Layout</a></li>
                 <li class='plain' data-bind="css:{highlight:opt()=='imp'}, click:function(){opt('imp'), fun('imp_file')}"><a class='plain option' href="#">Import</a></li>
             </ul>
         </div>
     </div> <!-- div.panel -->
-    {# Visualizatoin Section #}
+    {# Visualizatoin Section -#}
     <div class="panel panel-primary">
-        {# Section title #}
+        {# Section title -#}
         <div class="panel-heading plain" role="tab" id="heading2">
             <a class='panel-title plain section' data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
                 Visualization
             </a>
         </div>
-        {# Section options #}
+        {# Section options -#}
         <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
             <ul class='list-group plain'>
                 <li class='plain' data-bind="css:{highlight:opt()=='plate'}, click:function(){opt('plate')}"><a class='plain option' href="#">Plate</a></li>
@@ -33,19 +33,19 @@
             </ul>
         </div>
     </div> <!-- div.panel -->
-    {# Analysis Section #}
+    {# Analysis Section -#}
     <div class="panel panel-primary">
-        {# Section title #}
+        {# Section title -#}
         <div class="panel-heading plain" role="tab" id="heading3">
             <a class='panel-title plain section' data-toggle="collapse" data-parent="#accordion" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
                 Analysis
             </a>
         </div>
-        {# Section options #}
+        {# Section options -#}
         <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
             <ul class='list-group plain'>
-                <li class='plain'><a class='plain option' href="#">Normalization</a></li>
-                <li class='plain'><a class='plain option' href="#">Export</a></li>
+                <li class='plain' data-bind="css:{highlight:opt()=='norm'}, click:function(){opt('norm')}"><a class='plain option' href="#">Normalization</a></li>
+                <li class='plain' data-bind="css:{highlight:opt()=='expt'}, click:function(){opt('expt')}"><a class='plain option' href="#">Export</a></li>
             </ul>
         </div>
     </div> <!-- div.panel -->
