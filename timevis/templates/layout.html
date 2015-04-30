@@ -19,10 +19,12 @@
                             <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Experiment...'"></select>
                         </td>
                     </tr>
-                    <tr data-bind="visible: fun()=='lay_old'">
-                        <td>Layout</th>
+                    <tr>
+                        <td>Layout Name</th>
                         <td>
-                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Layout...'"></select>
+                            <select class="form-control auto-width"
+                                data-bind="visible: fun()=='lay_old', options: layouts, optionsCaption: 'Select Layout...'"></select>
+                            <input class="form-control" name="" data-bind="visible: fun()=='lay_new'">
                         </td>
                     </tr>
                     <tr>
@@ -39,10 +41,7 @@
     <div class="row">
         <div class="col-md-8 fix-500">
             <div id="well"></div>
-            <div class="tab-content"><br>
-                <div role="tabpanel" class="tab-pane fade active" id="wwell"></div>
-            </div>
-
+            <div class="sep"></div>
             <button class="btn btn-primary" data-bind="visible:fun()=='lay_old'">Update</button>
             <button class="btn btn-primary" data-bind="visible:fun()=='lay_new'">Add</button>
         </div> <!-- col-md-x -->
