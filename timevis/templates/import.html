@@ -1,28 +1,54 @@
-<div class="container" data-bind="visible: opt()=='file'">
-    <div class="row">
-        <div class="col-md-4">
-            <select class="form-control pull-left auto-width" data-bind="options: layouts, optionsCaption: 'Select...'"></select>
-            <input type="file" name="img">
-        </div> <!-- col-md-x -->
-    </div> <!-- row -->
-
-    <button>Upload</button>
-
+<div class="container" data-bind="visible: opt()=='imp'">
     <div class="row">
         <div class="col-md-6">
-          <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
-              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('lay_old')}">Update Existing</a></li>
-              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('lay_new')}">Add New</a></li>
+          <ul class="nav nav-tabs" role="tablist" id="import-tabs">
+              <li role="presentation" data-bind="css:{active: fun()=='imp_file'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('imp_file')}">Import files</a></li>
+              <li role="presentation" data-bind="css:{active: fun()=='imp_manu'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('imp_manu')}">Manual Paste</a></li>
           </ul>
         </div>
     </div> <!-- row -->
 
     <div class="row">
         <div class="col-md-4">
-            <select class="form-control pull-left auto-width" data-bind="options: layouts, optionsCaption: 'Select...', enable: fun()=='lay_old'"></select>
+            <div class="sep"></div>
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>Experiment</th>
+                        <td>
+                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Experiment...'"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Layout</th>
+                        <td>
+                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Layout...'"></select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 
-    <button>Upload</button>
+    <div class="row" data-bind="visible: fun()=='imp_file'">
+        <div class="col-md-4">
+            <div class="sep"></div>
+            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select File Type...'"></select>
+            <div class="sep"></div>
+            <input class="form-control" type="file" name="img">
+            <div class="sep"></div>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+
+
+    <div class="row" data-bind="visible: fun()=='imp_manu'">
+        <div class="col-md-4">
+            <div id="data_table"></div>
+            <div class="sep"></div>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+
+    <button class="btn btn-primary">Import</button>
+
 
 </div>

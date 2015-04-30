@@ -57,7 +57,6 @@ var setting = {
 };
 
 var container1 = document.getElementById("well"); 
-var hot = new Handsontable(container1, setting);
-$(document).ready(function () {
-    // Assign table to .tab-pane divs
-});
+var hot1 = new Handsontable(container1, setting);
+var container2 = document.getElementById("data_table"); 
+var hot2 = new Handsontable(container2, setting);
