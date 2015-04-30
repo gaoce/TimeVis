@@ -1,4 +1,13 @@
-<div class="container" data-bind="visible: opt()=='manu'">
+<div class="container" data-bind="visible: opt()=='file'">
+    <div class="row">
+        <div class="col-md-4">
+            <select class="form-control pull-left auto-width" data-bind="options: layouts, optionsCaption: 'Select...'"></select>
+            <input type="file" name="img">
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+
+    <button>Upload</button>
+
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
