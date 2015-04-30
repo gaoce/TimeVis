@@ -2,8 +2,8 @@
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="import-tabs">
-              <li role="presentation" data-bind="css:{active: fun()=='imp_file'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('imp_file')}">Import files</a></li>
-              <li role="presentation" data-bind="css:{active: fun()=='imp_manu'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('imp_manu')}">Manual Paste</a></li>
+              <li role="presentation" data-bind="css:{active: fun()=='imp_file'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('imp_file')}">Import Files</a></li>
+              <li role="presentation" data-bind="css:{active: fun()=='imp_manu'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('imp_manu')}">Manual Input</a></li>
           </ul>
         </div>
     </div> <!-- row -->
@@ -42,13 +42,13 @@
 
 
     <div class="row" data-bind="visible: fun()=='imp_manu'">
-        <div class="col-md-4">
+        <div class="col-md-8">
             <div id="data_table"></div>
             <div class="sep"></div>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 
-    <button class="btn btn-primary">Import</button>
+    <button class="btn btn-primary">Upload Data</button>
 
 
 </div>
