@@ -1,17 +1,22 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <script src="{{ url_for('static', filename='js/lib/handsontable.full.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/lib/knockout.min.js') }}"></script>
-
+    {# for slider in plate.html -#}
+    <script src="{{ url_for('static', filename='js/lib/jquery-ui.min.js') }}"></script>
+    {# CSS -#}
     <link rel="stylesheet" href="{{ url_for('static', filename='css/lib/bootstrap.min.css') }}">
     <link rel="stylesheet" media="screen" href="{{ url_for('static', filename='css/lib/handsontable.full.min.css') }}">
     <link rel="stylesheet" media="screen" href="{{ url_for('static', filename='css/lib/handsontable.bootstrap.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {# for slider in plate.html -#}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/lib/jquery-ui.min.css') }}">
 
 </head>
 <body>
@@ -19,6 +24,6 @@
         {% block content -%}
         {%- endblock %}
     </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
-<script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </html>

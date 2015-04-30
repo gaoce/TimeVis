@@ -27,6 +27,7 @@ setup(
             "static/js/lib/*.js",
             "static/css/*.css",
             "static/css/lib/*.css",
+            "static/css/lib/images/*",
             "templates/*.html",
         ]
     },

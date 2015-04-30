@@ -33,6 +33,9 @@ function viewModel(){
 
     // Remove a factor
     self.delFact = function(fact) { self.exp_fact.remove(fact) };
+
+    // Visualize plate
+    self.vis_plate = ko.observable(false);
 }
 
 var ExpVar = function() {
@@ -79,3 +82,5 @@ var container1 = document.getElementById("well");
 var hot1 = new Handsontable(container1, setting);
 var container2 = document.getElementById("data_table"); 
 var hot2 = new Handsontable(container2, setting);
+
+$("#time-slider").slider();
