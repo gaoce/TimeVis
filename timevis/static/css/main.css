@@ -89,7 +89,7 @@ li.plain {
 /*
  * Highlight an option when clicked
  */
-li.high {
+li.highlight {
     background-color: #D8D8D8;
     color: white;
 }
