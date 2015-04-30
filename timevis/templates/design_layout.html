@@ -9,40 +9,42 @@
     </div> <!-- row -->
 
     <div class="row">
-        <div class="col-md-8 fix-600">
+        <div class="col-md-4">
             <div class="sep"></div>
             <table class="table table-striped">
                 <tbody>
                     <tr>
                         <td>Experiment</th>
                         <td>
-                            <select class="form-control pull-left auto-width" data-bind="options: layouts, optionsCaption: 'Select Experiment...'"></select>
+                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Experiment...'"></select>
                         </td>
                     </tr>
                     <tr data-bind="visible: fun()=='lay_old'">
                         <td>Layout</th>
                         <td>
-                            <select class="form-control pull-left auto-width"
-                                data-bind="options: layouts, optionsCaption: 'Select Layout...'"></select>
+                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Layout...'"></select>
                         </td>
                     </tr>
                     <tr>
                         <td>Factor</th>
                         <td>
-                            <select class="form-control pull-left auto-width"
-                                data-bind="options: exp_fact, optionsText:
-                                'name', optionsCaption: 'Select Factor...'"></select>
+                            <select class="form-control auto-width" data-bind="options: exp_fact, optionsText: 'name', optionsCaption: 'Select Factor...'"></select>
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+
+    <div class="row">
+        <div class="col-md-8 fix-600">
             <div id="well"></div>
             <div class="tab-content"><br>
                 <div role="tabpanel" class="tab-pane fade active" id="wwell"></div>
             </div>
 
-            <button data-bind="visible:fun()=='lay_old'">Update</button>
-            <button data-bind="visible:fun()=='lay_new'">Add</button>
+            <button class="btn btn-primary" data-bind="visible:fun()=='lay_old'">Update</button>
+            <button class="btn btn-primary" data-bind="visible:fun()=='lay_new'">Add</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 </div>

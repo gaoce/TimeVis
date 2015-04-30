@@ -24,24 +24,18 @@
                     </tr>
                     <tr>
                         <td>Experiment Name</td>
-                        <td><input data-bind="value: exp_name" /></td>
+                        <td><input class="form-control" data-bind="value: exp_name" /></td>
                     </tr>
                     <tr>
                         <td>User</td>
-                        <td><input data-bind="value: exp_people" /></td>
+                        <td><input class="form-control" data-bind="value: exp_people" /></td>
                     </tr>
                     <tr>
-                        <td>Plate Type</td>
+                        <td>Well Number</td>
                         <td>
-                            <select class="form-control" data-bind='options: plate_types, optionsCaption: "Select Plate Type...", value: plate_type'> </select>
+                            <select class="form-control" data-bind='options: plate_types, optionsCaption: "Select Well Number...", value: plate_type'> </select>
                         </td>
                     </tr>
-                    <!--
-                    <tr>
-                        <td>Date</td>
-                        <td><input data-bind="value: exp_date" /></td>
-                    </tr>
-                    -->
                 </tbody>
             </table>
 
@@ -50,15 +44,15 @@
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th width="35%">Name</th>
+                        <th width="40%">Name</th>
                         <th width="35%">Type</th>
-                        <th width="30%"><button data-bind='click: addChnl'>Add Channel</button></th>
+                        <th width="25%"><button class="btn btn-primary" data-bind='click: addChnl'>Add Channel</button></th>
                     </tr>
                 </thead>
                 <tbody data-bind='foreach: exp_chnl'>
                     <tr>
                         <td>
-                            <p class="plain"><input data-bind="value: name" /></p>
+                            <p class="plain"><input class="form-control" data-bind="value: name" /></p>
                         </td>
                         <td> Decimal </td>
                         <td>
@@ -73,15 +67,15 @@
             <table class="table table-bordered" width="70%">
                 <thead>
                     <tr>
-                        <th width="35%">Name</th>
+                        <th width="40%">Name</th>
                         <th width="35%">Type</th>
-                        <th width="30%"><button data-bind='click: addFact'>Add Factor</button></th>
+                        <th width="25%"><button class="btn btn-primary" data-bind='click: addFact'>Add Factor</button></th>
                     </tr>
                 </thead>
                 <tbody data-bind='foreach: exp_fact'>
                     <tr>
                         <td>
-                            <p class="plain"><input data-bind="value: name" /></p>
+                            <p class="plain"><input class="form-control" data-bind="value: name" /></p>
                         </td>
                         <td>
                             <select class="form-control" data-bind='options: $parent.var_types, optionsCaption: "Select...", value: $parent.type'> </select>
@@ -92,8 +86,8 @@
                     </tr>
                 </tbody>
             </table>
-            <button data-bind="visible:fun()=='exp_old'">Update</button>
-            <button data-bind="visible:fun()=='exp_new'">Add</button>
+            <button class="btn btn-class" data-bind="visible:fun()=='exp_old'">Update</button>
+            <button class="btn btn-class" data-bind="visible:fun()=='exp_new'">Add</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 </div>
