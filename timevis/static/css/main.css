@@ -116,3 +116,7 @@ select {
     padding: 1px 0px;
     border-width: 1px;
 }
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
