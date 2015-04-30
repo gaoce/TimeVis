@@ -42,6 +42,25 @@ var ExpVar = function() {
 };
 ko.applyBindings(new viewModel());
 
+var createSetting = function(nRow, nCol, fixRow){
+    self.startRows = nRow;
+    self.minRows = nRow;
+    if (fixRow) {
+        self.maxRows = nRow;
+    }
+
+    self.startCols = nCol;
+    self.minCols = nCol;
+    self.maxCols = nCol;
+
+    self.manualColumnResize = true;
+    self.manualRowResize = true;
+    self.contextMenu = true;
+
+    self.rowHeaders = function(i) { return String.fromCharCode(65 + i); };
+    self.colHeaders = function(i) { return i+1; };
+};
+
 // TODO oop setting, make it dynamic for all types of tables
 var setting = {
     startCols:12,
