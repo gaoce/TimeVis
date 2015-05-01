@@ -7,58 +7,33 @@ function viewModel(){
     // ========================================================================
     // Controls subpage
     // ========================================================================
-    // | Section |  Option  |  Function |  Comment  |
-    // | ------- | -------- | --------- | --------- |
-    // | design  |   exp    |  exp_old  |           |
-    // | design  |   exp    |  exp_new  |			|
-    // | design  |   lay    |  lay_old  |           |
-    // | design  |   lay    |  lay_new  |           |
-    // | design  |   imp    |  imp_file |           |
-    // | design  |   imp    |  imp_manu |           |
+    // | Section  | Option  |  Function |  Comment  |
+    // | -------- | ------- | --------- | --------- |
+    // | design   |  exp    |  exp_old  |           |
+    // |          |         |  exp_new  |           |
+    // |          |  lay    |  lay_old  |           |
+    // |          |         |  lay_new  |           |
+    // |          |  imp    |  imp_file |           |
+    // |          |         |  imp_manu |           |
+    // | vis      |  plate  |           |           |
+    // |          |  genes  |           |           |
+    // | analysis |  norm   |           |           |
+    // |          |  expt   |           |           |
     //
     self.sec = ko.observable('design');  // Active section
     self.opt = ko.observable('exp');     // Active option
     self.fun = ko.observable('exp_old'); // Active function
 
-    // ========================================================================
     // Experiment subpage
-    // ========================================================================
-    //
-    self.exp_name = ko.observable();
-    self.exp_people = ko.observable();
-    self.exp_date = ko.observable();
-
-    // Well numbers
-    self.plate_types = [96, 384];
-    self.plate_type = ko.observable();
-
-    self.experiments = ko.observableArray(['AAA', 'BBB']);
-    self.layouts = ko.observableArray(['AAA', 'BBB']);
-
-    // Factor (independent variables)
-    self.exp_fact = ko.observableArray([new ExpVar()]);
-
-    // Channels (dependent variables)
-    self.exp_chnl = ko.observableArray([new ExpVar()]);
-
-    self.var_types = ['Category', 'Integer', 'Decimal'];
-
-    // Add a new dependent
-    self.add_chnl = function() { self.exp_chnl.push(new ExpVar()) };
-
-    // Remove a channel
-    self.del_chnl = function(chnl) { self.exp_chnl.remove(chnl) };
-
-    // Add a new independent
-    self.add_fact = function() { self.exp_fact.push(new ExpVar()) };
-
-    // Remove a factor
-    self.del_fact = function(fact) { self.exp_fact.remove(fact) };
+    self.exp = new ExpVM();
 
     // ========================================================================
     // Layout subpage
     // ========================================================================
     //
+    // Factor (independent variables)
+    self.exp_fact = ko.observableArray([new ExpVar()]);
+    self.layouts = ko.observableArray(['AAA', 'BBB']);
     self.layout_exps = ko.observableArray(['AAA','AAA']);
 
     // ========================================================================
@@ -113,6 +88,47 @@ function viewModel(){
 
 }
 
+// ========================================================================
+// Experiment viewModel class
+// ========================================================================
+var ExpVM = function() {
+    var self = this;
+
+    // Possible values: old, new
+    self.fun = ko.observable('old');
+
+    // Information about the experiment
+    self.name = ko.observable();
+    self.people = ko.observable();
+    self.date = ko.observable();
+
+    // Well numbers
+    self.plate_types = [96, 384];
+    self.plate_type = ko.observable();
+
+    self.experiments = ko.observableArray(['AAA', 'BBB']);
+
+    // Factor (independent variables)
+    self.exp_fact = ko.observableArray([new ExpVar()]);
+
+    // Channels (dependent variables)
+    self.exp_chnl = ko.observableArray([new ExpVar()]);
+
+    self.var_types = ['Category', 'Integer', 'Decimal'];
+
+    // Add a new dependent
+    self.add_chnl = function() { self.exp_chnl.push(new ExpVar()) };
+
+    // Remove a channel
+    self.del_chnl = function(chnl) { self.exp_chnl.remove(chnl) };
+
+    // Add a new independent
+    self.add_fact = function() { self.exp_fact.push(new ExpVar()) };
+
+    // Remove a factor
+    self.del_fact = function(fact) { self.exp_fact.remove(fact) };
+}
+
 // Get Factor for experiment
 // return a observableArray of FactorPanel
 function getFactors(exp) {
@@ -134,7 +150,6 @@ function searchLevel(val) {
             }
         }
     } else {
-        console.log('Here');
         for (g in self.levels()){
             self.levels()[g]._destroy = false;
         }

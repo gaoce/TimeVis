@@ -1,9 +1,12 @@
-<div class="container" data-bind="visible: opt()=='exp'">
+<div class="container" data-bind="with: exp, visible: $root.opt()=='exp'">
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
-              <li role="presentation" class="active"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('exp_old')}">Update Existing</a></li>
-              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('exp_new')}">Add New</a></li>
+              <li role="presentation" class="active">
+                  <a role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('old')}">Update Existing</a>
+              </li>
+              <li role="presentation">
+                  <a role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('new')}">Add New</a></li>
           </ul>
         </div>
     </div> <!-- row -->
@@ -11,12 +14,11 @@
     <div class="row">
         <div class="col-md-6 fix-600">
             <div class="sep"></div>
-
             <h3>Experiment Information</h3>
             <div class="sep"></div>
             <table class="table table-striped">
                 <tbody>
-                    <tr data-bind=" visible: fun()=='exp_old' ">
+                    <tr data-bind="visible: fun()=='old' ">
                         <td>Select Experiment</td>
                         <td>
                             <select class="form-control" data-bind="options: experiments"></select>
@@ -24,11 +26,11 @@
                     </tr>
                     <tr>
                         <td>Experiment Name</td>
-                        <td><input class="form-control" data-bind="value: exp_name" /></td>
+                        <td><input class="form-control" data-bind="value: name" /></td>
                     </tr>
                     <tr>
                         <td>User</td>
-                        <td><input class="form-control" data-bind="value: exp_people" /></td>
+                        <td><input class="form-control" data-bind="value: people" /></td>
                     </tr>
                     <tr>
                         <td>Well Number</td>
@@ -87,8 +89,8 @@
                     </tr>
                 </tbody>
             </table>
-            <button class="btn btn-primary" data-bind="visible:fun()=='exp_old'">Update</button>
-            <button class="btn btn-primary" data-bind="visible:fun()=='exp_new'">Upload</button>
+            <button class="btn btn-primary" data-bind="visible:fun()=='old'">Update</button>
+            <button class="btn btn-primary" data-bind="visible:fun()=='new'">Upload</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 </div>
