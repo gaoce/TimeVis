@@ -1,18 +1,34 @@
+// ========================================================================
+// viewModel class
+// ========================================================================
 function viewModel(){
     var self = this;
 
     // ========================================================================
-    // Controls
+    // Controls subpage
     // ========================================================================
+    // | Section |  Option  |  Function |  Comment  |
+    // | ------- | -------- | --------- | --------- |
+    // | design  |   exp    |  exp_old  |           |
+    // | design  |   exp    |  exp_new  |			|
+    // | design  |   lay    |  lay_old  |           |
+    // | design  |   lay    |  lay_new  |           |
+    // | design  |   imp    |  imp_file |           |
+    // | design  |   imp    |  imp_manu |           |
     //
     self.sec = ko.observable('design');  // Active section
     self.opt = ko.observable('exp');     // Active option
     self.fun = ko.observable('exp_old'); // Active function
 
+    // ========================================================================
+    // Experiment subpage
+    // ========================================================================
+    //
     self.exp_name = ko.observable();
     self.exp_people = ko.observable();
     self.exp_date = ko.observable();
 
+    // Well numbers
     self.plate_types = [96, 384];
     self.plate_type = ko.observable();
 
@@ -28,16 +44,22 @@ function viewModel(){
     self.var_types = ['Category', 'Integer', 'Decimal'];
 
     // Add a new dependent
-    self.addChnl = function() { self.exp_chnl.push(new ExpVar()) };
+    self.add_chnl = function() { self.exp_chnl.push(new ExpVar()) };
 
     // Remove a channel
-    self.delChnl = function(chnl) { self.exp_chnl.remove(chnl) };
+    self.del_chnl = function(chnl) { self.exp_chnl.remove(chnl) };
 
     // Add a new independent
-    self.addFact = function() { self.exp_fact.push(new ExpVar()) };
+    self.add_fact = function() { self.exp_fact.push(new ExpVar()) };
 
     // Remove a factor
-    self.delFact = function(fact) { self.exp_fact.remove(fact) };
+    self.del_fact = function(fact) { self.exp_fact.remove(fact) };
+
+    // ========================================================================
+    // Layout subpage
+    // ========================================================================
+    //
+    self.layout_exps = ko.observableArray(['AAA','AAA']);
 
     // ========================================================================
     // Plates
@@ -68,18 +90,18 @@ function viewModel(){
     };
 
     // Remove a factor
-    self.del_panel = function(fact) { 
+    self.del_panel = function(fact) {
         self.factor_panels.remove(fact);
         self.factors.push(fact);
-        self.factors.sort(function(left, right) { 
-            return left.name == right.name ? 0 : 
-            (left.name < right.name ? -1 : 1) 
+        self.factors.sort(function(left, right) {
+            return left.name == right.name ? 0 :
+            (left.name < right.name ? -1 : 1)
         });
         self.factor_chosen();
 
         // console.log(fact);
-        // self.factor_panels.remove(fact) 
-    	// fact._destroy = false;
+        // self.factor_panels.remove(fact)
+        // fact._destroy = false;
         // self.factors.valueHasMutated();
     };
 
@@ -145,6 +167,9 @@ var ExpVar = function() {
 var vm = new viewModel();
 ko.applyBindings(vm);
 
+// ========================================================================
+// handsontable
+// ========================================================================
 var createSetting = function(nRow, nCol, fixRow){
     self.startRows = nRow;
     self.minRows = nRow;
