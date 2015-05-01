@@ -4,7 +4,7 @@
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="import-tabs">
               <li role="presentation" class="active">
-                  <a aria-controls="well" role="tab" data-toggle="tab" href="#">Genes View</a>
+                  <a role="tab" data-toggle="tab" href="#">Genes View</a>
               </li>
           </ul>
         </div>
@@ -13,35 +13,29 @@
     <div class="row">
         <div class="col-md-4">
             <div class="sep"></div>
-            <table class="table table-striped">
-                <tbody>
-                    <tr>
-                        <td>Experiment</th>
-                        <td>
-                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Experiment...'"></select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Layout</th>
-                        <td>
-                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Layout...'"></select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Plate</th>
-                        <td>
-                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Plate...'"></select>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="pull-left">
+                <button class="btn btn-primary" data-bind="click: add_panel">Add Factor</button>
+            </div>
+            <div class="pull-left">
+                <select class="form-control auto-width pull-left" 
+                    data-bind="options: avi_factors, value: chosen_factor, optionsCaption: 'Select Factor...'"></select>
+            </div>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
+
+    {# Factor panel -#}
+    <div class="row" data-bind="foreach: factor_selected">
+        <div class="col-md-2">
+            <h3 data-bind="text:name"></h3>
+            <select class="form-control" multiple="multiple" data-bind="options: levels, selectedOptions: chosen_levels"></select>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+
     {# Start Visualization #}
     <button class="btn btn-primary" data-bind="click: function(){}">Visualize</button>
     {# Canvas #}
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-4 fix-500">
             <div class="sep"></div>
             <div id="canvas"></div>
         </div> <!-- col-md-x -->

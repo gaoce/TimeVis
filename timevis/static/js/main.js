@@ -3,7 +3,7 @@ function viewModel(){
     self.sec = ko.observable('design');  // Active section
     self.opt = ko.observable('exp');     // Active option
     self.fun = ko.observable('exp_old'); // Active function
-    
+
     self.exp_name = ko.observable();
     self.exp_people = ko.observable();
     self.exp_date = ko.observable();
@@ -36,6 +36,27 @@ function viewModel(){
 
     // Visualize plate
     self.vis_plate = ko.observable(false);
+
+    // Available factor for visualization
+    self.avi_factors = ko.observableArray([createFactor('A'), createFactor('B')]);
+
+    // Factor chosen to be added
+    self.chosen_factor = ko.observable(createFactor('C'));
+
+    // Add a factor selection panel
+    self.add_panel = function() {
+        self.factor_selected.push(self.chosen_factor);
+    };
+
+    // Factor selected
+    self.factor_selected = ko.observableArray([createFactor('A'), createFactor('B')]);
+}
+
+var createFactor = function(name) {
+    var self = this;
+    self.name = name;
+    self.levels = [1, 2, 3, 4];
+    self.chosen_levels = ko.observable([]);
 }
 
 var ExpVar = function() {
@@ -78,9 +99,9 @@ var setting = {
     contextMenu: true
 };
 
-var container1 = document.getElementById("well"); 
+var container1 = document.getElementById("well");
 var hot1 = new Handsontable(container1, setting);
-var container2 = document.getElementById("data_table"); 
+var container2 = document.getElementById("data_table");
 var hot2 = new Handsontable(container2, setting);
 
 $("#time-slider").slider();
