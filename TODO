@@ -3,3 +3,4 @@
 3. Plugin system
 4. Change uniqueness while inputting layout names, experiment names ...
 5. Use cookie to remember app status
+6. For each time plot, add a popup windows showing the factor table
