@@ -24,10 +24,12 @@
     </div> <!-- row -->
 
     {# Factor panel -#}
-    <div class="row" data-bind="foreach: factor_selected">
-        <div class="col-md-2">
-            <h3 data-bind="text:name"></h3>
-            <select class="form-control" multiple="multiple" data-bind="options: levels, selectedOptions: chosen_levels"></select>
+    <div class="row">
+        <div class="col-md-8" data-bind="foreach: factor_selected">
+            <div class="col-md-4">
+                <h3 data-bind="text:name"></h3>
+                <select class="form-control" multiple="multiple" data-bind="options: levels, selectedOptions: chosen_levels"></select>
+            </div> <!-- col-md-x -->
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 
