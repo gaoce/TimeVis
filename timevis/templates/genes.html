@@ -1,5 +1,5 @@
 <div class="container" data-bind="visible: opt()=='genes'">
-    {# Tabs -#}
+    {# Tabs: place holder to keep UI consistent, nothing happens here -#}
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="import-tabs">
@@ -13,24 +13,40 @@
     <div class="row">
         <div class="col-md-4">
             <div class="sep"></div>
-            <div class="pull-left">
-                <button class="btn btn-primary" data-bind="click: add_panel">Add Factor</button>
-            </div>
-            <div class="pull-left">
-                <select class="form-control auto-width pull-left" 
-                    data-bind="options: avi_factors, value: chosen_factor, optionsCaption: 'Select Factor...'"></select>
-            </div>
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>Experiment</th>
+                        <td>
+                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Experiment...'"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <button class="btn btn-primary" data-bind="click: add_panel">Add Factor</button>
+                        </td>
+                        <td>
+                            <select class="form-control" 
+                                data-bind="options: factors, value: factor_chosen, optionsText:'name', optionsCaption: 'Select Factor...'"></select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
-
-    {# Factor panel -#}
+    {# Factor Panels: each panel is a box allowing user the select levels -#}
     <div class="row">
+        {# Leave some space to the top -#}
         <div class="sep"></div>
-        <div class="col-md-8 fix-200" data-bind="foreach: factor_selected">
+        <div class="col-md-8 fix-200" data-bind="foreach: factor_panels">
             <div class="col-md-4">
-                <span data-bind="text:name"></span>
-                <button class="btn btn-primary" data-bind='click: $parent.del_factor'>Remove</button>
-                <select class="form-control" multiple="multiple" data-bind="options: levels, selectedOptions: chosen_levels"></select>
+                {# Name of the factor -#}
+                <span data-bind="text: name"></span>
+                {# Delete button -#}
+                <button class="btn btn-primary" data-bind='click: $root.del_panel'>Remove</button>
+                {# Search box to filter levels -#}
+                <input class="form-control" placeholder="Search…" type="search" autocomplete="off" data-bind="value: query, valueUpdate: 'keyup'">
+                <select class="form-control" multiple="multiple" data-bind="options: levels, optionsText: 'name', selectedOptions: chosen_levels"></select>
             </div> <!-- col-md-x -->
         </div> <!-- col-md-x -->
     </div> <!-- row -->

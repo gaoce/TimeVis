@@ -7,7 +7,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 # Setup, some thing to note
-#   1. zip_safe needs to be False since we need access to templates/
+#   1. zip_safe needs to be False since we need access to templates
 setup(
     name="TimeVis",
     version="0.1",

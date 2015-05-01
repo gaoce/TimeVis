@@ -1,5 +1,10 @@
 function viewModel(){
     var self = this;
+
+    // ========================================================================
+    // Controls
+    // ========================================================================
+    //
     self.sec = ko.observable('design');  // Active section
     self.opt = ko.observable('exp');     // Active option
     self.fun = ko.observable('exp_old'); // Active function
@@ -22,47 +27,114 @@ function viewModel(){
 
     self.var_types = ['Category', 'Integer', 'Decimal'];
 
-	// Add a new dependent
+    // Add a new dependent
     self.addChnl = function() { self.exp_chnl.push(new ExpVar()) };
 
     // Remove a channel
     self.delChnl = function(chnl) { self.exp_chnl.remove(chnl) };
 
-	// Add a new independent
+    // Add a new independent
     self.addFact = function() { self.exp_fact.push(new ExpVar()) };
 
     // Remove a factor
     self.delFact = function(fact) { self.exp_fact.remove(fact) };
 
+    // ========================================================================
+    // Plates
+    // ========================================================================
+
     // Visualize plate
     self.vis_plate = ko.observable(false);
 
+    // ========================================================================
+    // Genes Vis: Factor selection and query
+    // ========================================================================
     // Available factor for visualization
-    self.avi_factors = ko.observableArray([createFactor('A'), createFactor('B')]);
+    self.factors = getFactors();
 
     // Factor chosen to be added
-    self.chosen_factor = ko.observable(createFactor('C'));
+    self.factor_chosen = ko.observable();
+
+    // Factor selected
+    self.factor_panels = ko.observableArray();
 
     // Add a factor selection panel
     self.add_panel = function() {
-        self.factor_selected.push(self.chosen_factor);
+        if (self.factor_chosen()){
+            self.factor_panels.push(self.factor_chosen());
+            self.factors.remove(self.factor_chosen());
+            self.factor_chosen();
+        }
     };
 
-    // Factor selected
-    self.factor_selected = ko.observableArray([createFactor('A'), createFactor('B')]);
-
     // Remove a factor
-    self.del_factor = function(fact) { self.factor_selected.remove(fact) };
+    self.del_panel = function(fact) { 
+        self.factor_panels.remove(fact);
+        self.factors.push(fact);
+        self.factors.sort(function(left, right) { 
+            return left.name == right.name ? 0 : 
+            (left.name < right.name ? -1 : 1) 
+        });
+        self.factor_chosen();
 
+        // console.log(fact);
+        // self.factor_panels.remove(fact) 
+    	// fact._destroy = false;
+        // self.factors.valueHasMutated();
+    };
+
+    // ========================================================================
+    // Genes Vis: Time series curve vis
+    // ========================================================================
     // vis row
     self.row = ko.observableArray([ ['a', 'b'], ['c', 'd'] ]);
+
 }
 
-var createFactor = function(name) {
+// Get Factor for experiment
+// return a observableArray of FactorPanel
+function getFactors(exp) {
+    return ko.observableArray([new FactorPanel('A'),
+                               new FactorPanel('B')]);
+}
+
+// Search
+function searchLevel(val) {
+    var self = this;
+    // check if string is empty
+    console.log(val);
+    if (val){
+        for (g in self.levels()){
+            if (self.levels()[g].name.search(val) === -1){
+                self.levels()[g]._destroy = true;
+            } else {
+                self.levels()[g]._destroy = false;
+            }
+        }
+    } else {
+        console.log('Here');
+        for (g in self.levels()){
+            self.levels()[g]._destroy = false;
+        }
+    }
+    self.levels.valueHasMutated();
+}
+
+// Factor class
+var FactorPanel = function(name) {
     var self = this;
     self.name = name;
-    self.levels = [1, 2, 3, 4];
+    self.query = ko.observable();
+    self.query.subscribe(searchLevel, self);
+
+    self.levels = ko.observableArray([new Level('1'), new Level('2')]);
     self.chosen_levels = ko.observable([]);
+}
+
+var Level = function(name){
+    var self = this;
+    self.name = name;
+    self.value = 1;
 }
 
 var ExpVar = function() {
@@ -70,7 +142,8 @@ var ExpVar = function() {
     self.name = ko.observable();
     self.type = ko.observable();
 };
-ko.applyBindings(new viewModel());
+var vm = new viewModel();
+ko.applyBindings(vm);
 
 var createSetting = function(nRow, nCol, fixRow){
     self.startRows = nRow;
