@@ -46,7 +46,7 @@
                     <tr>
                         <th width="40%">Name</th>
                         <th width="35%">Type</th>
-                        <th width="25%"><button class="btn btn-primary" data-bind='click: addChnl'>Add Channel</button></th>
+                        <th width="25%"><button class="btn btn-primary" data-bind='click: add_chnl'>Add Channel</button></th>
                     </tr>
                 </thead>
                 <tbody data-bind='foreach: exp_chnl'>
@@ -56,7 +56,7 @@
                         </td>
                         <td> Decimal </td>
                         <td>
-                            <a href='#' data-bind='click: $parent.delChnl'>Remove</a>
+                            <a href='#' data-bind='click: $parent.del_chnl'>Remove</a>
                         </td>
                     </tr>
                 </tbody>
@@ -69,7 +69,8 @@
                     <tr>
                         <th width="40%">Name</th>
                         <th width="35%">Type</th>
-                        <th width="25%"><button class="btn btn-primary" data-bind='click: addFact'>Add Factor</button></th>
+                        <th width="25%"><button class="btn btn-primary"
+                                data-bind='click: add_fact'>Add Factor</button></th>
                     </tr>
                 </thead>
                 <tbody data-bind='foreach: exp_fact'>
@@ -81,7 +82,7 @@
                             <select class="form-control" data-bind='options: $parent.var_types, optionsCaption: "Select...", value: $parent.type'> </select>
                         </td>
                         <td>
-                            <a href='#' data-bind='click: $parent.delFact'>Remove</a>
+                            <a href='#' data-bind='click: $parent.del_fact'>Remove</a>
                         </td>
                     </tr>
                 </tbody>
