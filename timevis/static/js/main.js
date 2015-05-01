@@ -50,6 +50,12 @@ function viewModel(){
 
     // Factor selected
     self.factor_selected = ko.observableArray([createFactor('A'), createFactor('B')]);
+
+    // Remove a factor
+    self.del_factor = function(fact) { self.factor_selected.remove(fact) };
+
+    // vis row
+    self.row = ko.observableArray([ ['a', 'b'], ['c', 'd'] ]);
 }
 
 var createFactor = function(name) {

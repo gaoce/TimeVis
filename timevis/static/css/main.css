@@ -15,8 +15,23 @@ div.plain {
 }
 
 /*
- * Fix div height to 500px with scroll
- */
+ * Fix div height with scroll
+ */                 
+div.fix-100 {
+    height: 100px;
+    overflow-y: auto;
+}
+
+div.fix-200 {
+    height: 200px;
+    overflow-y: auto;
+}
+
+div.fix-300 {
+    height: 300px;
+    overflow-y: auto;
+}
+
 div.fix-500 {
     height: 500px;
     overflow-y: auto;

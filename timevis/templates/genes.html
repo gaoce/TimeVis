@@ -25,9 +25,11 @@
 
     {# Factor panel -#}
     <div class="row">
-        <div class="col-md-8" data-bind="foreach: factor_selected">
+        <div class="sep"></div>
+        <div class="col-md-8 fix-200" data-bind="foreach: factor_selected">
             <div class="col-md-4">
-                <h3 data-bind="text:name"></h3>
+                <span data-bind="text:name"></span>
+                <button class="btn btn-primary" data-bind='click: $parent.del_factor'>Remove</button>
                 <select class="form-control" multiple="multiple" data-bind="options: levels, selectedOptions: chosen_levels"></select>
             </div> <!-- col-md-x -->
         </div> <!-- col-md-x -->
@@ -37,9 +39,14 @@
     <button class="btn btn-primary" data-bind="click: function(){}">Visualize</button>
     {# Canvas #}
     <div class="row">
-        <div class="col-md-4 fix-500">
-            <div class="sep"></div>
-            <div id="canvas"></div>
-        </div> <!-- col-md-x -->
+        <div id="time_canvas" class="col-md-8 fix-300" data-bind="foreach: row">
+            <div class="row" data-bind="foreach: $data">
+                <div class="col-md-4">
+                    <div data-bind="attr:{id: $data}">A</div>
+                    <div data-bind="attr:{id: $data+'_legend'}"></div>
+                </div>
+            </div>  <!-- row -->
+
+        </div>  <!-- container -->
     </div>  <!-- row -->
 </div>
