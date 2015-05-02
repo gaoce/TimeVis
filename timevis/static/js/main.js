@@ -129,6 +129,25 @@ var ExpVM = function() {
     self.del_fact = function(fact) { self.exp_fact.remove(fact) };
 }
 
+// ========================================================================
+// Experiment class
+// ========================================================================
+function Exp(name, user, well_num) {
+    var self = this;
+    self.name = name;
+    self.user = user;
+    self.well_num = 96;
+
+    self.layouts = ko.observableArray();
+}
+
+// ========================================================================
+// Experiment class
+// ========================================================================
+function Layout(name, well_num) {
+    var self = this;
+}
+
 // Get Factor for experiment
 // return a observableArray of FactorPanel
 function getFactors(exp) {
