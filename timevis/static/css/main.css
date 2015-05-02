@@ -49,6 +49,11 @@ h3.table-title, p.table-title {
     display: inline;
 }
 
+h3.plain {
+    margin: 0px;
+    text-align: center;
+}
+
 /*
  * Plain link, without underline
  */
