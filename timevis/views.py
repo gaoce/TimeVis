@@ -31,7 +31,7 @@ class Plate(restful.Resource):
 class TimeSeries(restful.Resource):
     pass
 
-api.add_resource(Experiment, '/experiment')
-api.add_resource(Layout, '/layout')
-api.add_resource(Plate, '/plate')
-api.add_resource(TimeSeries, '/timeseries/')
+api.add_resource(Experiment, '/api/v2/experiment/<string:exp_id>')
+api.add_resource(Layout, '/api/v2/layout/<string:layout_id>')
+api.add_resource(Plate, '/api/v2/plate/<string:plate_id>')
+api.add_resource(TimeSeries, '/api/v2/timeseries/')
