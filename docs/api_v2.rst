@@ -47,16 +47,16 @@ A summary of all HTTP verbs used for this endpoint:
 
   {
     "exp_id1": {
-      "name": "exp1",
-      "users": ["user1", "user2"],
-      "well": 384,
+      "name"   : "exp1",
+      "users"  : ["user1", "user2"],
+      "well"   : 384,
       "chanels": ["GFP", "OD"],
       "factors": [{"name": "Dose", "type": "decimal"}]
     },
     "exp_id2": {
-      "name": "exp2",
-      "users": ["user3"],
-      "well": 96,
+      "name"   : "exp2",
+      "users"  : ["user3"],
+      "well"   : 96,
       "chanels": ["GFP"],
       "factors": [
       	{"name": "Dose", "type": "decimal"},
@@ -108,28 +108,47 @@ A summary of all HTTP verbs used for this endpoint:
 
 * **Parameters**: exp=exp_id.
 * **Input**: None.
-* **Output**: A json object mapping experiment IDs to experiment descriptions, for
-  expample:
+* **Output**: A json object that specifies experiment id and maps layout IDs to
+  layout descriptions, for expample:
 
 ::
 
   {
-    "layout_id1": {
-      "name": "exp1",
-      "users": ["user1", "user2"],
-      "well": 384,
-      "chanels": ["GFP", "OD"],
-      "factors": [{"name": "Dose", "type": "decimal"}]
-    },
-    "exp_id2": {
-      "name": "exp2",
-      "users": ["user3"],
-      "well": 96,
-      "chanels": ["GFP"],
-      "factors": [
-      	{"name": "Dose", "type": "decimal"},
-      	{"name": "Gene", "type": "category"},
-      ]
-    },
-    ...
+    "exp_id"     : "exp_id1",
+    {
+      "layout_id1": {
+        "name"   : "factor1",
+        "factors": [
+          {"name": "Dose", "levels": [4.2, 4.2, 42, 42, ...]},
+          {"name": "Gene", "levels": ['aa', 'aa', 'bb', ...]}
+        ]
+      },
+      "layout_id2": {
+        "name"   : "factor2",
+        "factors": [
+          {"name": "Dose", "levels": [0.42, 0.42, 0.042, ...]},
+          {"name": "Gene", "levels": ['aa', 'aa', 'bb',  ...]}
+        ]
+      },
+      ...
+    }
   }
+
+2. Post
+^^^^^^^
+
+* **Parameters**: exp=exp_id.
+* **Input**: A json object with the same format as described in ``GET``.
+* **Output**: None.
+
+3. PUT
+^^^^^^
+
+* **Parameters**: exp=exp_id.
+* **Input**: A json object with the same format as described in ``GET``.
+* **Output**: None.
+
+4. DELETE
+^^^^^^^^^
+**Not implemented**. It is not a safe practice to delete layout either, so this
+verb is not implemented.
