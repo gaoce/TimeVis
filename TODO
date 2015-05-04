@@ -5,3 +5,5 @@
 5. Use cookie to remember app status
 6. For each time plot, add a popup windows showing the factor table
 7. Adjustable div height
+8. In genes.html, the query panel and vis should have different background-color
+
