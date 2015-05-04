@@ -13,6 +13,7 @@ User's Guide
 .. toctree::
    :maxdepth: 2
 
+   install
    design
 
 Developer's Guide
@@ -22,3 +23,4 @@ Developer's Guide
    :maxdepth: 2
 
    api_v2
+   database
