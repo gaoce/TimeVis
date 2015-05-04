@@ -17,7 +17,7 @@ API Documentation
 | ``/api/v2/timeseries`` | time series data for a gene  |
 +------------------------+------------------------------+
 
-1. Experiment
+2. Experiment
 =============
 
 1. Endpoint
@@ -26,8 +26,6 @@ API Documentation
 
 2. HTTP verbs
 -------------
-
-
 
 1. Get
 ^^^^^^
@@ -43,3 +41,7 @@ Some source code::
       "factors": [{"name": "factor1", "type": "decimal"}]
     },
   }
+
+2. Post
+^^^^^^^
+
