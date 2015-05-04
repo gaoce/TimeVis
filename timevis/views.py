@@ -11,6 +11,8 @@ def index():
 
 
 class Experiment(restful.Resource):
+    """
+    """
     pass
 
 
@@ -25,7 +27,8 @@ class Plate(restful.Resource):
 class TimeSeries(restful.Resource):
     pass
 
-api.add_resource(Experiment, '/api/v2/experiment/<string:exp_id>')
-api.add_resource(Layout, '/api/v2/layout/<string:layout_id>')
-api.add_resource(Plate, '/api/v2/plate/<string:plate_id>')
-api.add_resource(TimeSeries, '/api/v2/timeseries/')
+api_root = '/api/v2'
+api.add_resource(Experiment, api_root + '/experiment/<string:exp_id>')
+api.add_resource(Layout,     api_root + '/layout/<string:layout_id>')
+api.add_resource(Plate, 	 api_root + '/plate/<string:plate_id>')
+api.add_resource(TimeSeries, api_root + '/timeseries/')
