@@ -206,8 +206,6 @@ A summary of all HTTP verbs used for this endpoint:
     }
   }
 
-
-
 2. Post
 ^^^^^^^
 
@@ -227,3 +225,55 @@ A summary of all HTTP verbs used for this endpoint:
 4. DELETE
 ^^^^^^^^^
 **Not implemented**.
+
+5. Time Series
+==============
+
+A summary of all HTTP verbs used for this endpoint:
+
++--------+--------------------------------------------+
+| Verb   | Function                                   |
++========+============================================+
+| GET    | Retrieve information for all experiments   |
++--------+--------------------------------------------+
+
+1. GET
+^^^^^^
+
+* **Parameters**: None
+* **Input**: A json object describing query criteria. Mandatory.
+
+::
+
+  {
+    "exp_id"   : "exp_id1",
+    "channel"  : "GFP",
+    "factors"  : {
+      "factor1":  [4.2, 4.2, 42, 42, ...],
+      "factor2":  [4.2, 4.2, 42, 42, ...],
+      ...
+    }
+  }
+
+* **Output**: A json object containing time series data, for expample:
+
+::
+
+  {
+    "query_id"   : "query_id1",
+    "query" : {},
+    "Result" :
+    [{
+       "value": -1.1618426259,
+       "time": "00:00:00",
+       "l": -2.6017329022,
+       "u": 0.2949717757
+      },{
+       "value": -1.1618426259,
+       "time": "00:00:05",
+       "l": -2.6017329022,
+       "u": 0.2949717757
+      },
+      ...
+    ]
+  }
