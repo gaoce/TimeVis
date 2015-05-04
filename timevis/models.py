@@ -9,7 +9,6 @@ import os.path
 Base = declarative_base()
 data_path = os.path.join(os.path.dirname(__file__), 'db')
 db_path = os.path.join(data_path, 'timevis.db')
-print(db_path)
 engine = create_engine('sqlite:///{}'.format(db_path))
 
 
@@ -123,5 +122,3 @@ class Value(Base):
 
     channel_values = relationship("Channel", backref=backref('values',
                                                              order_by=id))
-
-print(app)
