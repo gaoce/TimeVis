@@ -1,10 +1,16 @@
 from . import app
+from sqlalchemy import ForeignKey, Column, Integer, String, Float, Time
+from sqlalchemy import create_engine
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+import os.path
 
-from sqlalchemy import ForeignKey, Column, Integer, String, Float, Time
-from sqlalchemy.orm import relationship, backref
+Base = declarative_base()
+data_path = os.path.join(os.path.dirname(__file__), 'db')
+db_path = os.path.join(data_path, 'timevis.db')
+print(db_path)
+engine = create_engine('sqlite:///{}'.format(db_path))
 
 
 class Experiment(Base):

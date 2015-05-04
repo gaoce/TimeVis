@@ -23,6 +23,7 @@ setup(
     package_dir={"timevis": "timevis"},
     package_data={
         "timevis": [
+            "db/*.db",
             "static/images/*",
             "static/js/*.js",
             "static/js/lib/*.js",
