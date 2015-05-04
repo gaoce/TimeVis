@@ -1,7 +1,6 @@
-from . import app
 from sqlalchemy import ForeignKey, Column, Integer, String, Float, Time
 from sqlalchemy import create_engine
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
 import os.path
@@ -10,6 +9,9 @@ Base = declarative_base()
 data_path = os.path.join(os.path.dirname(__file__), 'db')
 db_path = os.path.join(data_path, 'timevis.db')
 engine = create_engine('sqlite:///{}'.format(db_path))
+
+# Create Session class and instance to make query
+Session = sessionmaker(bind=engine)
 
 
 class Experiment(Base):
