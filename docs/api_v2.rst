@@ -18,8 +18,8 @@ API Documentation
 | ``/api/v2/timeseries`` | Time series data        |
 +------------------------+-------------------------+
 
-2. Experiment
-=============
+2. Experiment information
+=========================
 
 A summary of all HTTP verbs used for this endpoint:
 
@@ -38,10 +38,13 @@ A summary of all HTTP verbs used for this endpoint:
 1. GET
 ^^^^^^
 
-* **Parameters**: None.
-* **Input**: None.
-* **Output**: A json object mapping experiment IDs to experiment descriptions,
-  for expample:
+**Parameters**
+    None.
+**Input**
+    None.
+**Output**
+    A json object mapping experiment IDs to experiment descriptions, for
+    expample:
 
 ::
 
@@ -59,37 +62,37 @@ A summary of all HTTP verbs used for this endpoint:
       "well"    : 96,
       "channels": ["GFP"],
       "factors" : [
-      	{"name": "Dose", "type": "decimal"},
-      	{"name": "Gene", "type": "category"},
+        {"name": "Dose", "type": "decimal"},
+        {"name": "Gene", "type": "category"},
       ]
     },
     ...
   }
 
-2. Post
+2. POST
 ^^^^^^^
 
-* **Parameters**: None.
-* **Input**: A json object with the same format as described in ``GET``. Only
-  one experiment is allowed to be uploaded per request. **Note ``exp_id`` for a
-  new experiment should be character zero, ie. '0'**
-* **Output**: None.
+**Parameters**
+    None.
+**Input**
+    A json object with the same format as described in ``GET``. Only one
+    experiment is allowed to be uploaded per request.  **Note**: ``exp_id`` for
+    a new experiment should be character zero, ie. '0'.
+**Output**
+    None.
 
 3. PUT
 ^^^^^^
 
-* **Parameters**: None.
-* **Input**: A json object with the same format as described in ``GET``.
-* **Output**: None.
+**Parameters**
+    None.
+**Input**
+    A json object with the same format as described in ``GET``.
+**Output**
+    None.
 
-4. DELETE
-^^^^^^^^^
-
-**Not implemented**. It is not a safe practice to delete an experiment so this
-verb is not implemented.
-
-3. Layout
-=========
+3. Layout information
+=====================
 
 A summary of all HTTP verbs used for this endpoint:
 
@@ -108,10 +111,13 @@ A summary of all HTTP verbs used for this endpoint:
 1. GET
 ^^^^^^
 
-* **Parameters**: ``?exp=exp_id``, mandatory.
-* **Input**: None.
-* **Output**: A json object that specifies experiment id and maps layout IDs to
-  layout descriptions, for expample:
+**Parameters**
+    ``?exp=exp_id``, mandatory.
+**Input**
+    None.
+**Output**
+    A json object that specifies experiment id and maps layout IDs to layout
+    descriptions, for expample:
 
 ::
 
@@ -136,29 +142,30 @@ A summary of all HTTP verbs used for this endpoint:
     }
   }
 
-2. Post
+2. POST
 ^^^^^^^
 
-* **Parameters**: ``?exp=exp_id``, mandatory.
-* **Input**: A json object with the same format as described in ``GET``. Only
-  one layout is allowed to be uploaded per request. **Note ``layout_id`` for a
-  new layout should be character zero, ie. '0'**
-* **Output**: None.
+**Parameters**
+    ``?exp=exp_id``, mandatory.
+**Input**
+    A json object with the same format as described in ``GET``. Only one layout
+    is allowed to be uploaded per request. **Note** ``layout_id`` for a new 
+    layout should be character zero, ie. '0'.
+**Output**
+    None.
 
 3. PUT
 ^^^^^^
 
-* **Parameters**: ``?exp=exp_id``, mandatory.
-* **Input**: A json object with the same format as described in ``GET``.
-* **Output**: None.
+**Parameters**
+    ``?exp=exp_id``, mandatory.
+**Input**
+    A json object with the same format as described in ``GET``.
+**Output**
+    None.
 
-4. DELETE
-^^^^^^^^^
-**Not implemented**. It is not a safe practice to delete layout either, so this
-verb is not implemented.
-
-3. Plate
-========
+3. Plate information
+====================
 
 A summary of all HTTP verbs used for this endpoint:
 
@@ -179,10 +186,13 @@ A summary of all HTTP verbs used for this endpoint:
 1. GET
 ^^^^^^
 
-* **Parameters**: ``?exp=exp_id&layout=layou_id``, mandatory.
-* **Input**: None.
-* **Output**: A json object mapping experiment IDs to experiment descriptions,
-  for expample:
+**Parameters**
+    ``?exp=exp_id&layout=layou_id``, mandatory.
+**Input**
+    None.
+**Output**
+    A json object mapping experiment IDs to experiment descriptions, for 
+    expample:
 
 ::
 
@@ -206,25 +216,27 @@ A summary of all HTTP verbs used for this endpoint:
     }
   }
 
-2. Post
+2. POST
 ^^^^^^^
 
-* **Parameters**: ``?exp=exp_id&layout=layou_id``, mandatory.
-* **Input**: A json object with the same format as described in ``GET``. Only
-  one plate is allowed to be uploaded per request. **Note ``plate_id`` for a
-  new layout should be character zero, ie. '0'**
-* **Output**: None.
+**Parameters**
+    ``?exp=exp_id&layout=layou_id``, mandatory.
+**Input**
+    A json object with the same format as described in ``GET``. Only one plate 
+    is allowed to be uploaded per request. **Note** ``plate_id`` for a new 
+    layout should be character zero, ie. '0'.
+**Output**
+    None.
 
 3. PUT
 ^^^^^^
 
-* **Parameters**: ``?exp=exp_id&layout=layou_id``, mandatory.
-* **Input**: A json object with the same format as described in ``GET``.
-* **Output**: None.
-
-4. DELETE
-^^^^^^^^^
-**Not implemented**.
+**Parameters**
+    ``?exp=exp_id&layout=layou_id``, mandatory.
+**Input**
+    A json object with the same format as described in ``GET``.
+**Output**
+    None.
 
 5. Time Series
 ==============
@@ -240,8 +252,10 @@ A summary of all HTTP verbs used for this endpoint:
 1. GET
 ^^^^^^
 
-* **Parameters**: None
-* **Input**: A json object describing query criteria. Mandatory.
+**Parameters**
+    None
+**Input**
+    A json object describing query criteria. Mandatory.
 
 ::
 
@@ -255,7 +269,8 @@ A summary of all HTTP verbs used for this endpoint:
     }
   }
 
-* **Output**: A json object containing time series data, for expample:
+**Output**
+  A json object containing time series data, for expample:
 
 ::
 
