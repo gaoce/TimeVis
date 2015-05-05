@@ -4,7 +4,7 @@ clean:
 	rm -rf TimeVis.egg-info/ build/ dist/
 	find . -name '*.pyc' -delete
 
-install:
+install: clean
 	@ if [ -e timevis/db/*.db ]; then rm timevis/db/*.db; fi
 	@ touch timevis/db/timevis.db
 	python setup.py install
