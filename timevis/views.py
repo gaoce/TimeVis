@@ -12,26 +12,26 @@ def index():
 
 
 class Experiment(restful.Resource):
-    """
+    """Endpoint for experiment information
     """
     def get(self):
         # Result
-        res = {}
+        ret = {}
 
         # Create query session
         s = m.Session()
 
         # Get Experiment instance and fill in the result dict
         for e in s.query(m.Experiment).all():
-            res[e.id] = {
+            ret[e.id] = {
                 "name": e.name,
-                "users": e.user,
+                "user": e.user,
                 "well": e.well,
                 "channels": [c.name for c in e.channels],
                 "factors": [{"name": f.name, "type": f.type} for f in e.factors]
             }
 
-        return res
+        return ret
 
     def post(self):
         # Create query session
@@ -76,13 +76,12 @@ class Experiment(restful.Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
-        # The new experiment obj should have a exp_id of 0
+        # Get experimen id and data body
         eid, data = json.popitem()
-        e = s.query(m.Experiment).filter_by(id=eid)
+        e = s.query(m.Experiment).filter_by(id=eid).first()
         e.name = data['name']
         e.user = data['user']
         e.well = data['well']
-
         s.commit()
 
         # After commit, delete the existing channels (TODO: need improvement)
@@ -107,7 +106,7 @@ class Experiment(restful.Resource):
             factors.append(m.Factor(name=f['name'], type=f['type'],
                            id_Experiment=e.id))
 
-        s.add_all(channels)
+        s.add_all(factors)
         s.commit()
 
         return ''
