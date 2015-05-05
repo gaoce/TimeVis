@@ -198,7 +198,7 @@ A summary of all HTTP verbs used for this endpoint:
           ]
         },
         "2": {
-          "name": "Layout2",
+          "name": "Layout 2",
           "factors": [
             {"id": 1, "name": "Dose", "type": "Decimal", 
              "levels": {'A01':'42', 'A02':'42', ...}},
