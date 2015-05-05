@@ -34,9 +34,30 @@ class Experiment(restful.Resource):
         return res
 
     def post(self):
-        import ipdb; ipdb.set_trace()  # XXX BREAKPOINT
-        print(request.json)
-        return {}
+        # Create query session
+        s = m.Session()
+
+        data = request.get_json()['0']
+        e = m.Experiment(name=data['name'], user=data['user'],
+                         well=data['well'])
+        s.add(e)
+        s.commit()
+
+        channels = []
+        for c in data['channels']:
+            channels.append(m.Channel(name=c, id_Experiment=e.id))
+        s.add_all(channels)
+        s.commit()
+
+        factors = []
+        for f in data['factors']:
+            factors.append(m.Factor(name=f['name'], type=f['type'],
+                           id_Experiment=e.id))
+
+        s.add_all(channels)
+        s.commit()
+
+        return ''
 
 
 class Layout(restful.Resource):
