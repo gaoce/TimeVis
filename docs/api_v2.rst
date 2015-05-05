@@ -48,12 +48,12 @@ A summary of all HTTP verbs used for this endpoint:
     ::
     
       {
-        "exp_id": {
-          "name"    : ... ,
-          "user"    : ... ,
-          "well"    : ... ,
-          "channels": [ ... ] ,
-          "factors" : [ {"name": ... , "type": ... }, ... ]
+        exp_id: {
+          "name": name,
+          "user": user,
+          "well": well,
+          "channels": channels,
+          "factors": factors
         },
         ...
       }
@@ -63,7 +63,8 @@ A summary of all HTTP verbs used for this endpoint:
     * ``name``: string, experiment name
     * ``user``: string, comma separated user names
     * ``channels``: array of strings, different channel
-    * ``factor``: array of objects, different factors
+    * ``factors``: array of objects, different factors, each objects contains the
+      following fields:
 
       - ``name``: string, factor name
       - ``type``: string, factor type, "Category", "Integer", or "Decimal"
@@ -143,28 +144,49 @@ A summary of all HTTP verbs used for this endpoint:
     A json object that specifies experiment id and maps layout IDs to layout
     descriptions, for expample:
 
-::
+    ::
+    
+      {
+        exp_id: {
+          layout_id: {
+            "name": name,
+            "factors": factors
+          },
+          ...
+        }
+      }
 
-  {
-    "exp_id"     : "exp_id1",
-    {
-      "layout_id1": {
-        "name"   : "layout1",
-        "factors": [
-          {"name": "Dose", "levels": [4.2, 4.2, 42, 42, ...]},
-          {"name": "Gene", "levels": ['aa', 'aa', 'bb', ...]}
-        ]
-      },
-      "layout_id2": {
-        "name"   : "layout2",
-        "factors": [
-          {"name": "Dose", "levels": [0.42, 0.42, 0.042, ...]},
-          {"name": "Gene", "levels": ['aa', 'aa', 'bb',  ...]}
-        ]
-      },
-      ...
-    }
-  }
+    * ``exp_id``: integer
+    * ``layout_id``: integer
+    * ``name``: string, layout name
+    * ``factors``: array of objects, different factors, containing the following
+      fields:
+
+      - ``name``: string, factor name
+      - ``levels``: array of strings, factor levels at well A1, A2, ...
+
+    Here is an expample:
+
+    ::
+    
+      {
+        "2": {
+          "1": {
+            "name": "Layout 1",
+            "factors": [
+              {"name": "Dose", "levels": ['4.2', '4.2', '42', '42', ...]},
+              {"name": "Gene", "levels": ['aa', 'aa', 'bb', 'bb', ...]}
+            ]
+          },
+          "2": {
+            "name": "Layout2",
+            "factors": [
+              {"name": "Dose", "levels": ['0.42', '0.42', '0.042', ...]},
+              {"name": "Gene", "levels": ['aa', 'aa', 'bb',  ...]}
+            ]
+          },
+        }
+      }
 
 2. POST
 ^^^^^^^
@@ -184,7 +206,8 @@ A summary of all HTTP verbs used for this endpoint:
 **Parameters**
     ``?exp=exp_id``, mandatory.
 **Input**
-    A json object with the same format as described in ``GET``.
+    A json object with the same format as described in ``GET``. Only one layout
+    is allowed to be updated at a time.
 **Output**
     None.
 
