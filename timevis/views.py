@@ -37,10 +37,57 @@ class Experiment(restful.Resource):
         # Create query session
         s = m.Session()
 
-        data = request.get_json()['0']
+        # Get json from POST data, force is True so the request header don't
+        # need to include "Content-type: application/json"
+        # TODO check input validity
+        json = request.get_json(force=True)
+
+        # The new experiment obj should have a exp_id of 0
+        data = json['0']
         e = m.Experiment(name=data['name'], user=data['user'],
                          well=data['well'])
         s.add(e)
+        s.commit()
+
+        # After commit, the e obj will obtain an id, then we can insert channels
+        channels = []
+        for c in data['channels']:
+            channels.append(m.Channel(name=c, id_Experiment=e.id))
+        s.add_all(channels)
+        s.commit()
+
+        # Insert new factors
+        factors = []
+        for f in data['factors']:
+            factors.append(m.Factor(name=f['name'], type=f['type'],
+                           id_Experiment=e.id))
+
+        s.add_all(channels)
+        s.commit()
+
+        return ''
+
+    def put(self):
+        # Create query session
+        s = m.Session()
+
+        # Get json from POST data, force is True so the request header don't
+        # need to include "Content-type: application/json"
+        # TODO check input validity
+        json = request.get_json(force=True)
+
+        # The new experiment obj should have a exp_id of 0
+        eid, data = json.popitem()
+        e = s.query(m.Experiment).filter_by(id=eid)
+        e.name = data['name']
+        e.user = data['user']
+        e.well = data['well']
+
+        s.commit()
+
+        # After commit, delete the existing channels (TODO: need improvement)
+        for c in s.query(m.Channel).filter_by(id_Experiment=eid).all():
+            s.delete(c)
         s.commit()
 
         channels = []
@@ -49,6 +96,12 @@ class Experiment(restful.Resource):
         s.add_all(channels)
         s.commit()
 
+        # After commit, delete the existing channels (TODO: need improvement)
+        for f in s.query(m.Factor).filter_by(id_Experiment=eid).all():
+            s.delete(f)
+        s.commit()
+
+        # Insert new factors
         factors = []
         for f in data['factors']:
             factors.append(m.Factor(name=f['name'], type=f['type'],
