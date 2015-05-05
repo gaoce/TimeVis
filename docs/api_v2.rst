@@ -55,7 +55,7 @@ A summary of all HTTP verbs used for this endpoint:
           "user": user,
           "well": well,
           "channels": channels,
-          "factors": factors
+          "factors": [{"id": id, "name": name, "type": type"}, ... ]
         },
         ...
       }
@@ -65,12 +65,9 @@ A summary of all HTTP verbs used for this endpoint:
     * ``name``: string, experiment name
     * ``user``: string, comma separated user names
     * ``channels``: array of strings, different channel
-    * ``factors``: array of objects, different factors, each objects contains the
-      following fields:
-
-      - ``id``: integer, factor id
-      - ``name``: string, factor name
-      - ``type``: string, factor type, "Category", "Integer", or "Decimal"
+    * ``id``: integer, factor id
+    * ``name``: string, factor name
+    * ``type``: string, factor type, "Category", "Integer", or "Decimal"
 
     Here is an expample:
 
@@ -106,6 +103,8 @@ A summary of all HTTP verbs used for this endpoint:
     experiment is allowed to be uploaded per request.  **Note**: ``exp_id`` and 
     factor ``id`` for a new experiment should be zero, ie. "0" or 0.
 
+    Here is a json file example:
+
     ::
 
       {
@@ -132,6 +131,24 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     A json object with the same format as described in ``GET``. Only one
     experiment is allowed to updated at a time.
+
+    Here is a json file example:
+
+    ::
+
+      {
+        "1": {
+          "name": "Exp 1",
+          "user": "user1",
+          "well": 96,
+          "channels": ["GFP"],
+          "factors": [
+            {"id": "1", "name": "Dose", "type": "Decimal"},
+            {"id": "2", "name": "Gene", "type": "Category"}
+          ]
+        }
+      }
+
 **Output**
     None.
 
@@ -168,20 +185,23 @@ A summary of all HTTP verbs used for this endpoint:
       {
         layout_id: {
           "name": name,
-          "factors": factors
+          "factors": [
+            {
+              "id": id, "name": name, "type": type", "levels":{well: level, ...}
+            },
+            ...
+          ]
         },
         ...
       }
 
     * ``layout_id``: integer
     * ``name``: string, layout name
-    * ``factors``: array of objects, different factors, containing the following
-      fields:
-
-      - ``id``: integer, factor id
-      - ``name``: string, factor name
-      - ``type``: string, factor type, "Category", "Integer", or "Decimal"
-      - ``levels``: object mapping well name to factor level, eg, {'A1':'42'}
+    * ``id``: integer, factor id
+    * ``name``: string, factor name
+    * ``type``: string, factor type, "Category", "Integer", or "Decimal"
+    * ``well``: string, well name, e.g., "A01", "C04"
+    * ``level``: string, factor level
 
     Here is an expample:
 
@@ -219,6 +239,38 @@ A summary of all HTTP verbs used for this endpoint:
     A json object with the same format as described in ``GET``. Only one layout
     is allowed to be uploaded per request. **Note** ``layout_id`` for a new
     layout should be character zero, ie. "0".
+
+    Here is a json file example:
+
+    ::
+
+      {
+        "0": {
+          "name": "Layout 1",
+          "factors":
+          {
+            "1":
+            {
+              "name": "Dose",
+              "levels":
+              {
+                "A01":"42", "A02":"42", "A03":"42", "A04":"42", ...
+              }
+            },
+            "2":
+            {
+              "name": "Gene",
+              "levels":
+              {
+                "A01":"aa", "A02":"aa", "A03":"aa", "A04":"aa", ...
+              }
+            }
+          }
+        }
+      }
+
+      # The factor levels are not shown in full here.
+
 **Output**
     None.
 
@@ -230,6 +282,38 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     A json object with the same format as described in ``GET``. Only one layout
     is allowed to be updated at a time.
+
+    Here is a json file example:
+
+    ::
+
+      {
+        "0": {
+          "name": "Layout 1",
+          "factors":
+          {
+            "1":
+            {
+              "name": "Dose",
+              "levels":
+              {
+                "A01":"42", "A02":"42", "A03":"42", "A04":"42", ...
+              }
+            },
+            "2":
+            {
+              "name": "Gene",
+              "levels":
+              {
+                "A01":"bb", "A02":"bb", "A03":"bb", "A04":"bb", ...
+              }
+            }
+          }
+        }
+      }
+
+      # The factor levels are not shown in full here.
+
 **Output**
     None.
 
@@ -263,27 +347,39 @@ A summary of all HTTP verbs used for this endpoint:
     A json object mapping experiment IDs to experiment descriptions, for
     expample:
 
-::
+    ::
+    
+      {
+        "exp_id": exp_id,
+        "layout_id": layout_id,
+        "plates": 
+        {
+          plate_id: 
+          {
+            channel_id: 
+            {
+              "name": channel_name, 
+              "time": time,
+              "values": {well: value, ...} 
+            },
+            ...
+          },
+          ...
+        }
+      }
 
-  {
-    "exp_id"     : "exp_id1",
-    "layout_id1" : "layout_id1",
-    {
-      "plate1": {
-        "name"   : "plate1",
-        "channels": [
-          {"GFP": [4.2, 4.2, 42, 42, ...]},
-        ]
-      },
-      "plate_id2": {
-        "name"   : "plate2",
-        "channels": [
-          {"GFP": [4.2, 4.2, 42, 42, ...]},
-        ]
-      },
-      ...
-    }
-  }
+    * ``exp_id``: integer, experiment id
+    * ``layout_id``: integer, layout id
+    * ``plate_id``: integer, plate id
+    * ``channel_id``: integer, channel id
+    * ``channel_name``: string, channel name
+    * ``well``: string, well name, e.g., "A01", "C04"
+    * ``value``: array of  decimals, measurements for the channel 
+    * ``time``: array of strings, measurement time point, should have the same
+      dimension as the value arrays
+
+    Here is an expample:
+
 
 2. POST
 ^^^^^^^
