@@ -1,5 +1,5 @@
 from timevis import app
-from flask import render_template
+from flask import render_template, request
 from flask.ext import restful
 import timevis.models as m
 
@@ -32,6 +32,11 @@ class Experiment(restful.Resource):
             }
 
         return res
+
+    def post(self):
+        import ipdb; ipdb.set_trace()  # XXX BREAKPOINT
+        print(request.json)
+        return {}
 
 
 class Layout(restful.Resource):
