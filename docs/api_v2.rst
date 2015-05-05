@@ -54,7 +54,7 @@ A summary of all HTTP verbs used for this endpoint:
       "user"    : "user1, user2",
       "well"    : 384,
       "channels": ["GFP", "OD"],
-      "factors" : [{"name": "Dose", "type": "decimal"}]
+      "factors" : [{"name": "Dose", "type": "Decimal"}]
     },
     "exp_id2": {
       "name"    : "exp2",
@@ -62,8 +62,8 @@ A summary of all HTTP verbs used for this endpoint:
       "well"    : 96,
       "channels": ["GFP"],
       "factors" : [
-        {"name": "Dose", "type": "decimal"},
-        {"name": "Gene", "type": "category"},
+        {"name": "Dose", "type": "Decimal"},
+        {"name": "Gene", "type": "Category"},
       ]
     },
     ...
