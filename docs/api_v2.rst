@@ -51,14 +51,14 @@ A summary of all HTTP verbs used for this endpoint:
   {
     "exp_id1": {
       "name"    : "exp1",
-      "users"   : "user1, user2",
+      "user"    : "user1, user2",
       "well"    : 384,
       "channels": ["GFP", "OD"],
       "factors" : [{"name": "Dose", "type": "decimal"}]
     },
     "exp_id2": {
       "name"    : "exp2",
-      "users"   : ["user3"],
+      "user"    : ["user3"],
       "well"    : 96,
       "channels": ["GFP"],
       "factors" : [
