@@ -1,4 +1,8 @@
-.PHONY: clean install run uninstal devserver stopdevserver restart local
+.PHONY: clean install run uninstal devserver stopdevserver restart local init-db
+
+init-db:
+	rm timevis/db/timevis.db
+	touch timevis/db/timevis.db
 
 clean:
 	rm -rf TimeVis.egg-info/ build/ dist/
@@ -25,5 +29,5 @@ stopdevserver:
 restart: stopdevserver run
 
 # Run without deployment
-local:
+local: init-db
 	python run.py
