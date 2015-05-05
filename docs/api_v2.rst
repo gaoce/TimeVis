@@ -35,6 +35,8 @@ A summary of all HTTP verbs used for this endpoint:
 | DELETE | Delete Experiment(s). **Not implemented**. |
 +--------+--------------------------------------------+
 
+``DELETE`` method is not implemented as it is not safe right now.
+
 1. GET
 ^^^^^^
 
@@ -66,6 +68,7 @@ A summary of all HTTP verbs used for this endpoint:
     * ``factors``: array of objects, different factors, each objects contains the
       following fields:
 
+      - ``id``: integer, factor id
       - ``name``: string, factor name
       - ``type``: string, factor type, "Category", "Integer", or "Decimal"
 
@@ -79,7 +82,7 @@ A summary of all HTTP verbs used for this endpoint:
           "user"    : "user1, user2",
           "well"    : 384,
           "channels": ["GFP", "OD"],
-          "factors" : [{"name": "Dose", "type": "Decimal"}]
+          "factors" : [{"id": 1, "name": "Dose", "type": "Decimal"}]
         },
         "2": {
           "name"    : "exp2",
@@ -87,8 +90,8 @@ A summary of all HTTP verbs used for this endpoint:
           "well"    : 96,
           "channels": ["GFP"],
           "factors" : [
-            {"name": "Dose", "type": "Decimal"},
-            {"name": "Gene", "type": "Category"},
+            {"id": 2, "name": "Dose", "type": "Decimal"},
+            {"id": 3, "name": "Gene", "type": "Category"}
           ]
         }
       }
@@ -100,8 +103,24 @@ A summary of all HTTP verbs used for this endpoint:
     None.
 **Input**
     A json object with the same format as described in ``GET``. Only one
-    experiment is allowed to be uploaded per request.  **Note**: ``exp_id`` for
-    a new experiment should be character zero, ie. "0".
+    experiment is allowed to be uploaded per request.  **Note**: ``exp_id`` and 
+    factor ``id`` for a new experiment should be zero, ie. "0" or 0.
+
+    ::
+
+      {
+        "0": {
+          "name": "Exp1",
+          "user": "user1, user2",
+          "well": 384,
+          "channels": ["GFP", "OD"],
+          "factors": [
+            {"id": 0, "name": "Dose", "type": "Decimal"},
+            {"id": 0, "name": "Gene", "type": "Category"}
+          ]
+        }
+      }
+
 **Output**
     None.
 
@@ -161,6 +180,7 @@ A summary of all HTTP verbs used for this endpoint:
 
       - ``id``: integer, factor id
       - ``name``: string, factor name
+      - ``type``: string, factor type, "Category", "Integer", or "Decimal"
       - ``levels``: object mapping well name to factor level, eg, {'A1':'42'}
 
     Here is an expample:
@@ -171,18 +191,24 @@ A summary of all HTTP verbs used for this endpoint:
         "1": {
           "name": "Layout 1",
           "factors": [
-            {"id": 1, "name": "Dose", "levels": {'A01':'42', 'A02':'42', ...}},
-            {"id": 2, "name": "Gene", "levels": {'A01':'aa', 'A02':'aa', ...}}
+            {"id": 1, "name": "Dose", "type": "Decimal", 
+             "levels": {'A01':'42', 'A02':'42', ...}},
+            {"id": 2, "name": "Gene", "type": "Category", 
+             "levels": {'A01':'aa', 'A02':'aa', ...}}
           ]
         },
         "2": {
           "name": "Layout2",
           "factors": [
-            {"id": 1, "name": "Dose", "levels": {'A01':'42', 'A02':'42', ...}},
-            {"id": 2, "name": "Gene", "levels": {'A01':'bb', 'A02':'bb', ...}}
+            {"id": 1, "name": "Dose", "type": "Decimal", 
+             "levels": {'A01':'42', 'A02':'42', ...}},
+            {"id": 2, "name": "Gene", "type": "Category",
+             "levels": {'A01':'bb', 'A02':'bb', ...}}
           ]
         }
       }
+
+      # The factor levels are not shown in full here.
 
 2. POST
 ^^^^^^^
