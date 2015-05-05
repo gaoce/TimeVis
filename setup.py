@@ -23,7 +23,7 @@ class MyInstall(install):
 #   1. zip_safe needs to be False since we need access to templates
 setup(
     name="TimeVis",
-    version="0.1",
+    version="0.2",
     author="Ce Gao",
     author_email="gaoce@coe.neu.edu",
     description=("TimeVis: An interactive tool to query and visualize "
@@ -31,6 +31,7 @@ setup(
     license="MIT",
     install_requires=[
         "Flask>=0.10.1",
+        "SQLAlchemy>=1.0.3",
     ],
     packages=['timevis'],
     package_dir={"timevis": "timevis"},
