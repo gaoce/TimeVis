@@ -1,7 +1,8 @@
 from timevis import app
 from flask import render_template, request
 from flask.ext.restful import Api, Resource, reqparse
-import timevis.models as m
+from timevis.models import Experiment, Layout, Factor, Channel, Level, Session
+from collections import defaultdict
 
 api = Api(app)
 
@@ -11,7 +12,7 @@ def index():
     return render_template('index.html')
 
 
-class Experiment(Resource):
+class ExperimentEP(Resource):
     """Endpoint for experiment information
     """
     def get(self):
@@ -19,23 +20,24 @@ class Experiment(Resource):
         ret = {}
 
         # Create query session
-        s = m.Session()
+        s = Session()
 
         # Get Experiment instance and fill in the result dict
-        for e in s.query(m.Experiment).all():
+        for e in s.query(Experiment).all():
             ret[e.id] = {
                 "name": e.name,
                 "user": e.user,
                 "well": e.well,
                 "channels": [c.name for c in e.channels],
-                "factors": [{"name": f.name, "type": f.type} for f in e.factors]
+                "factors": [{"id": f.id, "name": f.name, "type": f.type}
+                            for f in e.factors]
             }
 
         return ret
 
     def post(self):
         # Create query session
-        s = m.Session()
+        s = Session()
 
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
@@ -44,32 +46,31 @@ class Experiment(Resource):
 
         # The new experiment obj should have a exp_id of 0
         data = json['0']
-        e = m.Experiment(name=data['name'], user=data['user'],
-                         well=data['well'])
+        e = Experiment(name=data['name'], user=data['user'], well=data['well'])
         s.add(e)
         s.commit()
 
         # After commit, the e obj will obtain an id, then we can insert channels
         channels = []
         for c in data['channels']:
-            channels.append(m.Channel(name=c, id_Experiment=e.id))
+            channels.append(Channel(name=c, id_Experiment=e.id))
         s.add_all(channels)
         s.commit()
 
         # Insert new factors
         factors = []
         for f in data['factors']:
-            factors.append(m.Factor(name=f['name'], type=f['type'],
+            factors.append(Factor(name=f['name'], type=f['type'],
                            id_Experiment=e.id))
 
-        s.add_all(channels)
+        s.add_all(factors)
         s.commit()
 
-        return ''
+        return 'Success'
 
     def put(self):
         # Create query session
-        s = m.Session()
+        s = Session()
 
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
@@ -78,41 +79,71 @@ class Experiment(Resource):
 
         # Get experimen id and data body
         eid, data = json.popitem()
-        e = s.query(m.Experiment).filter_by(id=eid).first()
+        e = s.query(Experiment).filter_by(id=eid).first()
         e.name = data['name']
         e.user = data['user']
         e.well = data['well']
         s.commit()
 
         # After commit, delete the existing channels (TODO: need improvement)
-        for c in s.query(m.Channel).filter_by(id_Experiment=eid).all():
+        for c in s.query(Channel).filter_by(id_Experiment=eid).all():
             s.delete(c)
         s.commit()
 
         channels = []
         for c in data['channels']:
-            channels.append(m.Channel(name=c, id_Experiment=e.id))
+            channels.append(Channel(name=c, id_Experiment=e.id))
         s.add_all(channels)
         s.commit()
 
         # After commit, delete the existing channels (TODO: need improvement)
-        for f in s.query(m.Factor).filter_by(id_Experiment=eid).all():
+        for f in s.query(Factor).filter_by(id_Experiment=eid).all():
             s.delete(f)
         s.commit()
 
         # Insert new factors
         factors = []
         for f in data['factors']:
-            factors.append(m.Factor(name=f['name'], type=f['type'],
+            factors.append(Factor(name=f['name'], type=f['type'],
                            id_Experiment=e.id))
 
         s.add_all(factors)
         s.commit()
 
-        return ''
+        return 'Success'
 
 
-class Layout(Resource):
+class LayoutEP(Resource):
+    """Layout endpoint
+    This endpoint mainly query and modify Factor, Level and Layout tables
+    """
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('eid', type=int, help="experiment id")
+        args = parser.parse_args()
+        eid = args.eid
+
+        # Result
+        ret = defaultdict(dict)
+        # Create query session
+        s = Session()
+
+        from copy import deepcopy
+        factors = {}
+        for f in s.query(Factor).filter_by(id_Experiment=eid).all():
+            factors[str(f.id)] = {"name": f.name, "type": f.type, "levels": {}}
+
+        for l in s.query(Layout).filter_by(id_Experiment=eid).all():
+            ret[str(l.id)]["name"] = l.name
+            ret[str(l.id)]["factors"] = deepcopy(factors)
+
+            for well, lvl, fid in s.query(Level.well, Level.level, Factor.id).\
+                    filter(Level.id_Factor == Factor.id).\
+                    filter(Level.id_Layout == l.id).all():
+                ret[str(l.id)]["factors"][str(fid)]["levels"][well] = lvl
+
+        return ret
+
     def post(self):
         parser = reqparse.RequestParser()
         parser.add_argument('eid', type=int, help="experiment id")
@@ -120,7 +151,7 @@ class Layout(Resource):
         eid = args.eid
 
         # Create query session
-        s = m.Session()
+        s = Session()
 
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
@@ -130,34 +161,61 @@ class Layout(Resource):
         # Get layout id and data, lid should be 0
         _, data = json.popitem()
 
-        l = m.Layout(name=data['name'], id_Experiment=eid)
+        l = Layout(name=data['name'], id_Experiment=eid)
         s.add(l)
         s.commit()
 
         # After commit, the e obj will obtain an id, then we can insert channels
         lid = l.id
         levels = []
-        for f in data['factors']:
-            # Factor id
-            fid = f['id']
+        for fid, f in data['factors'].items():
             for well, level in f['levels'].items():
-                levels.append(m.Level(well=well, level=level,
-                                      id_Layout=lid, id_Factor=fid))
+                levels.append(Level(well=well, level=level,
+                                    id_Layout=lid, id_Factor=fid))
         s.add_all(levels)
         s.commit()
 
-        return ''
+        return 'Success'
+
+    def put(self):
+        """ Update a layout's name and its levels"""
+
+        # Get json from POST data, force is True so the request header don't
+        # need to include "Content-type: application/json"
+        # TODO check input validity
+        json = request.get_json(force=True)
+
+        # Get layout id and data
+        lid, data = json.popitem()
+
+        # Create query session
+        s = Session()
+
+        # Got layout obj and modify it
+        l = s.query(Layout).filter_by(id=lid)
+        l.name = data['name']
+        s.commit()
+
+        # Update level records
+        # Only update factor provided
+        for fid, f in data['factors'].items():
+            for lvl in s.query(Level).filter(Level.id_Layout == lid).\
+                    filter(Level.id_Factor == fid).all():
+                lvl.level = f['levels'][lvl.well]
+        s.commit()
+
+        return 'Success'
 
 
-class Plate(Resource):
+class PlateEP(Resource):
     pass
 
 
-class TimeSeries(Resource):
+class TimeSeriesEP(Resource):
     pass
 
 api_root = '/api/v2'
-api.add_resource(Experiment, api_root + '/experiment')
-api.add_resource(Layout,     api_root + '/layout/')
-api.add_resource(Plate,      api_root + '/plate/')
-api.add_resource(TimeSeries, api_root + '/timeseries/')
+api.add_resource(ExperimentEP, api_root + '/experiment')
+api.add_resource(LayoutEP,     api_root + '/layout')
+api.add_resource(PlateEP,      api_root + '/plate')
+api.add_resource(TimeSeriesEP, api_root + '/timeseries')
