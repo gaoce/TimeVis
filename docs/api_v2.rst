@@ -43,10 +43,10 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     None.
 **Output**
-    A json object mapping experiment IDs to experiment descriptions. 
-    
+    A json object mapping experiment IDs to experiment descriptions.
+
     ::
-    
+
       {
         exp_id: {
           "name": name,
@@ -57,8 +57,8 @@ A summary of all HTTP verbs used for this endpoint:
         },
         ...
       }
-  
-  
+
+
     * ``exp_id``: an integer
     * ``name``: string, experiment name
     * ``user``: string, comma separated user names
@@ -72,7 +72,7 @@ A summary of all HTTP verbs used for this endpoint:
     Here is an expample:
 
     ::
-    
+
       {
         "1": {
           "name"    : "exp1",
@@ -137,7 +137,7 @@ A summary of all HTTP verbs used for this endpoint:
 ^^^^^^
 
 **Parameters**
-    ``?exp=exp_id``, mandatory.
+    ``?eid=exp_id``, mandatory, experiment id.
 **Input**
     None.
 **Output**
@@ -145,46 +145,42 @@ A summary of all HTTP verbs used for this endpoint:
     descriptions, for expample:
 
     ::
-    
+
       {
-        exp_id: {
-          layout_id: {
-            "name": name,
-            "factors": factors
-          },
-          ...
-        }
+        layout_id: {
+          "name": name,
+          "factors": factors
+        },
+        ...
       }
 
-    * ``exp_id``: integer
     * ``layout_id``: integer
     * ``name``: string, layout name
     * ``factors``: array of objects, different factors, containing the following
       fields:
 
+      - ``id``: integer, factor id
       - ``name``: string, factor name
-      - ``levels``: array of strings, factor levels at well A1, A2, ...
+      - ``levels``: object mapping well name to factor level, eg, {'A1':'42'}
 
     Here is an expample:
 
     ::
-    
+
       {
+        "1": {
+          "name": "Layout 1",
+          "factors": [
+            {"id": 1, "name": "Dose", "levels": {'A01':'42', 'A02':'42', ...}},
+            {"id": 2, "name": "Gene", "levels": {'A01':'aa', 'A02':'aa', ...}}
+          ]
+        },
         "2": {
-          "1": {
-            "name": "Layout 1",
-            "factors": [
-              {"name": "Dose", "levels": ['4.2', '4.2', '42', '42', ...]},
-              {"name": "Gene", "levels": ['aa', 'aa', 'bb', 'bb', ...]}
-            ]
-          },
-          "2": {
-            "name": "Layout2",
-            "factors": [
-              {"name": "Dose", "levels": ['0.42', '0.42', '0.042', ...]},
-              {"name": "Gene", "levels": ['aa', 'aa', 'bb',  ...]}
-            ]
-          },
+          "name": "Layout2",
+          "factors": [
+            {"id": 1, "name": "Dose", "levels": {'A01':'42', 'A02':'42', ...}},
+            {"id": 2, "name": "Gene", "levels": {'A01':'bb', 'A02':'bb', ...}}
+          ]
         }
       }
 
@@ -192,10 +188,10 @@ A summary of all HTTP verbs used for this endpoint:
 ^^^^^^^
 
 **Parameters**
-    ``?exp=exp_id``, mandatory.
+    ``?eid=exp_id``, mandatory, experiment id.
 **Input**
     A json object with the same format as described in ``GET``. Only one layout
-    is allowed to be uploaded per request. **Note** ``layout_id`` for a new 
+    is allowed to be uploaded per request. **Note** ``layout_id`` for a new
     layout should be character zero, ie. "0".
 **Output**
     None.
@@ -204,7 +200,7 @@ A summary of all HTTP verbs used for this endpoint:
 ^^^^^^
 
 **Parameters**
-    ``?exp=exp_id``, mandatory.
+    None.
 **Input**
     A json object with the same format as described in ``GET``. Only one layout
     is allowed to be updated at a time.
@@ -238,7 +234,7 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     None.
 **Output**
-    A json object mapping experiment IDs to experiment descriptions, for 
+    A json object mapping experiment IDs to experiment descriptions, for
     expample:
 
 ::
@@ -269,8 +265,8 @@ A summary of all HTTP verbs used for this endpoint:
 **Parameters**
     ``?exp=exp_id&layout=layou_id``, mandatory.
 **Input**
-    A json object with the same format as described in ``GET``. Only one plate 
-    is allowed to be uploaded per request. **Note** ``plate_id`` for a new 
+    A json object with the same format as described in ``GET``. Only one plate
+    is allowed to be uploaded per request. **Note** ``plate_id`` for a new
     layout should be character zero, ie. "0".
 **Output**
     None.

@@ -117,7 +117,7 @@ class Plate(Base):
 
 
 class Level(Base):
-    """A table contains all factor levels
+    """A table contains all factor levels for different layouts
     """
     __tablename__ = 'levels'
 
@@ -131,14 +131,11 @@ class Level(Base):
 
     # Foreign keys
     id_Layout = Column(Integer, ForeignKey('layouts.id'))
-    id_Plate = Column(Integer, ForeignKey('plates.id'))
     id_Factor = Column(Integer, ForeignKey('factors.id'))
 
     # Relationships
     # layout_levels = relationship("Layout",
     #                              backref=backref('levels', order_by=id))
-    # plate_levels = relationship("Plate",
-    #                             backref=backref('levels', order_by=id))
     # factor_levels = relationship("Factor",
     #                              backref=backref('levels', order_by=id))
 

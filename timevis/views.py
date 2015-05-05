@@ -1,9 +1,9 @@
 from timevis import app
 from flask import render_template, request
-from flask.ext import restful
+from flask.ext.restful import Api, Resource, reqparse
 import timevis.models as m
 
-api = restful.Api(app)
+api = Api(app)
 
 
 @app.route('/')
@@ -11,7 +11,7 @@ def index():
     return render_template('index.html')
 
 
-class Experiment(restful.Resource):
+class Experiment(Resource):
     """Endpoint for experiment information
     """
     def get(self):
@@ -112,15 +112,48 @@ class Experiment(restful.Resource):
         return ''
 
 
-class Layout(restful.Resource):
+class Layout(Resource):
+    def post(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument('eid', type=int, help="experiment id")
+        args = parser.parse_args()
+        eid = args.eid
+
+        # Create query session
+        s = m.Session()
+
+        # Get json from POST data, force is True so the request header don't
+        # need to include "Content-type: application/json"
+        # TODO check input validity
+        json = request.get_json(force=True)
+
+        # Get layout id and data, lid should be 0
+        _, data = json.popitem()
+
+        l = m.Layout(name=data['name'], id_Experiment=eid)
+        s.add(l)
+        s.commit()
+
+        # After commit, the e obj will obtain an id, then we can insert channels
+        lid = l.id
+        levels = []
+        for f in data['factors']:
+            # Factor id
+            fid = f['id']
+            for well, level in f['levels'].items():
+                levels.append(m.Level(well=well, level=level,
+                                      id_Layout=lid, id_Factor=fid))
+        s.add_all(levels)
+        s.commit()
+
+        return ''
+
+
+class Plate(Resource):
     pass
 
 
-class Plate(restful.Resource):
-    pass
-
-
-class TimeSeries(restful.Resource):
+class TimeSeries(Resource):
     pass
 
 api_root = '/api/v2'
