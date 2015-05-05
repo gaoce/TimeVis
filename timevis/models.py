@@ -15,28 +15,33 @@ Session = sessionmaker(bind=engine)
 
 
 class Experiment(Base):
-        __tablename__ = 'experiments'
+    """ Experiment table contains information describing experiments
+    """
 
-        id = Column(Integer, primary_key=True)
-        name = Column(String)
-        user = Column(String)
-        well = Column(Integer)
+    __tablename__ = 'experiments'
 
-        def __repr__(self):
-            return "<Experiment({}, {})>".format(self.name, self.well)
+    id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False, unique=True)
+    user = Column(String)
+    well = Column(Integer, nullable=False)
+
+    def __repr__(self):
+        return "<Experiment({}, {})>".format(self.name, self.well)
 
 
 class Factor(Base):
     __tablename__ = 'factors'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    type = Column(String)
+    name = Column(String, nullable=False)
+    type = Column(String, nullable=False)
 
+    # Foreign key
     id_Experiment = Column(Integer, ForeignKey('experiments.id'))
 
-    experiments = relationship("Experiment", backref=backref('factors',
-                                                             order_by=id))
+    # Relationship
+    experiments = relationship("Experiment",
+                               backref=backref('factors', order_by=id))
 
     def __repr__(self):
         return "<Factor({})>".format(self.name)
@@ -46,12 +51,14 @@ class Layout(Base):
     __tablename__ = 'layouts'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
+    name = Column(String, nullable=False)
 
+    # Foreign key
     id_Experiment = Column(Integer, ForeignKey('experiments.id'))
 
-    layouts = relationship("Experiment", backref=backref('layouts',
-                                                         order_by=id))
+    # Relationship
+    layouts = relationship("Experiment",
+                           backref=backref('layouts', order_by=id))
 
     def __repr__(self):
         return "<Layout({})>".format(self.name)
@@ -97,14 +104,14 @@ class Level(Base):
     id_Plate = Column(Integer, ForeignKey('plates.id'))
     id_Factor = Column(Integer, ForeignKey('factors.id'))
 
-    layout_levels = relationship("Layout", backref=backref('levels',
-                                                           order_by=id))
+    layout_levels = relationship("Layout",
+                                 backref=backref('levels', order_by=id))
 
-    plate_levels = relationship("Plate", backref=backref('levels',
-                                                         order_by=id))
+    plate_levels = relationship("Plate",
+                                backref=backref('levels', order_by=id))
 
-    factor_levels = relationship("Factor", backref=backref('levels',
-                                                           order_by=id))
+    factor_levels = relationship("Factor",
+                                 backref=backref('levels', order_by=id))
 
 
 class Value(Base):
@@ -113,14 +120,15 @@ class Value(Base):
     __tablename__ = 'values'
 
     id = Column(Integer, primary_key=True)
-    well = Column(String)
-    time = Column(Time)
-    value = Column(Float)
+    well = Column(String, nullable=False)
+    time = Column(Time, nullable=False)
+    value = Column(Float, nullable=False)
 
     id_Plate = Column(Integer, ForeignKey('plates.id'))
     id_Channel = Column(Integer, ForeignKey('channels.id'))
 
+    # Relationships
     plate_values = relationship("Plate", backref=backref('values', order_by=id))
 
-    channel_values = relationship("Channel", backref=backref('values',
-                                                             order_by=id))
+    channel_values = relationship("Channel",
+                                  backref=backref('values', order_by=id))
