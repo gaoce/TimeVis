@@ -43,31 +43,54 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     None.
 **Output**
-    A json object mapping experiment IDs to experiment descriptions, for
-    expample:
+    A json object mapping experiment IDs to experiment descriptions. 
+    
+    ::
+    
+      {
+        "exp_id": {
+          "name"    : ... ,
+          "user"    : ... ,
+          "well"    : ... ,
+          "channels": [ ... ] ,
+          "factors" : [ {"name": ... , "type": ... }, ... ]
+        },
+        ...
+      }
+  
+  
+    * ``exp_id``: an integer
+    * ``name``: string, experiment name
+    * ``user``: string, comma separated user names
+    * ``channels``: array of strings, different channel
+    * ``factor``: array of objects, different factors
 
-::
+      - ``name``: string, factor name
+      - ``type``: string, factor type, "Category", "Integer", or "Decimal"
 
-  {
-    "exp_id1": {
-      "name"    : "exp1",
-      "user"    : "user1, user2",
-      "well"    : 384,
-      "channels": ["GFP", "OD"],
-      "factors" : [{"name": "Dose", "type": "Decimal"}]
-    },
-    "exp_id2": {
-      "name"    : "exp2",
-      "user"    : ["user3"],
-      "well"    : 96,
-      "channels": ["GFP"],
-      "factors" : [
-        {"name": "Dose", "type": "Decimal"},
-        {"name": "Gene", "type": "Category"},
-      ]
-    },
-    ...
-  }
+    Here is an expample:
+
+    ::
+    
+      {
+        "1": {
+          "name"    : "exp1",
+          "user"    : "user1, user2",
+          "well"    : 384,
+          "channels": ["GFP", "OD"],
+          "factors" : [{"name": "Dose", "type": "Decimal"}]
+        },
+        "2": {
+          "name"    : "exp2",
+          "user"    : ["user3"],
+          "well"    : 96,
+          "channels": ["GFP"],
+          "factors" : [
+            {"name": "Dose", "type": "Decimal"},
+            {"name": "Gene", "type": "Category"},
+          ]
+        }
+      }
 
 2. POST
 ^^^^^^^
@@ -77,7 +100,7 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     A json object with the same format as described in ``GET``. Only one
     experiment is allowed to be uploaded per request.  **Note**: ``exp_id`` for
-    a new experiment should be character zero, ie. '0'.
+    a new experiment should be character zero, ie. "0".
 **Output**
     None.
 
@@ -87,7 +110,8 @@ A summary of all HTTP verbs used for this endpoint:
 **Parameters**
     None.
 **Input**
-    A json object with the same format as described in ``GET``.
+    A json object with the same format as described in ``GET``. Only one
+    experiment is allowed to updated at a time.
 **Output**
     None.
 
@@ -150,7 +174,7 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     A json object with the same format as described in ``GET``. Only one layout
     is allowed to be uploaded per request. **Note** ``layout_id`` for a new 
-    layout should be character zero, ie. '0'.
+    layout should be character zero, ie. "0".
 **Output**
     None.
 
@@ -224,7 +248,7 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     A json object with the same format as described in ``GET``. Only one plate 
     is allowed to be uploaded per request. **Note** ``plate_id`` for a new 
-    layout should be character zero, ie. '0'.
+    layout should be character zero, ie. "0".
 **Output**
     None.
 
