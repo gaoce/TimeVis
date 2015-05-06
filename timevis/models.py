@@ -21,10 +21,10 @@ class Experiment(Base):
     id = Column(Integer, primary_key=True)
 
     # Experiment name, must be unique
-    name = Column(String, nullable=False, unique=True)
+    name = Column(String(255), nullable=False, unique=True)
 
     # Names of users, comma separated
-    user = Column(String)
+    user = Column(String(255))
 
     # Well number, either 96 or 384
     well = Column(Integer, nullable=False)
@@ -45,10 +45,10 @@ class Factor(Base):
     id = Column(Integer, primary_key=True)
 
     # Name of factor, usually a controlled condition, like dose
-    name = Column(String(50), nullable=False)
+    name = Column(String(255), nullable=False)
 
     # Type of factor, either 'Category', 'Integer', or 'Decimal'
-    type = Column(String, nullable=False)
+    type = Column(String(8), nullable=False)
 
     # Foreign key
     id_Experiment = Column(Integer, ForeignKey('experiments.id'))
@@ -67,7 +67,7 @@ class Channel(Base):
     __tablename__ = 'channels'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String, nullable=False)
+    name = Column(String(255), nullable=False)
 
     # Foreign key
     id_Experiment = Column(Integer, ForeignKey('experiments.id'))
@@ -123,11 +123,11 @@ class Level(Base):
 
     id = Column(Integer, primary_key=True)
 
-    # Name of the well
-    well = Column(String, nullable=False)
+    # Well name, eg, "A01" or "C04"
+    well = Column(String(3), nullable=False)
 
     # Level of the specific factor, which is indicated by id_Factor
-    level = Column(String)
+    level = Column(String(255))
 
     # Foreign keys
     id_Layout = Column(Integer, ForeignKey('layouts.id'))
@@ -147,8 +147,8 @@ class Value(Base):
 
     id = Column(Integer, primary_key=True)
 
-    # Well name
-    well = Column(String, nullable=False)
+    # Well name, eg, "A01" or "C04"
+    well = Column(String(3), nullable=False)
 
     # Time of measurement
     time = Column(Time, nullable=False)
