@@ -14,6 +14,7 @@ def index():
 
 class ExperimentEP(Resource):
     """Endpoint for experiment information
+    This endpoint mainly deals with Experiment, Channel and Factor tables.
     """
     def get(self):
         # Result
@@ -28,7 +29,7 @@ class ExperimentEP(Resource):
                 "name": e.name,
                 "user": e.user,
                 "well": e.well,
-                "channels": [c.name for c in e.channels],
+                "channels": [{"id": c.id, "name": c.name} for c in e.channels],
                 "factors": [{"id": f.id, "name": f.name, "type": f.type}
                             for f in e.factors]
             }
@@ -51,9 +52,10 @@ class ExperimentEP(Resource):
         s.commit()
 
         # After commit, the e obj will obtain an id, then we can insert channels
+        # At this phase, the channel id from user should be 0
         channels = []
         for c in data['channels']:
-            channels.append(Channel(name=c, id_Experiment=e.id))
+            channels.append(Channel(name=c['name'], id_Experiment=e.id))
         s.add_all(channels)
         s.commit()
 
@@ -92,7 +94,7 @@ class ExperimentEP(Resource):
 
         channels = []
         for c in data['channels']:
-            channels.append(Channel(name=c, id_Experiment=e.id))
+            channels.append(Channel(name=c['name'], id_Experiment=eid))
         s.add_all(channels)
         s.commit()
 
@@ -105,7 +107,7 @@ class ExperimentEP(Resource):
         factors = []
         for f in data['factors']:
             factors.append(Factor(name=f['name'], type=f['type'],
-                           id_Experiment=e.id))
+                           id_Experiment=eid))
 
         s.add_all(factors)
         s.commit()
