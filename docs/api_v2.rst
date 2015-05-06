@@ -6,22 +6,30 @@ API Documentation
 1. Endpoints summary
 ====================
 
-+------------------------+-------------------------+
-| URI                    | Target                  |
-+========================+=========================+
-| ``/api/v2/experiment`` | Experiment information  |
-+------------------------+-------------------------+
-| ``/api/v2/layout``     | Layout information      |
-+------------------------+-------------------------+
-| ``/api/v2/plate``      | Plate data              |
-+------------------------+-------------------------+
-| ``/api/v2/timeseries`` | Time series data        |
-+------------------------+-------------------------+
++------------------------+---------------------------------+
+| URI                    | Target                          |
++========================+=================================+
+| ``/api/v2/experiment`` | Experiment information          |
++------------------------+---------------------------------+
+| ``/api/v2/layout``     | Layout information              |
++------------------------+---------------------------------+
+| ``/api/v2/plate``      | Plate information and data      |
++------------------------+---------------------------------+
+| ``/api/v2/timeseries`` | (Transformed) time series data  |
++------------------------+---------------------------------+
 
 2. Experiment information
 =========================
 
-A summary of all HTTP verbs used for this endpoint:
+1. Summary
+^^^^^^^^^^
+
+Retrieve, upload and update information at experiment level, including
+experiment name, user names, well number of plates, channels (dependent
+variables) measured, factors (independent variables) set. 
+
+The URI is ``/api/v2/experiment``. A summary of all HTTP verbs used for this 
+endpoint is shown below:
 
 +--------+--------------------------------------------+
 | Verb   | Function                                   |
@@ -32,12 +40,12 @@ A summary of all HTTP verbs used for this endpoint:
 +--------+--------------------------------------------+
 | PUT    | Update existing experiment(s) information  |
 +--------+--------------------------------------------+
-| DELETE | Delete Experiment(s). **Not implemented**. |
-+--------+--------------------------------------------+
 
-``DELETE`` method is not implemented as it is not safe right now.
+..
+  | DELETE | Delete Experiment(s). **Not implemented**. |
+  ``DELETE`` method is not implemented as it is not safe right now.
 
-1. GET
+2. GET
 ^^^^^^
 
 **Parameters**
@@ -45,55 +53,78 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     None.
 **Output**
-    A json object mapping experiment IDs to experiment descriptions.
+    A json object mapping experiment IDs to experiment descriptions in the
+    following format.
 
     ::
 
       {
-        exp_id: {
-          "name": name,
-          "user": user,
-          "well": well,
-          "channels": channels,
-          "factors": [{"id": id, "name": name, "type": type"}, ... ]
+        exp_id: 
+        {
+          "name"    : exp_name,
+          "user"    : exp_user,
+          "well"    : exp_well,
+          "channels": 
+          [
+            {"id": channel_id, "name": channel_name}, 
+            ...
+          ],
+          "factors" : 
+          [
+            {"id": factor_id, "name": factor_name, "type": factor_type}, 
+            ...
+          ]
         },
         ...
       }
 
+    ..
+      The ``channels`` and ``factors`` are designed to be array instead of
+      objects mapping id to description is because all new factors and channels
+      will have the same "0".
 
-    * ``exp_id``: an integer
-    * ``name``: string, experiment name
-    * ``user``: string, comma separated user names
-    * ``channels``: array of strings, different channel
-    * ``id``: integer, factor id
-    * ``name``: string, factor name
-    * ``type``: string, factor type, "Category", "Integer", or "Decimal"
+
+    The unquoted variables are:
+
+    * ``exp_id``:       Integer. Experiment ID.
+    * ``exp_name``:     String.  Experiment name.
+    * ``exp_user``:     String.  Comma separated user names.
+    * ``exp_well``:     Integer. Well number.
+    * ``channel_id``:   Integer. Channel ID.
+    * ``channel_name``: String.  Channel name.
+    * ``factor_id``:    Integer. Factor id.
+    * ``factor_name``:  String.  Factor name.
+    * ``factor_type``:  String.  Factor type, can be either "Category", 
+      "Integer", or "Decimal"
 
     Here is an expample:
 
     ::
 
       {
-        "1": {
+        "1": 
+        {
           "name"    : "exp1",
           "user"    : "user1, user2",
           "well"    : 384,
-          "channels": ["GFP", "OD"],
-          "factors" : [{"id": 1, "name": "Dose", "type": "Decimal"}]
+          "channels": [{"id": "1", "name": "GFP"}, {"id"": "2", "name": "OD"}],
+          "factors" : [{"id": "1", "name": "Dose", "type": "Decimal"}]
         },
-        "2": {
+        "2": 
+        {
           "name"    : "exp2",
-          "user"    : ["user3"],
+          "user"    : "user3",
           "well"    : 96,
-          "channels": ["GFP"],
-          "factors" : [
-            {"id": 2, "name": "Dose", "type": "Decimal"},
-            {"id": 3, "name": "Gene", "type": "Category"}
+          "channels": [{"id": "3", "name": "GFP"}],
+          "factors" : 
+          [
+            {"id": "2", "name": "Dose", "type": "Decimal"},
+            {"id": "3", "name": "Gene", "type": "Category"}
           ]
         }
       }
 
-2. POST
+3. POST
 ^^^^^^^
 
 **Parameters**
@@ -103,17 +134,17 @@ A summary of all HTTP verbs used for this endpoint:
     experiment is allowed to be uploaded per request.  **Note**: ``exp_id`` and 
     factor ``id`` for a new experiment should be zero, ie. "0" or 0.
 
-    Here is a json file example:
+    Here is an example:
 
     ::
 
       {
         "0": {
-          "name": "Exp1",
-          "user": "user1, user2",
-          "well": 384,
-          "channels": ["GFP", "OD"],
-          "factors": [
+          "name"    : "Exp1",
+          "user"    : "user1, user2",
+          "well"    : 384,
+          "channels": [{"id": "0", "name": "GFP"}, {"id": "0", "name": "OD"}],
+          "factors" : [
             {"id": 0, "name": "Dose", "type": "Decimal"},
             {"id": 0, "name": "Gene", "type": "Category"}
           ]
@@ -123,7 +154,7 @@ A summary of all HTTP verbs used for this endpoint:
 **Output**
     None.
 
-3. PUT
+4. PUT
 ^^^^^^
 
 **Parameters**
@@ -132,17 +163,17 @@ A summary of all HTTP verbs used for this endpoint:
     A json object with the same format as described in ``GET``. Only one
     experiment is allowed to updated at a time.
 
-    Here is a json file example:
+    Here is an example:
 
     ::
 
       {
         "1": {
-          "name": "Exp 1",
-          "user": "user1",
-          "well": 96,
-          "channels": ["GFP"],
-          "factors": [
+          "name"    : "Exp 1",
+          "user"    : "user1",
+          "well"    : 96,
+          "channels": [{"id": "1", "name": "GFP"}],
+          "factors" : [
             {"id": "1", "name": "Dose", "type": "Decimal"},
             {"id": "2", "name": "Gene", "type": "Category"}
           ]
@@ -166,8 +197,9 @@ A summary of all HTTP verbs used for this endpoint:
 +--------+-------------------------------------------------------+
 | PUT    | Update existing layout(s) information                 |
 +--------+-------------------------------------------------------+
-| DELETE | Delete layout(s). **Not implemented**.                |
-+--------+-------------------------------------------------------+
+
+..
+  | DELETE | Delete layout(s). **Not implemented**.                |
 
 1. GET
 ^^^^^^
@@ -195,13 +227,15 @@ A summary of all HTTP verbs used for this endpoint:
         ...
       }
 
-    * ``layout_id``: integer
-    * ``name``: string, layout name
-    * ``id``: integer, factor id
-    * ``name``: string, factor name
-    * ``type``: string, factor type, "Category", "Integer", or "Decimal"
-    * ``well``: string, well name, e.g., "A01", "C04"
-    * ``level``: string, factor level
+    Unquoted variables are:
+
+    * ``layout_id``: Integer. Layout ID.
+    * ``name``:      String.  Layout name.
+    * ``id``:        Integer. Factor id.
+    * ``name``:      String.  Factor name
+    * ``type``:      String.  Factor type, "Category", "Integer", or "Decimal"
+    * ``well``:      String.  Well name, e.g., "A01", "C04"
+    * ``level``: 	 String.  Factor level.
 
     Here is an expample:
 
@@ -211,10 +245,18 @@ A summary of all HTTP verbs used for this endpoint:
         "1": {
           "name": "Layout 1",
           "factors": [
-            {"id": 1, "name": "Dose", "type": "Decimal", 
-             "levels": {'A01':'42', 'A02':'42', ...}},
-            {"id": 2, "name": "Gene", "type": "Category", 
-             "levels": {'A01':'aa', 'A02':'aa', ...}}
+            {
+              "id"    : 1, 
+              "name"  : "Dose", 
+              "type"  : "Decimal", 
+              "levels": {'A01':'42', 'A02':'42', ...}
+            },
+            {
+              "id"    : 2, 
+              "name"  : "Gene", 
+              "type"  : "Category", 
+              "levels": {'A01':'aa', 'A02':'aa', ...}
+            }
           ]
         },
         "2": {
