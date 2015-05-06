@@ -243,3 +243,9 @@ var container2 = document.getElementById("data_table");
 var hot2 = new Handsontable(container2, setting);
 
 $("#time-slider").slider();
+
+$.ajax({
+    url: "/api/v2/layout?eid=1",
+    type: "GET",
+    success: function(res){console.log(res);}
+});
