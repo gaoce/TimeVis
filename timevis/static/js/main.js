@@ -91,28 +91,61 @@ function viewModel(){
 // ========================================================================
 // Experiment viewModel class
 // ========================================================================
-var ExpVM = function() {
+function ExpVM() {
     var self = this;
 
     // Possible values: old, new
     self.fun = ko.observable('old');
+    // Reset current_exp every time fun changes
+    self.fun.subscribe(function(){self.current_exp(null);})
 
-    // Information about the experiment
-    self.name = ko.observable();
-    self.people = ko.observable();
-    self.date = ko.observable();
+    self.experiments = ko.observableArray();
+    self.current_exp = ko.observable();
+
+    self.current_exp.subscribe(function(new_exp){
+        self.exp_chnl(null);
+        for (c in new_exp.channels){
+            self.exp_chnl.push(new_exp.channels[c]);
+        }
+    })
+
+    // General information
+    self.name = ko.computed(function(){
+        if (self.current_exp()){
+            return self.current_exp().name;
+        }
+    });
+
+    self.user = ko.computed(function(){
+        if (self.current_exp()){
+            return self.current_exp().user;
+        }
+    });
 
     // Well numbers
-    self.plate_types = [96, 384];
-    self.plate_type = ko.observable();
+    self.well_types = [96, 384];
+    self.well = ko.computed(function(){
+        if (self.current_exp()){
+            return self.current_exp().well;
+        }
+    })
 
-    self.experiments = ko.observableArray(['AAA', 'BBB']);
+    // TODO: refresh button
+    $.ajax({
+        url: "/api/v2/experiment",
+        type: "GET",
+        success: function(data){
+            for (e in data.experiment){
+                self.experiments.push(data.experiment[e]);
+            }
+        }
+    });
 
     // Factor (independent variables)
     self.exp_fact = ko.observableArray([new ExpVar()]);
 
     // Channels (dependent variables)
-    self.exp_chnl = ko.observableArray([new ExpVar()]);
+    self.exp_chnl = ko.observableArray();
 
     self.var_types = ['Category', 'Integer', 'Decimal'];
 
@@ -159,7 +192,6 @@ function getFactors(exp) {
 function searchLevel(val) {
     var self = this;
     // check if string is empty
-    console.log(val);
     if (val){
         for (g in self.levels()){
             if (self.levels()[g].name.search(val) === -1){
@@ -244,8 +276,3 @@ var hot2 = new Handsontable(container2, setting);
 
 $("#time-slider").slider();
 
-$.ajax({
-    url: "/api/v2/layout?eid=1",
-    type: "GET",
-    success: function(res){console.log(res);}
-});
