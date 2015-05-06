@@ -117,7 +117,8 @@ class ExperimentEP(Resource):
 
 class LayoutEP(Resource):
     """Layout endpoint
-    This endpoint mainly query and modify Factor, Level and Layout tables
+    This endpoint mainly query Layout, Factor and Level tables, and modify Level
+    and Layout tables
     """
     def get(self):
         parser = reqparse.RequestParser()
@@ -130,19 +131,20 @@ class LayoutEP(Resource):
         # Create query session
         s = Session()
 
-        from copy import deepcopy
-        factors = {}
-        for f in s.query(Factor).filter_by(id_Experiment=eid).all():
-            factors[str(f.id)] = {"name": f.name, "type": f.type, "levels": {}}
-
         for l in s.query(Layout).filter_by(id_Experiment=eid).all():
             ret[str(l.id)]["name"] = l.name
-            ret[str(l.id)]["factors"] = deepcopy(factors)
+            ret[str(l.id)]["factors"] = []
 
-            for well, lvl, fid in s.query(Level.well, Level.level, Factor.id).\
-                    filter(Level.id_Factor == Factor.id).\
-                    filter(Level.id_Layout == l.id).all():
-                ret[str(l.id)]["factors"][str(fid)]["levels"][well] = lvl
+            for f in s.query(Factor).filter_by(id_Experiment=eid).all():
+                fac = {}
+                fac['id'] = f.id
+                fac['name'] = f.name
+
+                for well, lvl in s.query(Level.well, Level.level).\
+                        filter(Level.id_Factor == Factor.id).\
+                        filter(Level.id_Layout == l.id).all():
+                    fac["levels"][well] = lvl
+                ret[str(l.id)]["factors"].append(fac)
 
         return ret
 
@@ -170,10 +172,10 @@ class LayoutEP(Resource):
         # After commit, the e obj will obtain an id, then we can insert channels
         lid = l.id
         levels = []
-        for fid, f in data['factors'].items():
+        for f in data['factors']:
             for well, level in f['levels'].items():
                 levels.append(Level(well=well, level=level,
-                                    id_Layout=lid, id_Factor=fid))
+                                    id_Layout=lid, id_Factor=f['id']))
         s.add_all(levels)
         s.commit()
 
@@ -200,9 +202,9 @@ class LayoutEP(Resource):
 
         # Update level records
         # Only update factor provided
-        for fid, f in data['factors'].items():
+        for f in data['factors']:
             for lvl in s.query(Level).filter(Level.id_Layout == lid).\
-                    filter(Level.id_Factor == fid).all():
+                    filter(Level.id_Factor == f['id']).all():
                 lvl.level = f['levels'][lvl.well]
         s.commit()
 

@@ -186,6 +186,12 @@ endpoint is shown below:
 3. Layout information
 =====================
 
+1. Summary
+^^^^^^^^^^
+
+Retrieve, upload and update layout information, including layout name,
+especially the levels of factors at each well.
+
 A summary of all HTTP verbs used for this endpoint:
 
 +--------+-------------------------------------------------------+
@@ -215,27 +221,30 @@ A summary of all HTTP verbs used for this endpoint:
     ::
 
       {
-        layout_id: {
-          "name": name,
-          "factors": [
+        layout_id: 
+        {
+          "name": layout_name,
+          "factors":
+          [
             {
-              "id": id, "name": name, "type": type", "levels":{well: level, ...}
+              "id"    : factor_id,
+              "name"  : factor_name,
+              "levels": {well: level, ...}
             },
             ...
-          ]
+          ],
         },
         ...
       }
 
     Unquoted variables are:
 
-    * ``layout_id``: Integer. Layout ID.
-    * ``name``:      String.  Layout name.
-    * ``id``:        Integer. Factor id.
-    * ``name``:      String.  Factor name
-    * ``type``:      String.  Factor type, "Category", "Integer", or "Decimal"
-    * ``well``:      String.  Well name, e.g., "A01", "C04"
-    * ``level``: 	 String.  Factor level.
+    * ``layout_id``:   Integer. Layout ID.
+    * ``layout_name``: String.  Layout name.
+    * ``factor_id``:   Integer. Factor id.
+    * ``factor_name``: String.  Factor name.
+    * ``well``:        String.  Well name, e.g., "A01", "C04"
+    * ``level``: 	   String.  Factor level.
 
     Here is an expample:
 
@@ -246,15 +255,13 @@ A summary of all HTTP verbs used for this endpoint:
           "name": "Layout 1",
           "factors": [
             {
-              "id"    : 1, 
+              "id"    : "1", 
               "name"  : "Dose", 
-              "type"  : "Decimal", 
               "levels": {'A01':'42', 'A02':'42', ...}
             },
             {
-              "id"    : 2, 
+              "id"    : "2", 
               "name"  : "Gene", 
-              "type"  : "Category", 
               "levels": {'A01':'aa', 'A02':'aa', ...}
             }
           ]
@@ -262,10 +269,15 @@ A summary of all HTTP verbs used for this endpoint:
         "2": {
           "name": "Layout 2",
           "factors": [
-            {"id": 1, "name": "Dose", "type": "Decimal", 
-             "levels": {'A01':'42', 'A02':'42', ...}},
-            {"id": 2, "name": "Gene", "type": "Category",
-             "levels": {'A01':'bb', 'A02':'bb', ...}}
+            {
+              "id"    : "3", 
+              "name"  : "Dose", 
+              "levels": {'A01':'42', 'A02':'42', ...}
+            },
+            {
+              "id"    : "4", 
+              "name"  : "Gene", 
+              "levels": {'A01':'bb', 'A02':'bb', ...}}
           ]
         }
       }
@@ -282,7 +294,7 @@ A summary of all HTTP verbs used for this endpoint:
     is allowed to be uploaded per request. **Note** ``layout_id`` for a new
     layout should be character zero, ie. "0".
 
-    Here is a json file example:
+    Here is an example:
 
     ::
 
@@ -290,24 +302,18 @@ A summary of all HTTP verbs used for this endpoint:
         "0": {
           "name": "Layout 1",
           "factors":
-          {
-            "1":
+          [
             {
-              "name": "Dose",
-              "levels":
-              {
-                "A01":"42", "A02":"42", "A03":"42", "A04":"42", ...
-              }
+              "id"    : "0",
+              "name"  : "Dose",
+              "levels": {"A01":"42", "A02":"42", "A03":"42", "A04":"42", ...}
             },
-            "2":
             {
-              "name": "Gene",
-              "levels":
-              {
-                "A01":"aa", "A02":"aa", "A03":"aa", "A04":"aa", ...
-              }
+              "id"    : "0",
+              "name"  : "Gene",
+              "levels": {"A01":"aa", "A02":"aa", "A03":"aa", "A04":"aa", ...}
             }
-          }
+          ]
         }
       }
 
@@ -325,7 +331,7 @@ A summary of all HTTP verbs used for this endpoint:
     A json object with the same format as described in ``GET``. Only one layout
     is allowed to be updated at a time.
 
-    Here is a json file example:
+    Here is an example:
 
     ::
 
@@ -333,24 +339,18 @@ A summary of all HTTP verbs used for this endpoint:
         "0": {
           "name": "Layout 1",
           "factors":
-          {
-            "1":
+          [
             {
-              "name": "Dose",
-              "levels":
-              {
-                "A01":"42", "A02":"42", "A03":"42", "A04":"42", ...
-              }
+              "id"    : "1",
+              "name"  : "Dose",
+              "levels": {"A01":"42", "A02":"42", "A03":"42", "A04":"42", ...}
             },
-            "2":
             {
-              "name": "Gene",
-              "levels":
-              {
-                "A01":"bb", "A02":"bb", "A03":"bb", "A04":"bb", ...
-              }
+              "id"    : "2",
+              "name"  : "Gene",
+              "levels": {"A01":"bb", "A02":"bb", "A03":"bb", "A04":"bb", ...}
             }
-          }
+          ]
         }
       }
 
