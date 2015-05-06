@@ -31,6 +31,7 @@ setup(
     license="MIT",
     install_requires=[
         "Flask>=0.10.1",
+        "Flask-RESTful",
         "SQLAlchemy>=1.0.3",
     ],
     packages=['timevis'],
