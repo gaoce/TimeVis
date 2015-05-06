@@ -10,6 +10,16 @@ def index():
     return render_template('index.html')
 
 
+def get_exp_obj(e):
+    return {"name": e.name,
+            "id": e.id,
+            "user": e.user,
+            "well": e.well,
+            "channels": [{"id": c.id, "name": c.name} for c in e.channels],
+            "factors": [{"id": f.id, "name": f.name, "type": f.type}
+                        for f in e.factors]}
+
+
 class ExperimentEP(Resource):
     """Endpoint for experiment information
     This endpoint mainly deals with Experiment, Channel and Factor tables.
@@ -23,13 +33,7 @@ class ExperimentEP(Resource):
 
         # Get Experiment instance and fill in the result dict
         for e in s.query(Experiment).all():
-            ret["experiment"].append({
-                "name": e.name,
-                "user": e.user,
-                "well": e.well,
-                "channels": [{"id": c.id, "name": c.name} for c in e.channels],
-                "factors": [{"id": f.id, "name": f.name, "type": f.type}
-                            for f in e.factors]})
+            ret["experiment"].append(get_exp_obj(e))
 
         return ret
 
@@ -70,7 +74,9 @@ class ExperimentEP(Resource):
             # Commit the changes for channels and factors
             s.commit()
 
-        return 'Success'
+        # Return the updated experiment obj
+        e_new = s.query(Experiment).filter_by(id=e.id).first()
+        return {"experiment": [get_exp_obj(e_new)]}
 
     def put(self):
         """Update experiment information:
@@ -78,6 +84,7 @@ class ExperimentEP(Resource):
             2. Delete channel and factor records associated
             3. Add new channel and factor records
         """
+
         # Create query session
         s = Session()
 
@@ -90,6 +97,8 @@ class ExperimentEP(Resource):
         for data in json['experiment']:
             eid = data['id']
             e = s.query(Experiment).filter_by(id=eid).first()
+            if e is None:
+                return ''
             e.name = data['name']
             e.user = data['user']
             e.well = data['well']
@@ -120,7 +129,9 @@ class ExperimentEP(Resource):
             # TODO try except
             s.commit()
 
-        return 'Success'
+        # Return the updated experiment obj
+        e = s.query(Experiment).filter_by(id=eid).first()
+        return {"experiment": [get_exp_obj(e)]}
 
 
 class LayoutEP(Resource):

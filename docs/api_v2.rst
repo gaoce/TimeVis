@@ -164,7 +164,7 @@ endpoint is shown below:
       }
 
 **Output**
-    None.
+	Newly created experiment object.
 
 4. PUT
 ^^^^^^
@@ -199,7 +199,7 @@ endpoint is shown below:
       }
 
 **Output**
-    None.
+	Updated experiment object, with possible altered IDs.
 
 3. Layout information
 =====================
