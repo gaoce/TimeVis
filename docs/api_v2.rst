@@ -26,9 +26,9 @@ API Documentation
 
 Retrieve, upload and update information at experiment level, including
 experiment name, user names, well number of plates, channels (dependent
-variables) measured, factors (independent variables) set. 
+variables) measured, factors (independent variables) set.
 
-The URI is ``/api/v2/experiment``. A summary of all HTTP verbs used for this 
+The URI is ``/api/v2/experiment``. A summary of all HTTP verbs used for this
 endpoint is shown below:
 
 +--------+--------------------------------------------+
@@ -59,19 +59,19 @@ endpoint is shown below:
     ::
 
       {
-        exp_id: 
+        exp_id:
         {
           "name"    : exp_name,
           "user"    : exp_user,
           "well"    : exp_well,
-          "channels": 
+          "channels":
           [
-            {"id": channel_id, "name": channel_name}, 
+            {"id": channel_id, "name": channel_name},
             ...
           ],
-          "factors" : 
+          "factors" :
           [
-            {"id": factor_id, "name": factor_name, "type": factor_type}, 
+            {"id": factor_id, "name": factor_name, "type": factor_type},
             ...
           ]
         },
@@ -94,7 +94,7 @@ endpoint is shown below:
     * ``channel_name``: String.  Channel name.
     * ``factor_id``:    Integer. Factor id.
     * ``factor_name``:  String.  Factor name.
-    * ``factor_type``:  String.  Factor type, can be either "Category", 
+    * ``factor_type``:  String.  Factor type, can be either "Category",
       "Integer", or "Decimal"
 
     Here is an expample:
@@ -102,7 +102,7 @@ endpoint is shown below:
     ::
 
       {
-        "1": 
+        "1":
         {
           "name"    : "exp1",
           "user"    : "user1, user2",
@@ -110,13 +110,13 @@ endpoint is shown below:
           "channels": [{"id": "1", "name": "GFP"}, {"id"": "2", "name": "OD"}],
           "factors" : [{"id": "1", "name": "Dose", "type": "Decimal"}]
         },
-        "2": 
+        "2":
         {
           "name"    : "exp2",
           "user"    : "user3",
           "well"    : 96,
           "channels": [{"id": "3", "name": "GFP"}],
-          "factors" : 
+          "factors" :
           [
             {"id": "2", "name": "Dose", "type": "Decimal"},
             {"id": "3", "name": "Gene", "type": "Category"}
@@ -131,7 +131,7 @@ endpoint is shown below:
     None.
 **Input**
     A json object with the same format as described in ``GET``. Only one
-    experiment is allowed to be uploaded per request.  **Note**: ``exp_id`` and 
+    experiment is allowed to be uploaded per request.  **Note**: ``exp_id`` and
     factor ``id`` for a new experiment should be zero, ie. "0" or 0.
 
     Here is an example:
@@ -207,7 +207,7 @@ A summary of all HTTP verbs used for this endpoint:
 ..
   | DELETE | Delete layout(s). **Not implemented**.                |
 
-1. GET
+2. GET
 ^^^^^^
 
 **Parameters**
@@ -221,7 +221,7 @@ A summary of all HTTP verbs used for this endpoint:
     ::
 
       {
-        layout_id: 
+        layout_id:
         {
           "name": layout_name,
           "factors":
@@ -255,13 +255,13 @@ A summary of all HTTP verbs used for this endpoint:
           "name": "Layout 1",
           "factors": [
             {
-              "id"    : "1", 
-              "name"  : "Dose", 
+              "id"    : "1",
+              "name"  : "Dose",
               "levels": {'A01':'42', 'A02':'42', ...}
             },
             {
-              "id"    : "2", 
-              "name"  : "Gene", 
+              "id"    : "2",
+              "name"  : "Gene",
               "levels": {'A01':'aa', 'A02':'aa', ...}
             }
           ]
@@ -270,13 +270,13 @@ A summary of all HTTP verbs used for this endpoint:
           "name": "Layout 2",
           "factors": [
             {
-              "id"    : "3", 
-              "name"  : "Dose", 
+              "id"    : "3",
+              "name"  : "Dose",
               "levels": {'A01':'42', 'A02':'42', ...}
             },
             {
-              "id"    : "4", 
-              "name"  : "Gene", 
+              "id"    : "4",
+              "name"  : "Gene",
               "levels": {'A01':'bb', 'A02':'bb', ...}}
           ]
         }
@@ -284,7 +284,7 @@ A summary of all HTTP verbs used for this endpoint:
 
       # The factor levels are not shown in full here.
 
-2. POST
+3. POST
 ^^^^^^^
 
 **Parameters**
@@ -322,7 +322,7 @@ A summary of all HTTP verbs used for this endpoint:
 **Output**
     None.
 
-3. PUT
+4. PUT
 ^^^^^^
 
 **Parameters**
@@ -362,7 +362,12 @@ A summary of all HTTP verbs used for this endpoint:
 3. Plate information
 ====================
 
-A summary of all HTTP verbs used for this endpoint:
+1. Summary
+^^^^^^^^^^
+
+Retrieve, upload and update plate data, including channels and time series data.
+
+A summary of all HTTP verbs used for this endpoint is as follows:
 
 +--------+--------------------------------------------------------------------+
 | Verb   | Function                                                           |
@@ -375,10 +380,11 @@ A summary of all HTTP verbs used for this endpoint:
 +--------+--------------------------------------------------------------------+
 | PUT    | Update existing plate(s) information                               |
 +--------+--------------------------------------------------------------------+
-| DELETE | Delete Experiment(s). **Not implemented**.                         |
-+--------+--------------------------------------------------------------------+
 
-1. GET
+..
+  | DELETE | Delete Experiment(s). **Not implemented**.                         |
+
+2. GET
 ^^^^^^
 
 **Parameters**
@@ -390,35 +396,37 @@ A summary of all HTTP verbs used for this endpoint:
     expample:
 
     ::
-    
+
       {
-        "exp_id": exp_id,
-        "layout_id": layout_id,
-        "plates": 
+        "eid": eid,
+        "lid": lid,
+        "plates":
         {
-          plate_id: 
-          {
-            channel_id: 
+          plate_id:
+          [
             {
-              "name": channel_name, 
-              "time": time,
-              "values": {well: value, ...} 
+              "id"    : channel_id,
+              "name"  : channel_name,
+              "time"  : time,
+              "values": [{well: value, ...}, ...]
             },
             ...
-          },
+          ],
           ...
         }
       }
 
-    * ``exp_id``: integer, experiment id
-    * ``layout_id``: integer, layout id
-    * ``plate_id``: integer, plate id
-    * ``channel_id``: integer, channel id
-    * ``channel_name``: string, channel name
-    * ``well``: string, well name, e.g., "A01", "C04"
-    * ``value``: array of  decimals, measurements for the channel 
-    * ``time``: array of strings, measurement time point, should have the same
-      dimension as the value arrays
+    Unquoted variables are:
+
+    * ``ed``:           Integer. Experiment id.
+    * ``lid``: 		    Integer. Layout id.
+    * ``plate_id``:     Integer. Plate id.
+    * ``channel_id``:   Integer. Channel id.
+    * ``channel_name``: String.  Channel name.
+    * ``time``: 		Array of strings. Measurement time point, 
+      should have the same dimension as the value arrays
+    * ``well``:         String. Well name, e.g., "A01", "C04"
+    * ``value``:        Decimals. Measurements for the channel
 
     Here is an expample:
 
