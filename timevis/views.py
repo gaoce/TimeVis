@@ -10,16 +10,6 @@ def index():
     return render_template('index.html')
 
 
-def get_exp_obj(e):
-    return {"name": e.name,
-            "id": e.id,
-            "user": e.user,
-            "well": e.well,
-            "channels": [{"id": c.id, "name": c.name} for c in e.channels],
-            "factors": [{"id": f.id, "name": f.name, "type": f.type}
-                        for f in e.factors]}
-
-
 class ExperimentEP(Resource):
     """Endpoint for experiment information
     This endpoint mainly deals with Experiment, Channel and Factor tables.
@@ -33,7 +23,7 @@ class ExperimentEP(Resource):
 
         # Get Experiment instance and fill in the result dict
         for e in s.query(Experiment).all():
-            ret["experiment"].append(get_exp_obj(e))
+            ret["experiment"].append(self.construct_exp(e))
 
         return ret
 
@@ -76,7 +66,7 @@ class ExperimentEP(Resource):
 
         # Return the updated experiment obj
         e_new = s.query(Experiment).filter_by(id=e.id).first()
-        return {"experiment": [get_exp_obj(e_new)]}
+        return {"experiment": [self.construct_exp(e_new)]}
 
     def put(self):
         """Update experiment information:
@@ -131,7 +121,19 @@ class ExperimentEP(Resource):
 
         # Return the updated experiment obj
         e = s.query(Experiment).filter_by(id=eid).first()
-        return {"experiment": [get_exp_obj(e)]}
+        return {"experiment": [self.construct_exp(e)]}
+
+    def construct_exp(self, e):
+        """Helper function, construct exp obj using an Experiment record
+        """
+        ret = {"id": e.id,
+               "name": e.name,
+               "user": e.user,
+               "well": e.well,
+               "channels": [{"id": c.id, "name": c.name} for c in e.channels],
+               "factors": [{"id": f.id, "name": f.name, "type": f.type}
+                           for f in e.factors]}
+        return ret
 
 
 class LayoutEP(Resource):
