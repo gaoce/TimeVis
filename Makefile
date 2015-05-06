@@ -22,12 +22,17 @@ run: install
 devserver:
 	python timevis/app.py
 
-stopdevserver:
+stop-devserver:
 	pkill timevis
 	pkill python
 
-restart: stopdevserver run
+restart-devserver: stopdevserver run
 
 # Run without deployment
 local: init-db
 	python run.py
+
+stop-local:
+	pkill python
+
+restart-local: stop-local local
