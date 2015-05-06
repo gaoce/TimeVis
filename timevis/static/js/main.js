@@ -94,18 +94,42 @@ function viewModel(){
 function ExpVM() {
     var self = this;
 
+    // =====================
+    // Current functionality
+    // =====================
     // Possible values: old, new
     self.fun = ko.observable('old');
+
     // Reset current_exp every time fun changes
     self.fun.subscribe(function(){self.current_exp(null);})
 
+    // =====================
+    // Experiment objs
+    // =====================
     self.experiments = ko.observableArray();
     self.current_exp = ko.observable();
+    // Factor (independent variables)
+    self.exp_fact = ko.observableArray([new ExpVar()]);
+    // Channels (dependent variables)
+    self.exp_chnl = ko.observableArray();
 
-    self.current_exp.subscribe(function(new_exp){
-        self.exp_chnl(null);
-        for (c in new_exp.channels){
-            self.exp_chnl.push(new_exp.channels[c]);
+    // Reset exp_fact everytime the current_exp is reset
+    self.current_exp.subscribe(function(exp){
+        self.exp_fact([]);
+        if (exp) {
+            for (f in exp.factors){
+                self.exp_fact.push(exp.factors[f]);
+            }
+        }
+    })
+
+    // Reset exp_chnl everytime the current_exp is reset
+    self.current_exp.subscribe(function(exp){
+        self.exp_chnl([]);
+        if (exp) {
+            for (c in exp.channels){
+                self.exp_chnl.push(exp.channels[c]);
+            }
         }
     })
 
@@ -141,11 +165,20 @@ function ExpVM() {
         }
     });
 
-    // Factor (independent variables)
-    self.exp_fact = ko.observableArray([new ExpVar()]);
+    // TODO disable update button if there is no change
+    self.update_exp = function() {
+        $.ajax({
+            url: "/api/v2/experiment",
+            type: "PUT",
+            dataType: "json",
+            data: JSON.stringify({experiment: [self.current_exp()]}),
+            contentType: "application/json; charset=utf-8",
+            success: function(data){
+                self.current_exp(data);
+            }
+        });
+    };
 
-    // Channels (dependent variables)
-    self.exp_chnl = ko.observableArray();
 
     self.var_types = ['Category', 'Integer', 'Decimal'];
 
