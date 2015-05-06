@@ -1,0 +1,12 @@
+{
+  "0": {
+    "name"    : "Exp1",
+    "user"    : "user1, user2",
+    "well"    : 384,
+    "channels": [{"id": "0", "name": "GFP"}, {"id": "0", "name": "OD"}],
+    "factors" : [
+      {"id": 0, "name": "Dose", "type": "Decimal"},
+      {"id": 0, "name": "Gene", "type": "Category"}
+    ]
+  }
+}
