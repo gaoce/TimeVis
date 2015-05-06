@@ -112,8 +112,15 @@ endpoint is shown below:
             "name"    : "exp1",
             "user"    : "user1, user2",
             "well"    : "384",
-            "channels": [{"id": "1", "name": "GFP"}, {"id"": "2", "name": "OD"}],
-            "factors" : [{"id": "1", "name": "Dose", "type": "Decimal"}]
+            "channels":
+            [
+              {"id": "1", "name": "GFP"},
+              {"id": "2", "name": "OD"}
+            ],
+            "factors" :
+            [
+              {"id": "1", "name": "Dose", "type": "Decimal"}
+            ]
           },
           {
             "id"      : "2",
@@ -153,7 +160,11 @@ endpoint is shown below:
             "name"    : "Exp1",
             "user"    : "user1, user2",
             "well"    : "384",
-            "channels": [{"id": "0", "name": "GFP"}, {"id": "0", "name": "OD"}],
+            "channels":
+            [
+              {"id": "0", "name": "GFP"},
+              {"id": "0", "name": "OD"}
+            ],
             "factors" :
             [
               {"id": "0", "name": "Dose", "type": "Decimal"},
@@ -164,7 +175,32 @@ endpoint is shown below:
       }
 
 **Output**
-	Newly created experiment object.
+	Newly created experiment object, e.g.,
+
+    ::
+
+      {
+        "experiment":
+        [
+          {
+            "id"      : "1",
+            "name"    : "Exp1",
+            "user"    : "user1, user2",
+            "well"    : "384",
+            "channels":
+            [
+              {"id": "0", "name": "GFP"},
+              {"id": "0", "name": "OD"}
+            ],
+            "factors" :
+            [
+              {"id": "1", "name": "Dose", "type": "Decimal"},
+              {"id": "2", "name": "Gene", "type": "Category"}
+            ]
+          }
+        ]
+      }
+
 
 4. PUT
 ^^^^^^
@@ -199,7 +235,27 @@ endpoint is shown below:
       }
 
 **Output**
-	Updated experiment object, with possible altered IDs.
+	Updated experiment object, with possible altered IDs, e.g.,
+
+    ::
+
+      {
+        "experiment":
+        [
+          {
+            "id"      : "1",
+            "name"    : "Exp 1",
+            "user"    : "user1",
+            "well"    : "96",
+            "channels": [{"id": "2", "name": "GFP"}],
+            "factors" :
+            [
+              {"id": "3", "name": "Dose", "type": "Decimal"},
+              {"id": "4", "name": "Gene", "type": "Category"}
+            ]
+          }
+        ]
+      }
 
 3. Layout information
 =====================
@@ -239,20 +295,23 @@ A summary of all HTTP verbs used for this endpoint:
     ::
 
       {
-        layout_id:
-        {
-          "name": layout_name,
-          "factors":
-          [
-            {
-              "id"    : factor_id,
-              "name"  : factor_name,
-              "levels": {well: level, ...}
-            },
-            ...
-          ],
-        },
-        ...
+        "layout":
+        [
+          {
+            "id":   layout_id,
+            "name": layout_name,
+            "factors":
+            [
+              {
+                "id"    : factor_id,
+                "name"  : factor_name,
+                "levels": {well: level, ...}
+              },
+              ...
+            ],
+          },
+          ...
+        ]
       }
 
     Unquoted variables are:
@@ -269,35 +328,41 @@ A summary of all HTTP verbs used for this endpoint:
     ::
 
       {
-        "1": {
-          "name": "Layout 1",
-          "factors": [
-            {
-              "id"    : "1",
-              "name"  : "Dose",
-              "levels": {'A01':'42', 'A02':'42', ...}
-            },
-            {
-              "id"    : "2",
-              "name"  : "Gene",
-              "levels": {'A01':'aa', 'A02':'aa', ...}
-            }
-          ]
-        },
-        "2": {
-          "name": "Layout 2",
-          "factors": [
-            {
-              "id"    : "3",
-              "name"  : "Dose",
-              "levels": {'A01':'42', 'A02':'42', ...}
-            },
-            {
-              "id"    : "4",
-              "name"  : "Gene",
-              "levels": {'A01':'bb', 'A02':'bb', ...}}
-          ]
-        }
+        "layout": 
+        [
+          {
+            "id": "1",
+            "name": "Layout 1",
+            "factors": [
+              {
+                "id"    : "1",
+                "name"  : "Dose",
+                "levels": {'A01':'42', 'A02':'42', ...}
+              },
+              {
+                "id"    : "2",
+                "name"  : "Gene",
+                "levels": {'A01':'aa', 'A02':'aa', ...}
+              }
+            ]
+          },
+          {
+            "id":   "2",
+            "name": "Layout 2",
+            "factors": 
+            [
+              {
+                "id"    : "3",
+                "name"  : "Dose",
+                "levels": {'A01':'42', 'A02':'42', ...}
+              },
+              {
+                "id"    : "4",
+                "name"  : "Gene",
+                "levels": {'A01':'bb', 'A02':'bb', ...}}
+            ]
+          }
+        ]
       }
 
       # The factor levels are not shown in full here.
@@ -308,37 +373,41 @@ A summary of all HTTP verbs used for this endpoint:
 **Parameters**
     ``?eid=exp_id``, mandatory, experiment id.
 **Input**
-    A json object with the same format as described in ``GET``. Only one layout
-    is allowed to be uploaded per request. **Note** ``layout_id`` for a new
-    layout should be character zero, ie. "0".
+    A json object with the same format as described in ``GET``.
+
+    **Note** ``layout_id`` for a new layout should be character zero, ie. "0".
 
     Here is an example:
 
     ::
 
       {
-        "0": {
-          "name": "Layout 1",
-          "factors":
-          [
-            {
-              "id"    : "0",
-              "name"  : "Dose",
-              "levels": {"A01":"42", "A02":"42", "A03":"42", "A04":"42", ...}
-            },
-            {
-              "id"    : "0",
-              "name"  : "Gene",
-              "levels": {"A01":"aa", "A02":"aa", "A03":"aa", "A04":"aa", ...}
-            }
-          ]
-        }
+        "layout": 
+        [
+          {
+            "id"        : "0",
+            "name"      : "Layout 1",
+            "factors"   :
+            [
+              {
+                "id"    : "0",
+                "name"  : "Dose",
+                "levels": {"A01":"42", "A02":"42", "A03":"42", ...}
+              },
+              {
+                "id"    : "0",
+                "name"  : "Gene",
+                "levels": {"A01":"aa", "A02":"aa", "A03":"aa", ...}
+              }
+            ]
+          }
+        ]
       }
 
       # The factor levels are not shown in full here.
 
 **Output**
-    None.
+    Newly created factors.
 
 4. PUT
 ^^^^^^
@@ -354,28 +423,32 @@ A summary of all HTTP verbs used for this endpoint:
     ::
 
       {
-        "0": {
-          "name": "Layout 1",
-          "factors":
-          [
-            {
-              "id"    : "1",
-              "name"  : "Dose",
-              "levels": {"A01":"42", "A02":"42", "A03":"42", "A04":"42", ...}
-            },
-            {
-              "id"    : "2",
-              "name"  : "Gene",
-              "levels": {"A01":"bb", "A02":"bb", "A03":"bb", "A04":"bb", ...}
-            }
-          ]
-        }
+        "layout":
+        [
+          {
+            "id"        : "1",
+            "name"      : "Layout 1",
+            "factors":
+            [
+              {
+                "id"    : "1",
+                "name"  : "Dose",
+                "levels": {"A01":"42", "A02":"42", "A03":"42", ...}
+              },
+              {
+                "id"    : "2",
+                "name"  : "Gene",
+                "levels": {"A01":"bb", "A02":"bb", "A03":"bb", ...}
+              }
+            ]
+          }
+        ]
       }
 
       # The factor levels are not shown in full here.
 
 **Output**
-    None.
+    Update layout obj with possible altered IDs.
 
 3. Plate information
 ====================
