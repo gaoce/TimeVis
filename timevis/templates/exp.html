@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-md-6 fix-600">
             <div class="sep"></div>
-            <h3>General Information</h3>
+            <h2>General Information</h2>
             <div class="sep"></div>
             <table class="table table-striped">
                 <tbody>
@@ -41,8 +41,8 @@
                 </tbody>
             </table>
 
-            <h3 class="table-title">Channels</h3>
-            <p>Dependent Variables</p>
+            <h2 class="table-title">Channels</h2>
+            <p class="table-title">(Dependent Variables)</p>
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -54,7 +54,7 @@
                 <tbody data-bind='foreach: exp_chnl'>
                     <tr>
                         <td>
-                            <p class="plain"><input class="form-control" data-bind="value: 'name'" /></p>
+                            <p class="plain"><input class="form-control" data-bind="value: name" /></p>
                         </td>
                         <td> Decimal </td>
                         <td>
@@ -64,8 +64,8 @@
                 </tbody>
             </table>
 
-            <h3 class="table-title">Factors</h3>
-            <p>Independent Variables</p>
+            <h2 class="table-title">Factors</h2>
+            <p class="table-title">(Independent Variables)</p>
             <table class="table table-bordered" width="70%">
                 <thead>
                     <tr>
@@ -81,7 +81,7 @@
                             <p class="plain"><input class="form-control" data-bind="value: name" /></p>
                         </td>
                         <td>
-                            <select class="form-control" data-bind='options: $parent.var_types, optionsCaption: "Select...", value: $parent.type'> </select>
+                            <select class="form-control" data-bind='options: $parent.var_types, optionsCaption: "Select...", value: type'> </select>
                         </td>
                         <td>
                             <a href='#' data-bind='click: $parent.del_fact'>Remove</a>
@@ -89,7 +89,7 @@
                     </tr>
                 </tbody>
             </table>
-            <button class="btn btn-primary" data-bind="visible:fun()=='old'">Update</button>
+            <button class="btn btn-primary" data-bind="visible:fun()=='old', click: update_exp">Update</button>
             <button class="btn btn-primary" data-bind="visible:fun()=='new'">Add</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->

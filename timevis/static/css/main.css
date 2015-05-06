@@ -1,3 +1,6 @@
+body {
+    font-size: 170%;
+}
 /*
  * Clear the top of container
  */
@@ -45,7 +48,7 @@ div.fix-600 {
 /*
  * Float title
  */
-h3.table-title, p.table-title {
+h2.table-title, h3.table-title, p.table-title {
     display: inline;
 }
 
