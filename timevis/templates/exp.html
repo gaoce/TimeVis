@@ -1,12 +1,12 @@
-<div class="container" data-bind="with: exp, visible: $root.opt()=='exp'">
+<div class="container" data-bind="with: exp, visible: $root.opt()=='exp' ">
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
               <li role="presentation" class="active">
-                  <a role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('old')}">Update Existing</a>
+                  <a role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('old')}">Available</a>
               </li>
               <li role="presentation">
-                  <a role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('new')}">Add New</a></li>
+                  <a role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('new')}">New</a></li>
           </ul>
         </div>
     </div> <!-- row -->
@@ -14,35 +14,35 @@
     <div class="row">
         <div class="col-md-6 fix-600">
             <div class="sep"></div>
-            <h3>Experiment Information</h3>
+            <h3>General Information</h3>
             <div class="sep"></div>
             <table class="table table-striped">
                 <tbody>
                     <tr data-bind="visible: fun()=='old' ">
                         <td>Select Experiment</td>
                         <td>
-                            <select class="form-control" data-bind="options: experiments"></select>
+                            <select class="form-control" data-bind="options: experiments, optionsText: 'name', value: current_exp, optionsCaption: 'Choose...'"></select>
                         </td>
                     </tr>
                     <tr>
-                        <td>Experiment Name</td>
+                        <td>Experiment Name (need to be unique)</td>
                         <td><input class="form-control" data-bind="value: name" /></td>
                     </tr>
                     <tr>
-                        <td>User</td>
-                        <td><input class="form-control" data-bind="value: people" /></td>
+                        <td>User (comma separated)</td>
+                        <td><input class="form-control" data-bind="value: user" /></td>
                     </tr>
                     <tr>
                         <td>Well Number</td>
                         <td>
-                            <select class="form-control" data-bind='options: plate_types, optionsCaption: "Select Well Number...", value: plate_type'> </select>
+                            <select class="form-control" data-bind="options: well_types, optionsCaption: 'Select Well Number...', value: well"> </select>
                         </td>
                     </tr>
                 </tbody>
             </table>
 
             <h3 class="table-title">Channels</h3>
-            <p class="table-title">(Dependent Variables)</p>
+            <p>Dependent Variables</p>
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -54,7 +54,7 @@
                 <tbody data-bind='foreach: exp_chnl'>
                     <tr>
                         <td>
-                            <p class="plain"><input class="form-control" data-bind="value: name" /></p>
+                            <p class="plain"><input class="form-control" data-bind="value: 'name'" /></p>
                         </td>
                         <td> Decimal </td>
                         <td>
@@ -65,7 +65,7 @@
             </table>
 
             <h3 class="table-title">Factors</h3>
-            <p class="table-title">(Independent Variables)</p>
+            <p>Independent Variables</p>
             <table class="table table-bordered" width="70%">
                 <thead>
                     <tr>
@@ -90,7 +90,7 @@
                 </tbody>
             </table>
             <button class="btn btn-primary" data-bind="visible:fun()=='old'">Update</button>
-            <button class="btn btn-primary" data-bind="visible:fun()=='new'">Upload</button>
+            <button class="btn btn-primary" data-bind="visible:fun()=='new'">Add</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 </div>
