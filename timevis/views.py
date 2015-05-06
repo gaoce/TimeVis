@@ -4,8 +4,6 @@ from flask.ext.restful import Api, Resource, reqparse
 from timevis.models import Experiment, Layout, Factor, Channel, Level, Session
 from collections import defaultdict
 
-api = Api(app)
-
 
 @app.route('/')
 def index():
@@ -218,6 +216,7 @@ class PlateEP(Resource):
 class TimeSeriesEP(Resource):
     pass
 
+api = Api(app)
 api_root = '/api/v2'
 api.add_resource(ExperimentEP, api_root + '/experiment')
 api.add_resource(LayoutEP,     api_root + '/layout')

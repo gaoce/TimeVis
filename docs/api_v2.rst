@@ -423,7 +423,7 @@ A summary of all HTTP verbs used for this endpoint is as follows:
     * ``plate_id``:     Integer. Plate id.
     * ``channel_id``:   Integer. Channel id.
     * ``channel_name``: String.  Channel name.
-    * ``time``: 		Array of strings. Measurement time point, 
+    * ``time``: 		Array of strings. Measurement time point,
       should have the same dimension as the value arrays
     * ``well``:         String. Well name, e.g., "A01", "C04"
     * ``value``:        Decimals. Measurements for the channel

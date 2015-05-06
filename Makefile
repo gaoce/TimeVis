@@ -5,7 +5,7 @@ init-db:
 	touch timevis/db/timevis.db
 
 clean:
-	rm -rf TimeVis.egg-info/ build/ dist/
+	rm -rf TimeVis.egg-info/ build/ dist/ *.log
 	find . -name '*.pyc' -delete
 
 install: clean
