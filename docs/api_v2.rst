@@ -59,23 +59,26 @@ endpoint is shown below:
     ::
 
       {
-        exp_id:
-        {
-          "name"    : exp_name,
-          "user"    : exp_user,
-          "well"    : exp_well,
-          "channels":
-          [
-            {"id": channel_id, "name": channel_name},
-            ...
-          ],
-          "factors" :
-          [
-            {"id": factor_id, "name": factor_name, "type": factor_type},
-            ...
-          ]
-        },
+        "experiment":
+        [
+          {
+            "id"      : exp_id,
+            "name"    : exp_name,
+            "user"    : exp_user,
+            "well"    : exp_well,
+            "channels":
+            [
+              {"id": channel_id, "name": channel_name},
+              ...
+            ],
+            "factors" :
+            [
+              {"id": factor_id, "name": factor_name, "type": factor_type},
+              ...
+            ]
+          },
         ...
+        ]
       }
 
     ..
@@ -102,26 +105,29 @@ endpoint is shown below:
     ::
 
       {
-        "1":
-        {
-          "name"    : "exp1",
-          "user"    : "user1, user2",
-          "well"    : 384,
-          "channels": [{"id": "1", "name": "GFP"}, {"id"": "2", "name": "OD"}],
-          "factors" : [{"id": "1", "name": "Dose", "type": "Decimal"}]
-        },
-        "2":
-        {
-          "name"    : "exp2",
-          "user"    : "user3",
-          "well"    : 96,
-          "channels": [{"id": "3", "name": "GFP"}],
-          "factors" :
-          [
-            {"id": "2", "name": "Dose", "type": "Decimal"},
-            {"id": "3", "name": "Gene", "type": "Category"}
-          ]
-        }
+        "experiment":
+        [
+          {
+            "id"      : "1",
+            "name"    : "exp1",
+            "user"    : "user1, user2",
+            "well"    : "384",
+            "channels": [{"id": "1", "name": "GFP"}, {"id"": "2", "name": "OD"}],
+            "factors" : [{"id": "1", "name": "Dose", "type": "Decimal"}]
+          },
+          {
+            "id"      : "2",
+            "name"    : "exp2",
+            "user"    : "user3",
+            "well"    : "96",
+            "channels": [{"id": "3", "name": "GFP"}],
+            "factors" :
+            [
+              {"id": "2", "name": "Dose", "type": "Decimal"},
+              {"id": "3", "name": "Gene", "type": "Category"}
+            ]
+          }
+        ]
       }
 
 3. POST
@@ -130,25 +136,31 @@ endpoint is shown below:
 **Parameters**
     None.
 **Input**
-    A json object with the same format as described in ``GET``. Only one
-    experiment is allowed to be uploaded per request.  **Note**: ``exp_id`` and
-    factor ``id`` for a new experiment should be zero, ie. "0" or 0.
+    A json object with the same format as described in ``GET``.
+
+    **Note**: ``exp_id`` and ``channel_id`` and ``factor_id`` for a new
+    experiment should be zero, ie. "0".
 
     Here is an example:
 
     ::
 
       {
-        "0": {
-          "name"    : "Exp1",
-          "user"    : "user1, user2",
-          "well"    : 384,
-          "channels": [{"id": "0", "name": "GFP"}, {"id": "0", "name": "OD"}],
-          "factors" : [
-            {"id": 0, "name": "Dose", "type": "Decimal"},
-            {"id": 0, "name": "Gene", "type": "Category"}
-          ]
-        }
+        "experiment":
+        [
+          {
+            "id"      : "0",
+            "name"    : "Exp1",
+            "user"    : "user1, user2",
+            "well"    : "384",
+            "channels": [{"id": "0", "name": "GFP"}, {"id": "0", "name": "OD"}],
+            "factors" :
+            [
+              {"id": "0", "name": "Dose", "type": "Decimal"},
+              {"id": "0", "name": "Gene", "type": "Category"}
+            ]
+          }
+        ]
       }
 
 **Output**
@@ -161,23 +173,29 @@ endpoint is shown below:
     None.
 **Input**
     A json object with the same format as described in ``GET``. Only one
-    experiment is allowed to updated at a time.
+    experiment is allowed to updated at a time. Note update may cause loss of
+    factor and channel.
 
     Here is an example:
 
     ::
 
       {
-        "1": {
-          "name"    : "Exp 1",
-          "user"    : "user1",
-          "well"    : 96,
-          "channels": [{"id": "1", "name": "GFP"}],
-          "factors" : [
-            {"id": "1", "name": "Dose", "type": "Decimal"},
-            {"id": "2", "name": "Gene", "type": "Category"}
-          ]
-        }
+        "experiment":
+        [
+          {
+            "id"      : "1",
+            "name"    : "Exp 1",
+            "user"    : "user1",
+            "well"    : "96",
+            "channels": [{"id": "1", "name": "GFP"}],
+            "factors" :
+            [
+              {"id": "1", "name": "Dose", "type": "Decimal"},
+              {"id": "2", "name": "Gene", "type": "Category"}
+            ]
+          }
+        ]
       }
 
 **Output**

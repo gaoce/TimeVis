@@ -16,25 +16,28 @@ class ExperimentEP(Resource):
     """
     def get(self):
         # Result
-        ret = {}
+        ret = {"experiment": []}
 
         # Create query session
         s = Session()
 
         # Get Experiment instance and fill in the result dict
         for e in s.query(Experiment).all():
-            ret[e.id] = {
+            ret["experiment"].append({
                 "name": e.name,
                 "user": e.user,
                 "well": e.well,
                 "channels": [{"id": c.id, "name": c.name} for c in e.channels],
                 "factors": [{"id": f.id, "name": f.name, "type": f.type}
-                            for f in e.factors]
-            }
+                            for f in e.factors]})
 
         return ret
 
     def post(self):
+        """Create a new experiment:
+            1. Create a new record in Experiment table;
+            2. Create new records in Channel and Factor tables.
+        """
         # Create query session
         s = Session()
 
@@ -44,31 +47,37 @@ class ExperimentEP(Resource):
         json = request.get_json(force=True)
 
         # The new experiment obj should have a exp_id of 0
-        data = json['0']
-        e = Experiment(name=data['name'], user=data['user'], well=data['well'])
-        s.add(e)
-        s.commit()
+        for data in json['experiment']:
+            e = Experiment(name=data['name'], user=data['user'],
+                           well=data['well'])
+            s.add(e)
+            s.commit()
 
-        # After commit, the e obj will obtain an id, then we can insert channels
-        # At this phase, the channel id from user should be 0
-        channels = []
-        for c in data['channels']:
-            channels.append(Channel(name=c['name'], id_Experiment=e.id))
-        s.add_all(channels)
-        s.commit()
+            # After commit, the exp will have an id, we can insert channels now.
+            channels = []
+            for c in data['channels']:
+                channels.append(Channel(name=c['name'], id_Experiment=e.id))
+            s.add_all(channels)
 
-        # Insert new factors
-        factors = []
-        for f in data['factors']:
-            factors.append(Factor(name=f['name'], type=f['type'],
-                           id_Experiment=e.id))
+            # Insert new factors
+            factors = []
+            for f in data['factors']:
+                factors.append(Factor(name=f['name'], type=f['type'],
+                               id_Experiment=e.id))
 
-        s.add_all(factors)
-        s.commit()
+            s.add_all(factors)
+
+            # Commit the changes for channels and factors
+            s.commit()
 
         return 'Success'
 
     def put(self):
+        """Update experiment information:
+            1. Update experiment record;
+            2. Delete channel and factor records associated
+            3. Add new channel and factor records
+        """
         # Create query session
         s = Session()
 
@@ -78,37 +87,38 @@ class ExperimentEP(Resource):
         json = request.get_json(force=True)
 
         # Get experimen id and data body
-        eid, data = json.popitem()
-        e = s.query(Experiment).filter_by(id=eid).first()
-        e.name = data['name']
-        e.user = data['user']
-        e.well = data['well']
-        s.commit()
+        for data in json['experiment']:
+            eid = data['id']
+            e = s.query(Experiment).filter_by(id=eid).first()
+            e.name = data['name']
+            e.user = data['user']
+            e.well = data['well']
 
-        # After commit, delete the existing channels (TODO: need improvement)
-        for c in s.query(Channel).filter_by(id_Experiment=eid).all():
-            s.delete(c)
-        s.commit()
+            # Delete associated channel and factor records
+            for c, f in s.query(Channel, Factor).\
+                    filter(Channel.id_Experiment == eid).\
+                    filter(Factor.id_Experiment == eid).\
+                    all():
+                s.delete(c)
+                s.delete(f)
 
-        channels = []
-        for c in data['channels']:
-            channels.append(Channel(name=c['name'], id_Experiment=eid))
-        s.add_all(channels)
-        s.commit()
+            # Insert new channels
+            channels = []
+            for c in data['channels']:
+                channels.append(Channel(name=c['name'], id_Experiment=eid))
+            s.add_all(channels)
 
-        # After commit, delete the existing channels (TODO: need improvement)
-        for f in s.query(Factor).filter_by(id_Experiment=eid).all():
-            s.delete(f)
-        s.commit()
+            # Insert new factors
+            factors = []
+            for f in data['factors']:
+                factors.append(Factor(name=f['name'], type=f['type'],
+                               id_Experiment=eid))
 
-        # Insert new factors
-        factors = []
-        for f in data['factors']:
-            factors.append(Factor(name=f['name'], type=f['type'],
-                           id_Experiment=eid))
+            s.add_all(factors)
 
-        s.add_all(factors)
-        s.commit()
+            # Commit the changes
+            # TODO try except
+            s.commit()
 
         return 'Success'
 
@@ -177,6 +187,7 @@ class LayoutEP(Resource):
         s.add_all(levels)
         s.commit()
 
+        # TODO return meaningful result
         return 'Success'
 
     def put(self):
