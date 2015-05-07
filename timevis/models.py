@@ -43,7 +43,7 @@ class Experiment(Base):
     # data = Column(Date)
 
     def __repr__(self):
-        return "<Experiment({}, {})>".format(self.name, self.well)
+        return "<Experiment({}, {}, {})>".format(self.id, self.name, self.well)
 
 
 class Factor(Base):
@@ -70,7 +70,7 @@ class Factor(Base):
                               backref=backref('factors', order_by=id))
 
     def __repr__(self):
-        return "<Factor({})>".format(self.name)
+        return "<Factor({}, {})>".format(self.id, self.name)
 
 
 class Channel(Base):
@@ -91,7 +91,7 @@ class Channel(Base):
                               backref=backref('channels', order_by=id))
 
     def __repr__(self):
-        return "<Channel({})>".format(self.name)
+        return "<Channel({}, {})>".format(self.id, self.name)
 
 
 class Layout(Base):
@@ -111,7 +111,7 @@ class Layout(Base):
                               backref=backref('layouts', order_by=id))
 
     def __repr__(self):
-        return "<Layout({})>".format(self.name)
+        return "<Layout({}, {})>".format(self.id, self.name)
 
 
 class Plate(Base):
@@ -156,6 +156,11 @@ class Level(Base):
     layout = relationship("Layout", backref=backref('levels', order_by=id))
     factor = relationship("Factor", backref=backref('levels', order_by=id))
 
+    def __repr__(self):
+        return "<Level({}\t{}\t{}\t{}\t{})>".format(self.id, self.layout.name,
+                                                    self.factor.name, self.well,
+                                                    self.level)
+
 
 class Value(Base):
     """A table contains all time series data
@@ -183,3 +188,8 @@ class Value(Base):
     # Relationships
     plate = relationship("Plate", backref=backref('values', order_by=id))
     channel = relationship("Channel", backref=backref('values', order_by=id))
+
+    def __repr__(self):
+        return "<Value({}\t{}\t{}\t{}\t{})>".format(self.id, self.plate.id,
+                                                    self.channel.name,
+                                                    self.well, self.value)
