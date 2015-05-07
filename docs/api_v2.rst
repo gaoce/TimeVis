@@ -25,11 +25,17 @@ The data exchanged are generally in the following JSON format:
 ::
 
   {
-    endpoint_name: obj_array
+    endpoint_name: obj_array,
   }
 
-``endpoint_name`` could be ``experiment``, ``layout``, etc. ``obj_array`` is an
-array of objects describing experiment, layout, etc, as discussed below.
+``endpoint_name``
+    Name of the endpoint, could be ``experiment``, ``layout``, etc. 
+``obj_array`` 
+	An array of objects describing experiment, layout, etc, as discussed below.
+
+..
+    ``para_name*`` and ``para*``
+        key-value pairs describing parameters for the requests
 
 2. Experiment information
 =========================
@@ -529,35 +535,35 @@ A summary of all HTTP verbs used for this endpoint is as follows:
     ::
 
       {
-        "eid": eid,
-        "lid": lid,
-        "plates":
-        {
-          plate_id:
-          [
-            {
-              "id"    : channel_id,
-              "name"  : channel_name,
-              "time"  : time,
-              "values": [{well: value, ...}, ...]
-            },
-            ...
-          ],
+        "plate":
+        [
+          {
+            "id"        : plate_id,
+            "channels"  :
+            [
+              {
+                "id"    : channel_id,
+                "name"  : channel_name,
+                "time"  : time,
+                "well"  : well,
+                "value" : [value, ...]
+              },
+              ...
+            ]
+          },
           ...
-        }
+        ]
       }
 
     Unquoted variables are:
 
-    * ``ed``:           Integer. Experiment id.
-    * ``lid``: 		    Integer. Layout id.
     * ``plate_id``:     Integer. Plate id.
     * ``channel_id``:   Integer. Channel id.
     * ``channel_name``: String.  Channel name.
     * ``time``: 		Array of strings. Measurement time point,
       should have the same dimension as the value arrays
-    * ``well``:         String. Well name, e.g., "A01", "C04"
-    * ``value``:        Decimals. Measurements for the channel
+    * ``well``:         String. Well name array, e.g., "A01", "C04"
+    * ``value``:        Decimals. Value array. Measurements for the channel.
 
     Here is an expample:
 
