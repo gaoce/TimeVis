@@ -1,16 +1,16 @@
 {
-  "experiment": 
+  "experiment":
   [
     {
-      "id"      : "1",
+      "id"      : 1,
       "name"    : "Exp 1",
       "user"    : "user1",
-      "well"    : "96",
-      "channels": [{"id": "1", "name": "GFP"}],
-      "factors": 
+      "well"    : 96,
+      "channels": [{"id": 1, "name": "GFP"}],
+      "factors":
       [
-        {"id": "1", "name": "Dose", "type": "Decimal"},
-        {"id": "2", "name": "Gene", "type": "Category"}
+        {"id": 1, "name": "Doses", "type": "Decimal"},
+        {"id": 2, "name": "Genes", "type": "Category"}
       ]
     }
   ]

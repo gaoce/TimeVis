@@ -121,30 +121,30 @@ endpoint is shown below:
         "experiment":
         [
           {
-            "id"      : "1",
+            "id"      : 1,
             "name"    : "exp1",
             "user"    : "user1, user2",
-            "well"    : "384",
+            "well"    : 384,
             "channels":
             [
-              {"id": "1", "name": "GFP"},
-              {"id": "2", "name": "OD"}
+              {"id": 1, "name": "GFP"},
+              {"id": 2, "name": "OD"}
             ],
             "factors" :
             [
-              {"id": "1", "name": "Dose", "type": "Decimal"}
+              {"id": 1, "name": "Dose", "type": "Decimal"}
             ]
           },
           {
-            "id"      : "2",
+            "id"      : 2,
             "name"    : "exp2",
             "user"    : "user3",
-            "well"    : "96",
+            "well"    : 96,
             "channels": [{"id": "3", "name": "GFP"}],
             "factors" :
             [
-              {"id": "2", "name": "Dose", "type": "Decimal"},
-              {"id": "3", "name": "Gene", "type": "Category"}
+              {"id": 2, "name": "Dose", "type": "Decimal"},
+              {"id": 3, "name": "Gene", "type": "Category"}
             ]
           }
         ]
@@ -159,7 +159,7 @@ endpoint is shown below:
     A JSON object with the same format as described in ``GET``.
 
     **Note**: ``exp_id`` and ``channel_id`` and ``factor_id`` for a new
-    experiment should be zero, ie. "0".
+    experiment should be zero.
 
     Here is an example:
 
@@ -169,19 +169,19 @@ endpoint is shown below:
         "experiment":
         [
           {
-            "id"      : "0",
+            "id"      : 0,
             "name"    : "Exp1",
             "user"    : "user1, user2",
-            "well"    : "384",
+            "well"    : 384,
             "channels":
             [
-              {"id": "0", "name": "GFP"},
-              {"id": "0", "name": "OD"}
+              {"id": 0, "name": "GFP"},
+              {"id": 0, "name": "OD"}
             ],
             "factors" :
             [
-              {"id": "0", "name": "Dose", "type": "Decimal"},
-              {"id": "0", "name": "Gene", "type": "Category"}
+              {"id": 0, "name": "Dose", "type": "Decimal"},
+              {"id": 0, "name": "Gene", "type": "Category"}
             ]
           }
         ]
@@ -196,19 +196,19 @@ endpoint is shown below:
         "experiment":
         [
           {
-            "id"      : "1",
+            "id"      : 1,
             "name"    : "Exp1",
             "user"    : "user1, user2",
-            "well"    : "384",
+            "well"    : 384,
             "channels":
             [
-              {"id": "0", "name": "GFP"},
-              {"id": "0", "name": "OD"}
+              {"id": 0, "name": "GFP"},
+              {"id": 0, "name": "OD"}
             ],
             "factors" :
             [
-              {"id": "1", "name": "Dose", "type": "Decimal"},
-              {"id": "2", "name": "Gene", "type": "Category"}
+              {"id": 1, "name": "Dose", "type": "Decimal"},
+              {"id": 2, "name": "Gene", "type": "Category"}
             ]
           }
         ]
@@ -232,15 +232,15 @@ endpoint is shown below:
         "experiment":
         [
           {
-            "id"      : "1",
+            "id"      : 1,
             "name"    : "Exp 1",
             "user"    : "user1",
-            "well"    : "96",
+            "well"    : 96,
             "channels": [{"id": "1", "name": "GFP"}],
             "factors" :
             [
-              {"id": "1", "name": "Dose", "type": "Decimal"},
-              {"id": "2", "name": "Gene", "type": "Category"}
+              {"id": 1, "name": "Dose", "type": "Decimal"},
+              {"id": 2, "name": "Gene", "type": "Category"}
             ]
           }
         ]
@@ -255,15 +255,15 @@ endpoint is shown below:
         "experiment":
         [
           {
-            "id"      : "1",
+            "id"      : 1,
             "name"    : "Exp 1",
             "user"    : "user1",
-            "well"    : "96",
-            "channels": [{"id": "2", "name": "GFP"}],
+            "well"    : 96,
+            "channels": [{"id": 2, "name": "GFP"}],
             "factors" :
             [
-              {"id": "3", "name": "Dose", "type": "Decimal"},
-              {"id": "4", "name": "Gene", "type": "Category"}
+              {"id": 3, "name": "Dose", "type": "Decimal"},
+              {"id": 4, "name": "Gene", "type": "Category"}
             ]
           }
         ]
