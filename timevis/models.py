@@ -107,8 +107,8 @@ class Layout(Base):
                                                onupdate="CASCADE"))
 
     # Relationship
-    layouts = relationship("Experiment",
-                           backref=backref('layouts', order_by=id))
+    experiment = relationship("Experiment",
+                              backref=backref('layouts', order_by=id))
 
     def __repr__(self):
         return "<Layout({})>".format(self.name)
@@ -125,7 +125,7 @@ class Plate(Base):
     id_layout = Column(Integer, ForeignKey('layouts.id', onupdate="CASCADE"))
 
     # Relationship
-    plates = relationship("Layout", backref=backref('plates', order_by=id))
+    layout = relationship("Layout", backref=backref('plates', order_by=id))
 
     def __repr__(self):
         return "<Plate({})>".format(self.id)
@@ -142,7 +142,7 @@ class Level(Base):
     well = Column(String(3), nullable=False)
 
     # Level of the specific factor, which is indicated by id_factor
-    level = Column(String(255))
+    level = Column(String(255), nullable=False)
 
     # Foreign keys
     id_layout = Column(Integer, ForeignKey('layouts.id',
