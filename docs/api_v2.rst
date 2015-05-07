@@ -343,33 +343,33 @@ A summary of all HTTP verbs used for this endpoint:
         "layout":
         [
           {
-            "id": "1",
+            "id": 1,
             "name": "Layout 1",
             "factors": [
               {
-                "id"    : "1",
+                "id"    : 1,
                 "name"  : "Dose",
                 "levels": {'A01':'42', 'A02':'42', ...}
               },
               {
-                "id"    : "2",
+                "id"    : 2,
                 "name"  : "Gene",
                 "levels": {'A01':'aa', 'A02':'aa', ...}
               }
             ]
           },
           {
-            "id":   "2",
+            "id":   2,
             "name": "Layout 2",
             "factors":
             [
               {
-                "id"    : "3",
+                "id"    : 3,
                 "name"  : "Dose",
                 "levels": {'A01':'42', 'A02':'42', ...}
               },
               {
-                "id"    : "4",
+                "id"    : 4,
                 "name"  : "Gene",
                 "levels": {'A01':'bb', 'A02':'bb', ...}}
             ]
@@ -387,7 +387,7 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     A JSON object with the same format as described in ``GET``.
 
-    **Note** ``layout_id`` for a new layout should be character zero, ie. "0".
+    **Note** ``layout_id`` for a new layout should be zero.
 
     Here is an example:
 
@@ -397,12 +397,12 @@ A summary of all HTTP verbs used for this endpoint:
         "layout":
         [
           {
-            "id"        : "0",
+            "id"        : 0,
             "name"      : "Layout 1",
             "factors"   :
             [
               {
-                "id"    : "1",
+                "id"    : 1,
                 "name"  : "Dose",
                 "levels": {"A01":"42", "A02":"42", "A03":"42", ...}
               },
