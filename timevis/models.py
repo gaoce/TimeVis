@@ -24,6 +24,10 @@ Session = sessionmaker(bind=engine)
 
 class Experiment(Base):
     """Experiment table contains information describing experiments
+    Additional attributes:
+        factors
+        channels
+        layouts
     """
 
     __tablename__ = 'experiments'
@@ -49,6 +53,8 @@ class Experiment(Base):
 class Factor(Base):
     """Factor table contains information describing factors (independent
     variables)
+    Additional attributes:
+        levels
     """
     __tablename__ = 'factors'
 
@@ -75,6 +81,8 @@ class Factor(Base):
 
 class Channel(Base):
     """Channel tables contains information describing measurement
+    Additional attributes:
+        values
     """
     __tablename__ = 'channels'
 
@@ -96,6 +104,9 @@ class Channel(Base):
 
 class Layout(Base):
     """Layout table describing unique plate setup
+    Additional attributes:
+        plates
+        levels
     """
     __tablename__ = 'layouts'
 
@@ -116,6 +127,8 @@ class Layout(Base):
 
 class Plate(Base):
     """Plate table describe invidual plate
+    Additional attributes:
+        values
     """
     __tablename__ = 'plates'
 
