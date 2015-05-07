@@ -3,8 +3,10 @@ API Documentation
 *****************
 .. This is version 2 of API. Version 1 is hidden somewhere in the history.
 
-1. Endpoints summary
-====================
+1. Summary
+==========
+
+The endpoints are summarized in the following table:
 
 +------------------------+---------------------------------+
 | URI                    | Target                          |
@@ -17,6 +19,17 @@ API Documentation
 +------------------------+---------------------------------+
 | ``/api/v2/timeseries`` | (Transformed) time series data  |
 +------------------------+---------------------------------+
+
+The data exchanged are generally in the following JSON format:
+
+::
+
+  {
+    endpoint_name: obj_array
+  }
+
+``endpoint_name`` could be ``experiment``, ``layout``, etc. ``obj_array`` is an
+array of objects describing experiment, layout, etc, as discussed below.
 
 2. Experiment information
 =========================
@@ -53,8 +66,8 @@ endpoint is shown below:
 **Input**
     None.
 **Output**
-    A json object mapping experiment IDs to experiment descriptions in the
-    following format.
+    A JSON object containing an array of experiment object describing experiment
+    information.
 
     ::
 
@@ -143,7 +156,7 @@ endpoint is shown below:
 **Parameters**
     None.
 **Input**
-    A json object with the same format as described in ``GET``.
+    A JSON object with the same format as described in ``GET``.
 
     **Note**: ``exp_id`` and ``channel_id`` and ``factor_id`` for a new
     experiment should be zero, ie. "0".
@@ -208,9 +221,8 @@ endpoint is shown below:
 **Parameters**
     None.
 **Input**
-    A json object with the same format as described in ``GET``. Only one
-    experiment is allowed to updated at a time. Note update may cause loss of
-    factor and channel.
+    A JSON object with the same format as described in ``GET``. Note update may
+    cause loss of factor and channel.
 
     Here is an example:
 
@@ -289,7 +301,7 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     None.
 **Output**
-    A json object that specifies experiment id and maps layout IDs to layout
+    A JSON object that specifies experiment id and maps layout IDs to layout
     descriptions, for expample:
 
     ::
@@ -314,7 +326,7 @@ A summary of all HTTP verbs used for this endpoint:
         ]
       }
 
-    Unquoted variables are:
+    The unquoted variables are:
 
     * ``layout_id``:   Integer. Layout ID.
     * ``layout_name``: String.  Layout name.
@@ -373,7 +385,7 @@ A summary of all HTTP verbs used for this endpoint:
 **Parameters**
     ``?eid=exp_id``, mandatory, experiment id.
 **Input**
-    A json object with the same format as described in ``GET``.
+    A JSON object with the same format as described in ``GET``.
 
     **Note** ``layout_id`` for a new layout should be character zero, ie. "0".
 
@@ -415,7 +427,7 @@ A summary of all HTTP verbs used for this endpoint:
 **Parameters**
     None.
 **Input**
-    A json object with the same format as described in ``GET``. Only one layout
+    A JSON object with the same format as described in ``GET``. Only one layout
     is allowed to be updated at a time.
 
     Here is an example:
@@ -483,7 +495,7 @@ A summary of all HTTP verbs used for this endpoint is as follows:
 **Input**
     None.
 **Output**
-    A json object mapping experiment IDs to experiment descriptions, for
+    A JSON object mapping experiment IDs to experiment descriptions, for
     expample:
 
     ::
@@ -528,7 +540,7 @@ A summary of all HTTP verbs used for this endpoint is as follows:
 **Parameters**
     ``?exp=exp_id&layout=layou_id``, mandatory.
 **Input**
-    A json object with the same format as described in ``GET``. Only one plate
+    A JSON object with the same format as described in ``GET``. Only one plate
     is allowed to be uploaded per request. **Note** ``plate_id`` for a new
     layout should be character zero, ie. "0".
 **Output**
@@ -540,7 +552,7 @@ A summary of all HTTP verbs used for this endpoint is as follows:
 **Parameters**
     ``?exp=exp_id&layout=layou_id``, mandatory.
 **Input**
-    A json object with the same format as described in ``GET``.
+    A JSON object with the same format as described in ``GET``.
 **Output**
     None.
 
@@ -561,7 +573,7 @@ A summary of all HTTP verbs used for this endpoint:
 **Parameters**
     None
 **Input**
-    A json object describing query criteria. Mandatory.
+    A JSON object describing query criteria. Mandatory.
 
 ::
 
@@ -576,7 +588,7 @@ A summary of all HTTP verbs used for this endpoint:
   }
 
 **Output**
-  A json object containing time series data, for expample:
+  A JSON object containing time series data, for expample:
 
 ::
 
