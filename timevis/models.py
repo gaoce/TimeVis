@@ -4,6 +4,16 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+from sqlalchemy.engine import Engine
+from sqlalchemy import event
+
+
+# Enable sqlite foreign key support
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 # Create Base, Session and engine
 Base = declarative_base()
@@ -51,7 +61,8 @@ class Factor(Base):
     type = Column(String(8), nullable=False)
 
     # Foreign key
-    id_Experiment = Column(Integer, ForeignKey('experiments.id'))
+    id_Experiment = Column(Integer, ForeignKey('experiments.id',
+                                               onupdate="CASCADE"))
 
     # Relationship
     experiments = relationship("Experiment",
@@ -70,7 +81,8 @@ class Channel(Base):
     name = Column(String(255), nullable=False)
 
     # Foreign key
-    id_Experiment = Column(Integer, ForeignKey('experiments.id'))
+    id_Experiment = Column(Integer, ForeignKey('experiments.id',
+                                               onupdate="CASCADE"))
 
     # Relationship
     channels = relationship("Experiment",
@@ -89,7 +101,8 @@ class Layout(Base):
     name = Column(String, nullable=False)
 
     # Foreign key
-    id_Experiment = Column(Integer, ForeignKey('experiments.id'))
+    id_Experiment = Column(Integer, ForeignKey('experiments.id',
+                                               onupdate="CASCADE"))
 
     # Relationship
     layouts = relationship("Experiment",
@@ -107,7 +120,7 @@ class Plate(Base):
     id = Column(Integer, primary_key=True)
 
     # Foreign key
-    id_Layout = Column(Integer, ForeignKey('layouts.id'))
+    id_Layout = Column(Integer, ForeignKey('layouts.id', onupdate="CASCADE"))
 
     # Relationship
     plates = relationship("Layout", backref=backref('plates', order_by=id))
@@ -130,14 +143,14 @@ class Level(Base):
     level = Column(String(255))
 
     # Foreign keys
-    id_Layout = Column(Integer, ForeignKey('layouts.id'))
-    id_Factor = Column(Integer, ForeignKey('factors.id'))
+    id_Layout = Column(Integer, ForeignKey('layouts.id', onupdate="CASCADE"))
+    id_Factor = Column(Integer, ForeignKey('factors.id', onupdate="CASCADE"))
 
     # Relationships
-    # layout_levels = relationship("Layout",
-    #                              backref=backref('levels', order_by=id))
-    # factor_levels = relationship("Factor",
-    #                              backref=backref('levels', order_by=id))
+    layout_levels = relationship("Layout",
+                                 backref=backref('levels', order_by=id))
+    factor_levels = relationship("Factor",
+                                 backref=backref('levels', order_by=id))
 
 
 class Value(Base):
@@ -156,8 +169,8 @@ class Value(Base):
     # Value of measurement
     value = Column(Float, nullable=False)
 
-    id_Plate = Column(Integer, ForeignKey('plates.id'))
-    id_Channel = Column(Integer, ForeignKey('channels.id'))
+    id_Plate = Column(Integer, ForeignKey('plates.id', onupdate="CASCADE"))
+    id_Channel = Column(Integer, ForeignKey('channels.id', onupdate="CASCADE"))
 
     # Relationships
     # plate_values = relationship("Plate",
