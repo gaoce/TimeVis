@@ -44,10 +44,10 @@ get-plate:
 
 post-plate:
 	@echo "### POST PLATE"
-	@curl localhost:8000/api/v2/plate?eid=1&lid=1 -d @plate_post.json -X POST -H "Content-type: application/json" -s | python -m json.tool 
+	@curl localhost:8000/api/v2/plate?lid=1 -d @plate_post.json -X POST -H "Content-type: application/json" -s | python -m json.tool 
 	@echo
 
-put-layout:
+put-plate:
 	@echo "### PUT PLATE"
 	@curl localhost:8000/api/v2/plate?eid=1&lid=1 -d @plate_put.json -X PUT -s | python -m json.tool 
 	@echo

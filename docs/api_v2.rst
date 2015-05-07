@@ -525,7 +525,7 @@ A summary of all HTTP verbs used for this endpoint is as follows:
 ^^^^^^
 
 **Parameters**
-    ``?eid=exp_id&lid=layou_id``, mandatory, Experiment ID and Layout ID.
+    ``?lid=layout_id``, mandatory, Layout ID.
 **Input**
     None.
 **Output**
@@ -563,7 +563,10 @@ A summary of all HTTP verbs used for this endpoint is as follows:
     * ``time``: 		Array of strings. Measurement time point,
       should have the same dimension as the value arrays
     * ``well``:         String. Well name array, e.g., "A01", "C04"
-    * ``value``:        Decimals. Value array. Measurements for the channel.
+    * ``value``:        Decimals. Value array. Record channel measurement at all
+      wells at a given time point. The well order is the same as ``well``
+      field, and the time point order is corresponding to the time order in
+      ``time`` field.
 
     Here is an expample:
 
@@ -592,7 +595,7 @@ A summary of all HTTP verbs used for this endpoint is as follows:
 ^^^^^^^
 
 **Parameters**
-    ``?eid=exp_id&lid=layou_id``, mandatory, Experiment ID and Layout ID.
+    ``?lid=layout_id``, mandatory, Layout ID.
 **Input**
     A JSON object with the same format as described in ``GET``. Only one plate
     is allowed to be uploaded per request. **Note** ``plate_id`` for a new
@@ -647,7 +650,7 @@ A summary of all HTTP verbs used for this endpoint is as follows:
 ^^^^^^
 
 **Parameters**
-    ``?eid=exp_id&lid=layou_id``, mandatory, Experiment ID and Layout ID.
+    ``?lid=layout_id``, mandatory, Layout ID.
 **Input**
     A JSON object with the same format as described in ``GET``, eg.,
 

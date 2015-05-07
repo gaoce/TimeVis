@@ -1,7 +1,10 @@
 from timevis import app
 from flask import render_template, request
 from flask.ext.restful import Api, Resource, reqparse
-from timevis.models import Experiment, Layout, Factor, Channel, Level, Session
+from timevis.models import (Experiment, Layout, Factor, Channel, Level, Plate,
+                            Value, Session)
+
+from datetime import datetime
 
 
 @app.route('/')
@@ -74,7 +77,6 @@ class ExperimentEP(Resource):
     def put(self):
         """Update experiment information:
             1. Update experiment record;
-            2. Delete channel and factor records associated
             3. Add new channel and factor records
         """
 
@@ -105,6 +107,8 @@ class ExperimentEP(Resource):
                     if c.id == ch['id']:
                         c.name = ch['name']
                         found_c = 1
+                        # I tried to remove ch from obj['channels'] here, but
+                        # considered it too dangerous
                         break
                 if found_c == 0:
                     s.delete(c)
@@ -227,7 +231,7 @@ class LayoutEP(Resource):
         return json
 
     def put(self):
-        """ Update a layout's name and its levels"""
+        """Update a layout's name and its levels"""
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
         # TODO check input validity
@@ -262,7 +266,62 @@ class LayoutEP(Resource):
 
 
 class PlateEP(Resource):
-    pass
+    """Retrieve, upload and update plate information. This endpoint mainly
+    queries Plate, Value tables, and modified Plate, Channel, Value tables
+    """
+    def post(self):
+        """Input a new plate data"""
+
+        # Parse args
+        parser = reqparse.RequestParser()
+        parser.add_argument('lid', type=int, help="layout id")
+        args = parser.parse_args()
+        lid = args.lid
+
+        # Get json from POST data, force is True so the request header don't
+        # need to include "Content-type: application/json"
+        # TODO check input validity
+        json = request.get_json(force=True)
+
+        # Create query session
+        s = Session()
+
+        # For commit purpose
+        plates = []
+
+        # Get layout id and data
+        for data in json['plate']:
+            p = Plate(id_layout=lid)
+            plates.append(p)
+
+            for ch in data['channels']:
+                c = s.query(Channel).filter_by(id=ch['id']).first()
+
+                # Parse time
+                time_array = [datetime.strptime(t, "%H:%M:%S").time()
+                              for t in ch['time']]
+                well_array = ch['well']
+                for t, val_array in zip(time_array, ch['value']):
+                    for well, val in zip(well_array, val_array):
+                        Value(well=well, time=t, value=val, plate=p, channel=c)
+
+        s.add_all(plates)
+        try:
+            s.commit()
+        except Exception as e:
+            print e
+            return 'failed'
+
+        # The plate id is now available, update json obj with it
+        for idx, p in enumerate(plates):
+            json['plate'][idx]['id'] = p.id
+        return json
+
+    def get(self):
+        return "success"
+
+    def put(self):
+        return "success"
 
 
 class TimeSeriesEP(Resource):
