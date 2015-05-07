@@ -61,12 +61,13 @@ class Factor(Base):
     type = Column(String(8), nullable=False)
 
     # Foreign key
-    id_Experiment = Column(Integer, ForeignKey('experiments.id',
-                                               onupdate="CASCADE"))
+    id_experiment = Column(Integer, ForeignKey('experiments.id',
+                                               onupdate="CASCADE",
+                                               ondelete="CASCADE"))
 
-    # Relationship
-    experiments = relationship("Experiment",
-                               backref=backref('factors', order_by=id))
+    # Relationship, a factor record must have an associate experiment record
+    experiment = relationship("Experiment",
+                              backref=backref('factors', order_by=id))
 
     def __repr__(self):
         return "<Factor({})>".format(self.name)
@@ -81,12 +82,13 @@ class Channel(Base):
     name = Column(String(255), nullable=False)
 
     # Foreign key
-    id_Experiment = Column(Integer, ForeignKey('experiments.id',
-                                               onupdate="CASCADE"))
+    id_experiment = Column(Integer, ForeignKey('experiments.id',
+                                               onupdate="CASCADE",
+                                               ondelete="CASCADE"))
 
-    # Relationship
-    channels = relationship("Experiment",
-                            backref=backref('channels', order_by=id))
+    # Channel must have an associate experiment
+    experiment = relationship("Experiment",
+                              backref=backref('channels', order_by=id))
 
     def __repr__(self):
         return "<Channel({})>".format(self.name)
@@ -101,7 +103,7 @@ class Layout(Base):
     name = Column(String, nullable=False)
 
     # Foreign key
-    id_Experiment = Column(Integer, ForeignKey('experiments.id',
+    id_experiment = Column(Integer, ForeignKey('experiments.id',
                                                onupdate="CASCADE"))
 
     # Relationship
@@ -120,7 +122,7 @@ class Plate(Base):
     id = Column(Integer, primary_key=True)
 
     # Foreign key
-    id_Layout = Column(Integer, ForeignKey('layouts.id', onupdate="CASCADE"))
+    id_layout = Column(Integer, ForeignKey('layouts.id', onupdate="CASCADE"))
 
     # Relationship
     plates = relationship("Layout", backref=backref('plates', order_by=id))
@@ -139,18 +141,20 @@ class Level(Base):
     # Well name, eg, "A01" or "C04"
     well = Column(String(3), nullable=False)
 
-    # Level of the specific factor, which is indicated by id_Factor
+    # Level of the specific factor, which is indicated by id_factor
     level = Column(String(255))
 
     # Foreign keys
-    id_Layout = Column(Integer, ForeignKey('layouts.id', onupdate="CASCADE"))
-    id_Factor = Column(Integer, ForeignKey('factors.id', onupdate="CASCADE"))
+    id_layout = Column(Integer, ForeignKey('layouts.id',
+                                           onupdate="CASCADE",
+                                           ondelete="CASCADE"))
+    id_factor = Column(Integer, ForeignKey('factors.id',
+                                           onupdate="CASCADE",
+                                           ondelete="CASCADE"))
 
-    # Relationships
-    layout_levels = relationship("Layout",
-                                 backref=backref('levels', order_by=id))
-    factor_levels = relationship("Factor",
-                                 backref=backref('levels', order_by=id))
+    # Associated layout and factor
+    layout = relationship("Layout", backref=backref('levels', order_by=id))
+    factor = relationship("Factor", backref=backref('levels', order_by=id))
 
 
 class Value(Base):
@@ -169,11 +173,13 @@ class Value(Base):
     # Value of measurement
     value = Column(Float, nullable=False)
 
-    id_Plate = Column(Integer, ForeignKey('plates.id', onupdate="CASCADE"))
-    id_Channel = Column(Integer, ForeignKey('channels.id', onupdate="CASCADE"))
+    id_plate = Column(Integer, ForeignKey('plates.id',
+                                          onupdate="CASCADE",
+                                          ondelete="CASCADE"))
+    id_channel = Column(Integer, ForeignKey('channels.id',
+                                            onupdate="CASCADE",
+                                            ondelete="CASCADE"))
 
     # Relationships
-    # plate_values = relationship("Plate",
-    #                             backref=backref('values', order_by=id))
-    # channel_values = relationship("Channel",
-    #                               backref=backref('values', order_by=id))
+    plate = relationship("Plate", backref=backref('values', order_by=id))
+    channel = relationship("Channel", backref=backref('values', order_by=id))
