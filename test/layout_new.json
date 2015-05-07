@@ -7,7 +7,7 @@
       "factors"   :
       [
         {
-          "id"    : 3,
+          "id"    : 1,
           "name"  : "Dose",
           "levels":
           {
@@ -30,7 +30,7 @@
           }
         },
         {
-          "id"    : 4,
+          "id"    : 2,
           "name"  : "Gene",
           "levels":
           {
