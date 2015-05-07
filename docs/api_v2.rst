@@ -459,7 +459,7 @@ A summary of all HTTP verbs used for this endpoint:
 ^^^^^^
 
 **Parameters**
-    None.
+    ``?eid=exp_id``, mandatory, experiment id.
 **Input**
     A JSON object with the same format as described in ``GET``. Only one layout
     is allowed to be updated at a time.
@@ -525,7 +525,7 @@ A summary of all HTTP verbs used for this endpoint is as follows:
 ^^^^^^
 
 **Parameters**
-    ``?exp=exp_id&layout=layou_id``, mandatory.
+    ``?eid=exp_id&lid=layou_id``, mandatory, Experiment ID and Layout ID.
 **Input**
     None.
 **Output**
@@ -567,28 +567,134 @@ A summary of all HTTP verbs used for this endpoint is as follows:
 
     Here is an expample:
 
+    ::
+
+      {
+        "plate":
+        [
+          {
+            "id"        : 1,
+            "channels"  :
+            [
+              {
+                "id"    : 1,
+                "name"  : "GFP",
+                "time"  : ["00:00:00", "00:05:00", "00:10:00", "00:15:00"],
+                "well"  : ["A01", "A02", "A03", "A04", "A05", "A06", ...],
+                "value" : [ [0, 0, 0, ... ], ... ]
+              }
+            ]
+          }
+        ]
+      }
 
 2. POST
 ^^^^^^^
 
 **Parameters**
-    ``?exp=exp_id&layout=layou_id``, mandatory.
+    ``?eid=exp_id&lid=layou_id``, mandatory, Experiment ID and Layout ID.
 **Input**
     A JSON object with the same format as described in ``GET``. Only one plate
     is allowed to be uploaded per request. **Note** ``plate_id`` for a new
-    layout should be character zero, ie. "0".
+    layout should be 0, e.g.,
+
+    ::
+
+      {
+        "plate":
+        [
+          {
+            "id"        : 0,
+            "channels"  :
+            [
+              {
+                "id"    : 1,
+                "name"  : "GFP",
+                "time"  : ["00:00:00", "00:05:00", "00:10:00", "00:15:00"],
+                "well"  : ["A01", "A02", "A03", "A04", "A05", "A06", ...],
+                "value" : [ [0, 0, 0, ... ], ... ]
+              }
+            ]
+          }
+        ]
+      }
+
 **Output**
-    None.
+    Newly created plate object, eg.,
+
+    ::
+
+      {
+        "plate":
+        [
+          {
+            "id"        : 1,
+            "channels"  :
+            [
+              {
+                "id"    : 1,
+                "name"  : "GFP",
+                "time"  : ["00:00:00", "00:05:00", "00:10:00", "00:15:00"],
+                "well"  : ["A01", "A02", "A03", "A04", "A05", "A06", ...],
+                "value" : [ [0, 0, 0, ... ], ... ]
+              }
+            ]
+          }
+        ]
+      }
 
 3. PUT
 ^^^^^^
 
 **Parameters**
-    ``?exp=exp_id&layout=layou_id``, mandatory.
+    ``?eid=exp_id&lid=layou_id``, mandatory, Experiment ID and Layout ID.
 **Input**
-    A JSON object with the same format as described in ``GET``.
+    A JSON object with the same format as described in ``GET``, eg.,
+
+    ::
+
+      {
+        "plate":
+        [
+          {
+            "id"        : 1,
+            "channels"  :
+            [
+              {
+                "id"    : 1,
+                "name"  : "GFP",
+                "time"  : ["00:00:00", "00:05:00", "00:10:00", "00:15:00"],
+                "well"  : ["A01", "A02", "A03", "A04", "A05", "A06", ...],
+                "value" : [ [1, 1, 1, ... ], ... ]
+              }
+            ]
+          }
+        ]
+      }
+
 **Output**
-    None.
+    Newly altered plate object, eg.,
+
+    ::
+
+      {
+        "plate":
+        [
+          {
+            "id"        : 1,
+            "channels"  :
+            [
+              {
+                "id"    : 1,
+                "name"  : "GFP",
+                "time"  : ["00:00:00", "00:05:00", "00:10:00", "00:15:00"],
+                "well"  : ["A01", "A02", "A03", "A04", "A05", "A06", ...],
+                "value" : [ [1, 1, 1, ... ], ... ]
+              }
+            ]
+          }
+        ]
+      }
 
 5. Time Series
 ==============
