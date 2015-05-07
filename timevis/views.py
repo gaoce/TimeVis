@@ -18,6 +18,7 @@ class ExperimentEP(Resource):
         ret = {"experiment": []}
 
         # Create query session
+        # TODO: session scope and context manager
         s = Session()
 
         # Get Experiment instance and fill in the result dict
@@ -39,33 +40,36 @@ class ExperimentEP(Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
-        # The new experiment obj should have a exp_id of 0
-        for data in json['experiment']:
-            e = Experiment(name=data['name'], user=data['user'],
-                           well=data['well'])
-            s.add(e)
-            s.commit()
+        # Experiment obj array for return purpose
+        experiments = []
 
-            # After commit, the exp will have an id, we can insert channels now.
-            channels = []
-            for c in data['channels']:
-                channels.append(Channel(name=c['name'], id_Experiment=e.id))
-            s.add_all(channels)
+        # Insert each experiment obj to table, creating new factors and channels
+        for obj in json['experiment']:
+            # The new experiment obj should have a exp_id of 0
+            if str(obj['id']) != '0':
+                return "New experiment ID should be '0'"
+
+            # New experiment record
+            e = Experiment(name=obj['name'], user=obj['user'], well=obj['well'])
+
+            # Create a Channel object, associate it with e, it will be inserted
+            # when we add e to experiment table through cascading
+            for c in obj['channels']:
+                Channel(name=c['name'], experiment=e)
 
             # Insert new factors
-            factors = []
-            for f in data['factors']:
-                factors.append(Factor(name=f['name'], type=f['type'],
-                               id_Experiment=e.id))
+            for f in obj['factors']:
+                Factor(name=f['name'], type=f['type'], experiment=e)
 
-            s.add_all(factors)
-
-            # Commit the changes for channels and factors
+            # Commit the changes for experiment, channels and factors
+            s.add(e)
+            # TODO try except
             s.commit()
 
+            experiments.append(self.construct_exp(e))
+
         # Return the updated experiment obj
-        e_new = s.query(Experiment).filter_by(id=e.id).first()
-        return {"experiment": [self.construct_exp(e_new)]}
+        return {"experiment": experiments}
 
     def put(self):
         """Update experiment information:
@@ -82,48 +86,47 @@ class ExperimentEP(Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
+        # Array of experiment obj, return purpose
+        experiments = []
+
         # Get experimen id and data body
-        for data in json['experiment']:
-            eid = data['id']
-            e = s.query(Experiment).filter_by(id=eid).first()
-            if e is None:
-                return ''
-            e.name = data['name']
-            e.user = data['user']
-            e.well = data['well']
+        for obj in json['experiment']:
+            eid = obj['id']
+            # Exp record must exist and be only one
+            # TODO try except
+            e = s.query(Experiment).filter_by(id=eid).one()
+            e.name, e.user, e.well = obj['name'], obj['user'], obj['well']
 
-            # TODO update without delete
-            # Delete associated channel and factor records
-            for c, f in s.query(Channel, Factor).\
-                    filter(Channel.id_Experiment == eid).\
-                    filter(Factor.id_Experiment == eid).\
-                    all():
-                s.delete(c)
-                s.delete(f)
+            # Update channel record in database, delete un-associated channel
+            for c in s.query(Channel).filter_by(id_experiment=eid).all():
+                # A flag
+                found_c = 0
+                for ch in obj['channels']:
+                    if c.id == ch['id']:
+                        c.name = ch['name']
+                        found_c = 1
+                        break
+                if found_c == 0:
+                    s.delete(c)
 
-            # Insert new channels
-            channels = []
-            for c in data['channels']:
-                channels.append(Channel(name=c['name'], id_Experiment=eid))
-            s.add_all(channels)
-
-            # Insert new factors
-            factors = []
-            for f in data['factors']:
-                factors.append(Factor(name=f['name'], type=f['type'],
-                               id_Experiment=eid))
-
-            s.add_all(factors)
-
-            # TODO: UPDATE level table factor id
+            for f in s.query(Factor).filter_by(id_experiment=eid).all():
+                # A flag
+                found_f = 0
+                for fa in obj['factors']:
+                    if f.id == fa['id']:
+                        f.name, f.type = fa['name'], fa['type']
+                        found_f = 1
+                        break
+                if found_f == 0:
+                    s.delete(f)
 
             # Commit the changes
             # TODO try except
             s.commit()
+            experiments.append(self.construct_exp(e))
 
         # Return the updated experiment obj
-        e = s.query(Experiment).filter_by(id=eid).first()
-        return {"experiment": [self.construct_exp(e)]}
+        return {"experiment": experiments}
 
     def construct_exp(self, e):
         """Helper function, construct exp obj using an Experiment record
@@ -155,21 +158,21 @@ class LayoutEP(Resource):
         # Result
         ret = {"layout": []}
 
-        for l in s.query(Layout).filter_by(id_Experiment=eid).all():
+        for l in s.query(Layout).filter_by(id_experiment=eid).all():
             layout_obj = {}
             layout_obj["id"] = l.id
             layout_obj["name"] = l.name
             layout_obj["factors"] = []
 
-            for f in s.query(Factor).filter_by(id_Experiment=eid).all():
+            for f in s.query(Factor).filter_by(id_experiment=eid).all():
                 fac = {}
                 fac['id'] = f.id
                 fac['name'] = f.name
                 fac['levels'] = {}
 
                 for well, lvl in s.query(Level.well, Level.level).\
-                        filter(Level.id_Factor == f.id).\
-                        filter(Level.id_Layout == l.id).all():
+                        filter(Level.id_factor == f.id).\
+                        filter(Level.id_layout == l.id).all():
                     fac['levels'][well] = lvl
 
                 layout_obj['factors'].append(fac)
@@ -200,7 +203,7 @@ class LayoutEP(Resource):
         for idx, data in enumerate(json["layout"]):
 
             # Create a new Layout record
-            l = Layout(name=data['name'], id_Experiment=eid)
+            l = Layout(name=data['name'], id_experiment=eid)
             s.add(l)
             s.commit()
 
@@ -211,7 +214,7 @@ class LayoutEP(Resource):
                 fid = f['id']
                 for well, level in f['levels'].items():
                     levels.append(Level(well=well, level=level,
-                                        id_Layout=lid, id_Factor=fid))
+                                        id_layout=lid, id_factor=fid))
 
             s.add_all(levels)
             s.commit()
@@ -246,8 +249,8 @@ class LayoutEP(Resource):
                 flvl = f['levels']
                 # levels = []
                 for lvl in s.query(Level).\
-                        filter(Level.id_Layout == lid).\
-                        filter(Level.id_Factor == fid).all():
+                        filter(Level.id_layout == lid).\
+                        filter(Level.id_factor == fid).all():
                     lvl.level = flvl[lvl.well]
 
         # Commit the changes
