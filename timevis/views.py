@@ -275,7 +275,45 @@ class PlateEP(Resource):
         parser.add_argument('lid', type=int, help="layout id")
         args = parser.parse_args()
         lid = args.lid
-        pass
+
+        # Return value
+        ret = {"plate": []}
+
+        # Create query session
+        s = Session()
+
+        # Layout obj
+        l = s.query(Layout).filter_by(id=lid).first()
+
+        # Plate inside layout
+        for p in l.plates:
+            p_obj = {"id": p.id, "channels": []}
+
+            for ch in l.experiment.channels:
+                ch_obj = {"id": ch.id, "name": ch.name, "value": []}
+                ch_obj['time'] = [str(t[0]) for t in s.query(Value.time).
+                                  distinct().order_by(Value.time).all()]
+                ch_obj['well'] = [v[0] for v in s.query(Value.well).distinct().
+                                  order_by(Value.well).all()]
+                # Current time point
+                curr_time = None
+                values = None
+                for v in s.query(Value).order_by(Value.time, Value.well).all():
+                    if curr_time != v.time:
+                        curr_time = v.time
+                        # Just finish a loop
+                        if values is not None:
+                            ch_obj['value'].append(values)
+                        # Reset
+                        values = []
+                    values.append(v.value)
+
+                # Append the last time point
+                ch_obj['value'].append(values)
+                p_obj['channels'].append(ch_obj)
+
+            ret["plate"].append(p_obj)
+        return ret
 
     def post(self):
         """Input new plates"""
