@@ -200,7 +200,8 @@ class LayoutEP(Resource):
         json = request.get_json(force=True)
 
         # Get layout id and data, lid should be 0
-        for idx, data in enumerate(json["layout"]):
+        layouts = []
+        for data in json["layout"]:
 
             # Create a new Layout record
             l = Layout(name=data['name'], id_experiment=eid)
@@ -212,9 +213,13 @@ class LayoutEP(Resource):
                 for well, level in f['levels'].items():
                     Level(well=well, level=level, layout=l, id_factor=fid)
 
-            s.add(l)
-            s.commit()
+            layouts.append(l)
 
+        # Commit the changes
+        s.add_all(layouts)
+        s.commit()
+
+        for idx, l in enumerate(layouts):
             # Only Layout id is changed (a new one is given)
             json['layout'][idx]['id'] = l.id
 
