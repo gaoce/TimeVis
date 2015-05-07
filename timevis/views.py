@@ -92,6 +92,7 @@ class ExperimentEP(Resource):
             e.user = data['user']
             e.well = data['well']
 
+            # TODO update without delete
             # Delete associated channel and factor records
             for c, f in s.query(Channel, Factor).\
                     filter(Channel.id_Experiment == eid).\
@@ -237,21 +238,19 @@ class LayoutEP(Resource):
             lid = data['id']
             l = s.query(Layout).filter_by(id=lid)
             l.name = data['name']
-            s.commit()
 
             # Update level records
             # Only update factor provided
             for f in data['factors']:
                 fid = f['id']
                 flvl = f['levels']
-                levels = []
+                # levels = []
                 for lvl in s.query(Level).\
                         filter(Level.id_Layout == lid).\
                         filter(Level.id_Factor == fid).all():
-                    levels.append(Level(well=lvl.well, level=flvl[lvl.well],
-                                        id_Layout=lid, id_Factor=fid))
-                    s.delete(lvl)
-                s.add_all(levels)
+                    lvl.level = flvl[lvl.well]
+
+        # Commit the changes
         s.commit()
 
         # Nothing to change, really
