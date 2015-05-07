@@ -1,4 +1,4 @@
-.PHONY: clean install run uninstal devserver stopdevserver restart local init-db
+.PHONY: init-db clean install uninstall run devserver stop-devserver restart-devserver local stop-local restart-local
 
 init-db:
 	rm timevis/db/timevis.db
