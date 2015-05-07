@@ -39,7 +39,7 @@ layout: post-layout put-layout get-layout
 
 get-plate:
 	@echo "### GET PLATE"
-	@curl localhost:8000/api/v2/plate?eid=1&lid=1 -s | python -m json.tool 
+	@curl localhost:8000/api/v2/plate?lid=1 -s | python -m json.tool 
 	@echo
 
 post-plate:
@@ -49,7 +49,7 @@ post-plate:
 
 put-plate:
 	@echo "### PUT PLATE"
-	@curl localhost:8000/api/v2/plate?eid=1&lid=1 -d @plate_put.json -X PUT -s | python -m json.tool 
+	@curl localhost:8000/api/v2/plate?lid=1 -d @plate_put.json -X PUT -H "Content-type: application/json" -s | python -m json.tool 
 	@echo
 
 plate: post-plate put-plate get-plate

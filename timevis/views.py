@@ -269,8 +269,16 @@ class PlateEP(Resource):
     """Retrieve, upload and update plate information. This endpoint mainly
     queries Plate, Value tables, and modified Plate, Channel, Value tables
     """
+    def get(self):
+        # Parse args
+        parser = reqparse.RequestParser()
+        parser.add_argument('lid', type=int, help="layout id")
+        args = parser.parse_args()
+        lid = args.lid
+        pass
+
     def post(self):
-        """Input a new plate data"""
+        """Input new plates"""
 
         # Parse args
         parser = reqparse.RequestParser()
@@ -317,11 +325,44 @@ class PlateEP(Resource):
             json['plate'][idx]['id'] = p.id
         return json
 
-    def get(self):
-        return "success"
-
     def put(self):
-        return "success"
+        """Update plates data"""
+        # Get json from POST data, force is True so the request header don't
+        # need to include "Content-type: application/json"
+        # TODO check input validity
+        json = request.get_json(force=True)
+
+        # Create query session
+        s = Session()
+
+        # Newly created value
+        values = []
+
+        # Get layout id and data
+        for data in json['plate']:
+            # Plate id
+            pid = data['id']
+            p = s.query(Plate).filter_by(id=pid).first()
+
+            s.query(Value).filter_by(id_plate=pid).delete()
+
+            for ch in data['channels']:
+                c = s.query(Channel).filter_by(id=ch['id']).first()
+
+                # Parse time
+                time_array = [datetime.strptime(t, "%H:%M:%S").time()
+                              for t in ch['time']]
+                well_array = ch['well']
+                for t, val_array in zip(time_array, ch['value']):
+                    for well, val in zip(well_array, val_array):
+                        values.append(Value(well=well, time=t, value=val,
+                                            plate=p, channel=c))
+
+        s.add_all(values)
+        s.commit()
+
+        # Nothing to change
+        return json
 
 
 class TimeSeriesEP(Resource):

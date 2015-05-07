@@ -650,7 +650,7 @@ A summary of all HTTP verbs used for this endpoint is as follows:
 ^^^^^^
 
 **Parameters**
-    ``?lid=layout_id``, mandatory, Layout ID.
+	None. ``plate_id`` is unique and no ``layout_id`` is necessary.
 **Input**
     A JSON object with the same format as described in ``GET``, eg.,
 
