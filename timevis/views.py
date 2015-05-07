@@ -204,23 +204,19 @@ class LayoutEP(Resource):
 
             # Create a new Layout record
             l = Layout(name=data['name'], id_experiment=eid)
+
+            # Update level records
+            for f in data['factors']:
+                # Factor ID
+                fid = f['id']
+                for well, level in f['levels'].items():
+                    Level(well=well, level=level, layout=l, id_factor=fid)
+
             s.add(l)
             s.commit()
 
-            # Update level records
-            levels = []
-            lid = data['id'] = l.id
-            for f in data['factors']:
-                fid = f['id']
-                for well, level in f['levels'].items():
-                    levels.append(Level(well=well, level=level,
-                                        id_layout=lid, id_factor=fid))
-
-            s.add_all(levels)
-            s.commit()
-
             # Only Layout id is changed (a new one is given)
-            json['layout'][idx]['id'] = lid
+            json['layout'][idx]['id'] = l.id
 
         # Return newly create obj
         return json
