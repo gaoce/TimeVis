@@ -340,7 +340,7 @@ A summary of all HTTP verbs used for this endpoint:
     ::
 
       {
-        "layout": 
+        "layout":
         [
           {
             "id": "1",
@@ -361,7 +361,7 @@ A summary of all HTTP verbs used for this endpoint:
           {
             "id":   "2",
             "name": "Layout 2",
-            "factors": 
+            "factors":
             [
               {
                 "id"    : "3",
@@ -394,7 +394,7 @@ A summary of all HTTP verbs used for this endpoint:
     ::
 
       {
-        "layout": 
+        "layout":
         [
           {
             "id"        : "0",
@@ -402,12 +402,12 @@ A summary of all HTTP verbs used for this endpoint:
             "factors"   :
             [
               {
-                "id"    : "0",
+                "id"    : "1",
                 "name"  : "Dose",
                 "levels": {"A01":"42", "A02":"42", "A03":"42", ...}
               },
               {
-                "id"    : "0",
+                "id"    : "2",
                 "name"  : "Gene",
                 "levels": {"A01":"aa", "A02":"aa", "A03":"aa", ...}
               }
@@ -419,7 +419,35 @@ A summary of all HTTP verbs used for this endpoint:
       # The factor levels are not shown in full here.
 
 **Output**
-    Newly created factors.
+    Newly created factors, eg,
+
+
+    ::
+
+      {
+        "layout":
+        [
+          {
+            "id"        : "1",
+            "name"      : "Layout 1",
+            "factors"   :
+            [
+              {
+                "id"    : "1",
+                "name"  : "Dose",
+                "levels": {"A01":"42", "A02":"42", "A03":"42", ...}
+              },
+              {
+                "id"    : "2",
+                "name"  : "Gene",
+                "levels": {"A01":"aa", "A02":"aa", "A03":"aa", ...}
+              }
+            ]
+          }
+        ]
+      }
+
+      # The factor levels are not shown in full here.
 
 4. PUT
 ^^^^^^
