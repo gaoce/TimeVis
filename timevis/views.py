@@ -2,7 +2,6 @@ from timevis import app
 from flask import render_template, request
 from flask.ext.restful import Api, Resource, reqparse
 from timevis.models import Experiment, Layout, Factor, Channel, Level, Session
-from collections import defaultdict
 
 
 @app.route('/')
@@ -115,6 +114,8 @@ class ExperimentEP(Resource):
 
             s.add_all(factors)
 
+            # TODO: UPDATE level table factor id
+
             # Commit the changes
             # TODO try except
             s.commit()
@@ -147,29 +148,40 @@ class LayoutEP(Resource):
         args = parser.parse_args()
         eid = args.eid
 
-        # Result
-        ret = defaultdict(dict)
         # Create query session
         s = Session()
 
+        # Result
+        ret = {"layout": []}
+
         for l in s.query(Layout).filter_by(id_Experiment=eid).all():
-            ret[str(l.id)]["name"] = l.name
-            ret[str(l.id)]["factors"] = []
+            layout_obj = {}
+            layout_obj["id"] = l.id
+            layout_obj["name"] = l.name
+            layout_obj["factors"] = []
 
             for f in s.query(Factor).filter_by(id_Experiment=eid).all():
                 fac = {}
                 fac['id'] = f.id
                 fac['name'] = f.name
+                fac['levels'] = {}
 
                 for well, lvl in s.query(Level.well, Level.level).\
-                        filter(Level.id_Factor == Factor.id).\
+                        filter(Level.id_Factor == f.id).\
                         filter(Level.id_Layout == l.id).all():
-                    fac["levels"][well] = lvl
-                ret[str(l.id)]["factors"].append(fac)
+                    fac['levels'][well] = lvl
+
+                layout_obj['factors'].append(fac)
+
+            ret["layout"].append(layout_obj)
 
         return ret
 
     def post(self):
+        """Create a new layout obj:
+            1. Create a new record in Layout table
+            2. Create new records in Level table
+        """
         parser = reqparse.RequestParser()
         parser.add_argument('eid', type=int, help="experiment id")
         args = parser.parse_args()
@@ -184,53 +196,66 @@ class LayoutEP(Resource):
         json = request.get_json(force=True)
 
         # Get layout id and data, lid should be 0
-        _, data = json.popitem()
+        for idx, data in enumerate(json["layout"]):
 
-        l = Layout(name=data['name'], id_Experiment=eid)
-        s.add(l)
-        s.commit()
+            # Create a new Layout record
+            l = Layout(name=data['name'], id_Experiment=eid)
+            s.add(l)
+            s.commit()
 
-        # After commit, the e obj will obtain an id, then we can insert channels
-        lid = l.id
-        levels = []
-        for f in data['factors']:
-            for well, level in f['levels'].items():
-                levels.append(Level(well=well, level=level,
-                                    id_Layout=lid, id_Factor=f['id']))
-        s.add_all(levels)
-        s.commit()
+            # Update level records
+            levels = []
+            lid = data['id'] = l.id
+            for f in data['factors']:
+                fid = f['id']
+                for well, level in f['levels'].items():
+                    levels.append(Level(well=well, level=level,
+                                        id_Layout=lid, id_Factor=fid))
 
-        # TODO return meaningful result
-        return 'Success'
+            s.add_all(levels)
+            s.commit()
+
+            # Only Layout id is changed (a new one is given)
+            json['layout'][idx]['id'] = lid
+
+        # Return newly create obj
+        return json
 
     def put(self):
         """ Update a layout's name and its levels"""
-
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
         # TODO check input validity
         json = request.get_json(force=True)
 
-        # Get layout id and data
-        lid, data = json.popitem()
-
         # Create query session
         s = Session()
 
-        # Got layout obj and modify it
-        l = s.query(Layout).filter_by(id=lid)
-        l.name = data['name']
+        # Get layout id and data
+        for data in json["layout"]:
+            # Got layout obj and modify it
+            lid = data['id']
+            l = s.query(Layout).filter_by(id=lid)
+            l.name = data['name']
+            s.commit()
+
+            # Update level records
+            # Only update factor provided
+            for f in data['factors']:
+                fid = f['id']
+                flvl = f['levels']
+                levels = []
+                for lvl in s.query(Level).\
+                        filter(Level.id_Layout == lid).\
+                        filter(Level.id_Factor == fid).all():
+                    levels.append(Level(well=lvl.well, level=flvl[lvl.well],
+                                        id_Layout=lid, id_Factor=fid))
+                    s.delete(lvl)
+                s.add_all(levels)
         s.commit()
 
-        # Update level records
-        # Only update factor provided
-        for f in data['factors']:
-            for lvl in s.query(Level).filter(Level.id_Layout == lid).\
-                    filter(Level.id_Factor == f['id']).all():
-                lvl.level = f['levels'][lvl.well]
-        s.commit()
-
-        return 'Success'
+        # Nothing to change, really
+        return json
 
 
 class PlateEP(Resource):
