@@ -404,7 +404,16 @@ class PlateEP(Resource):
 
 
 class TimeSeriesEP(Resource):
-    pass
+    def get(self):
+        """
+        sqlite> select "values".time, "values".value, levels.level from "values" join plates join channels join levels on plates.id_layout = levels.id_layout join factors on levels.id_factor = factors.id where channels.id = 1 and ((factors.id=2 and levels.level in ('42', 'bb')) or (factors.id=1));
+
+        """
+        # Get json from POST data, force is True so the request header don't
+        # need to include "Content-type: application/json"
+        # TODO check input validity
+        json = request.get_json(force=True)
+
 
 api = Api(app)
 api_root = '/api/v2'
