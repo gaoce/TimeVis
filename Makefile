@@ -36,3 +36,11 @@ stop-local:
 	pkill python
 
 restart-local: stop-local local
+
+github:
+	@echo "Issue this command after checking out to gh-pages branch"
+	git checkout master -- docs
+	cp -r docs/_build/html/* .
+	git add .
+	git commit -m "Update github pages"
+	git push origin gh-pages
