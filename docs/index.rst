@@ -22,5 +22,6 @@ Developer's Guide
 .. toctree::
    :maxdepth: 2
 
+   dev
    api_v2
    database
