@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Design of Software &mdash; TimeVisAn 0.1 documentation</title>
+    <title>Development &mdash; TimeVisAn 0.1 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="TimeVisAn 0.1 documentation" href="index.html" />
-    <link rel="next" title="Development" href="dev.html" />
-    <link rel="prev" title="Installation" href="install.html" />
+    <link rel="next" title="API Documentation" href="api_v2.html" />
+    <link rel="prev" title="Design of Software" href="design.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -42,10 +42,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="dev.html" title="Development"
+          <a href="api_v2.html" title="API Documentation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="install.html" title="Installation"
+          <a href="design.html" title="Design of Software"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">TimeVisAn 0.1 documentation</a> &raquo;</li> 
       </ul>
@@ -56,59 +56,39 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="design-of-software">
-<h1>Design of Software<a class="headerlink" href="#design-of-software" title="Permalink to this headline">¶</a></h1>
-<p>The cell array research can be organized at three different levels: experiment,
-layout and plate. Accordingly, the data are organized with these three levels
-too.</p>
-<div class="section" id="experiment">
-<h2>1. Experiment<a class="headerlink" href="#experiment" title="Permalink to this headline">¶</a></h2>
-<p>A single experiment aims to answer one question: how different factors
-(independent variables) influence channels (dependent variables). The experiment
-information consists experiment name, user and number of wells for microplates,
-as well as meta information about factors and channels.</p>
+  <div class="section" id="development">
+<h1>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h1>
+<p>This page describes the commands used during development.</p>
+<div class="section" id="documentation">
+<h2>1. Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="documentation-and-sphinx">
+<h3>1.1 Documentation and sphinx<a class="headerlink" href="#documentation-and-sphinx" title="Permalink to this headline">¶</a></h3>
+<p>All the documents are in docs/ folder under the root directory. The
+documentation of this project is using <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a>.</p>
+<p>To convert the .rst file into visually appealling HTML files, issue the
+following commands.</p>
+<div class="highlight-python"><div class="highlight"><pre>$ cd docs
+$ make html
+</pre></div>
 </div>
-<div class="section" id="layout">
-<h2>2. Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h2>
-<p>A unique layout is determined by the specific combination of factors in all the
-wells. For example:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="26%" />
-<col width="26%" />
-<col width="26%" />
-<col width="22%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Well</th>
-<th class="head">Gene</th>
-<th class="head">Dose</th>
-<th class="head">...</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td>1</td>
-<td>&#8216;aa&#8217;</td>
-<td>42</td>
-<td>...</td>
-</tr>
-<tr class="row-odd"><td>2</td>
-<td>&#8216;aa&#8217;</td>
-<td>4.2</td>
-<td>...</td>
-</tr>
-<tr class="row-even"><td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-</tbody>
-</table>
+<p>To see the html files on browser, issue the following commands, then the
+generated web pages can be access at <a class="reference external" href="http://localhost:8000">http://localhost:8000</a></p>
+<div class="highlight-python"><div class="highlight"><pre>$ cd docs
+$ make test
+</pre></div>
 </div>
-<div class="section" id="plate">
-<h2>3. Plate<a class="headerlink" href="#plate" title="Permalink to this headline">¶</a></h2>
-<p>A unique plate is foundamental unit of experimetn. Plate information includes
-the experiment measures.</p>
+<p>1.2 Github pages</p>
+<p>To deploy the generated documentation to github pages, issue the following
+commands in the root directory. The documentation can be now visited from
+<cite>&lt;username&gt;.github.io/&lt;project_name&gt;</cite>.</p>
+<div class="highlight-python"><div class="highlight"><pre># Switch to gh-pages branch
+$ git checkout gh-pages
+
+# Deploy
+$ make github
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -120,20 +100,21 @@ the experiment measures.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Design of Software</a><ul>
-<li><a class="reference internal" href="#experiment">1. Experiment</a></li>
-<li><a class="reference internal" href="#layout">2. Layout</a></li>
-<li><a class="reference internal" href="#plate">3. Plate</a></li>
+<li><a class="reference internal" href="#">Development</a><ul>
+<li><a class="reference internal" href="#documentation">1. Documentation</a><ul>
+<li><a class="reference internal" href="#documentation-and-sphinx">1.1 Documentation and sphinx</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="install.html"
-                        title="previous chapter">Installation</a></p>
+  <p class="topless"><a href="design.html"
+                        title="previous chapter">Design of Software</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="dev.html"
-                        title="next chapter">Development</a></p>
+  <p class="topless"><a href="api_v2.html"
+                        title="next chapter">API Documentation</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
