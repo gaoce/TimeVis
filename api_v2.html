@@ -1,0 +1,910 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API Documentation &mdash; TimeVisAn 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TimeVisAn 0.1 documentation" href="index.html" />
+    <link rel="next" title="Database design" href="database.html" />
+    <link rel="prev" title="Design of Software" href="design.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="database.html" title="Database design"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="design.html" title="Design of Software"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">TimeVisAn 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="summary">
+<h2>1. Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h2>
+<p>The endpoints are summarized in the following table:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="42%" />
+<col width="58%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">URI</th>
+<th class="head">Target</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">/api/v2/experiment</span></code></td>
+<td>Experiment information</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">/api/v2/layout</span></code></td>
+<td>Layout information</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">/api/v2/plate</span></code></td>
+<td>Plate information and data</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">/api/v2/timeseries</span></code></td>
+<td>(Transformed) time series data</td>
+</tr>
+</tbody>
+</table>
+<p>The data exchanged are generally in the following JSON format:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="n">endpoint_name</span><span class="p">:</span> <span class="n">obj_array</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><code class="docutils literal"><span class="pre">endpoint_name</span></code></dt>
+<dd>Name of the endpoint, could be <code class="docutils literal"><span class="pre">experiment</span></code>, <code class="docutils literal"><span class="pre">layout</span></code>, etc.</dd>
+<dt><code class="docutils literal"><span class="pre">obj_array</span></code></dt>
+<dd>An array of objects describing experiment, layout, etc, as discussed below.</dd>
+</dl>
+</div>
+<div class="section" id="experiment-information">
+<h2>2. Experiment information<a class="headerlink" href="#experiment-information" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>1. Summary<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Retrieve, upload and update information at experiment level, including
+experiment name, user names, well number of plates, channels (dependent
+variables) measured, factors (independent variables) set.</p>
+<p>The URI is <code class="docutils literal"><span class="pre">/api/v2/experiment</span></code>. A summary of all HTTP verbs used for this
+endpoint is shown below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Verb</th>
+<th class="head">Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>Retrieve information for all experiments</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>Upload a new experiment information</td>
+</tr>
+<tr class="row-even"><td>PUT</td>
+<td>Update existing experiment(s) information</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="get">
+<h3>2. GET<a class="headerlink" href="#get" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd>None.</dd>
+<dt><strong>Input</strong></dt>
+<dd>None.</dd>
+<dt><strong>Output</strong></dt>
+<dd><p class="first">A JSON object containing an array of experiment object describing experiment
+information.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;experiment&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>      <span class="p">:</span> <span class="n">exp_id</span><span class="p">,</span>
+      <span class="s">&quot;name&quot;</span>    <span class="p">:</span> <span class="n">exp_name</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span>    <span class="p">:</span> <span class="n">exp_user</span><span class="p">,</span>
+      <span class="s">&quot;well&quot;</span>    <span class="p">:</span> <span class="n">exp_well</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span><span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">channel_name</span><span class="p">},</span>
+        <span class="o">...</span>
+      <span class="p">],</span>
+      <span class="s">&quot;factors&quot;</span> <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="n">factor_id</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">factor_name</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="n">factor_type</span><span class="p">},</span>
+        <span class="o">...</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+  <span class="o">...</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The unquoted variables are:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">exp_id</span></code>:       Integer. Experiment ID.</li>
+<li><code class="docutils literal"><span class="pre">exp_name</span></code>:     String.  Experiment name.</li>
+<li><code class="docutils literal"><span class="pre">exp_user</span></code>:     String.  Comma separated user names.</li>
+<li><code class="docutils literal"><span class="pre">exp_well</span></code>:     Integer. Well number.</li>
+<li><code class="docutils literal"><span class="pre">channel_id</span></code>:   Integer. Channel ID.</li>
+<li><code class="docutils literal"><span class="pre">channel_name</span></code>: String.  Channel name.</li>
+<li><code class="docutils literal"><span class="pre">factor_id</span></code>:    Integer. Factor id.</li>
+<li><code class="docutils literal"><span class="pre">factor_name</span></code>:  String.  Factor name.</li>
+<li><code class="docutils literal"><span class="pre">factor_type</span></code>:  String.  Factor type, can be either &#8220;Category&#8221;,
+&#8220;Integer&#8221;, or &#8220;Decimal&#8221;</li>
+</ul>
+<p>Here is an expample:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;experiment&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>      <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s">&quot;name&quot;</span>    <span class="p">:</span> <span class="s">&quot;exp1&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span>    <span class="p">:</span> <span class="s">&quot;user1, user2&quot;</span><span class="p">,</span>
+      <span class="s">&quot;well&quot;</span>    <span class="p">:</span> <span class="mi">384</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span><span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;OD&quot;</span><span class="p">}</span>
+      <span class="p">],</span>
+      <span class="s">&quot;factors&quot;</span> <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Dose&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Decimal&quot;</span><span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>      <span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+      <span class="s">&quot;name&quot;</span>    <span class="p">:</span> <span class="s">&quot;exp2&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span>    <span class="p">:</span> <span class="s">&quot;user3&quot;</span><span class="p">,</span>
+      <span class="s">&quot;well&quot;</span>    <span class="p">:</span> <span class="mi">96</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;3&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">}],</span>
+      <span class="s">&quot;factors&quot;</span> <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Dose&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Decimal&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Gene&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Category&quot;</span><span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="post">
+<h3>3. POST<a class="headerlink" href="#post" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd>None.</dd>
+<dt><strong>Input</strong></dt>
+<dd><p class="first">A JSON object with the same format as described in <code class="docutils literal"><span class="pre">GET</span></code>.</p>
+<p><strong>Note</strong>: <code class="docutils literal"><span class="pre">exp_id</span></code> and <code class="docutils literal"><span class="pre">channel_id</span></code> and <code class="docutils literal"><span class="pre">factor_id</span></code> for a new
+experiment should be zero.</p>
+<p>Here is an example:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;experiment&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>      <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s">&quot;name&quot;</span>    <span class="p">:</span> <span class="s">&quot;Exp1&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span>    <span class="p">:</span> <span class="s">&quot;user1, user2&quot;</span><span class="p">,</span>
+      <span class="s">&quot;well&quot;</span>    <span class="p">:</span> <span class="mi">384</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span><span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;OD&quot;</span><span class="p">}</span>
+      <span class="p">],</span>
+      <span class="s">&quot;factors&quot;</span> <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Dose&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Decimal&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Gene&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Category&quot;</span><span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Output</strong></dt>
+<dd><blockquote class="first">
+<div>Newly created experiment object, e.g.,</div></blockquote>
+<div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;experiment&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>      <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s">&quot;name&quot;</span>    <span class="p">:</span> <span class="s">&quot;Exp1&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span>    <span class="p">:</span> <span class="s">&quot;user1, user2&quot;</span><span class="p">,</span>
+      <span class="s">&quot;well&quot;</span>    <span class="p">:</span> <span class="mi">384</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span><span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;OD&quot;</span><span class="p">}</span>
+      <span class="p">],</span>
+      <span class="s">&quot;factors&quot;</span> <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Dose&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Decimal&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Gene&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Category&quot;</span><span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="put">
+<h3>4. PUT<a class="headerlink" href="#put" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd>None.</dd>
+<dt><strong>Input</strong></dt>
+<dd><p class="first">A JSON object with the same format as described in <code class="docutils literal"><span class="pre">GET</span></code>. Note update may
+cause loss of factor and channel.</p>
+<p>Here is an example:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;experiment&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>      <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s">&quot;name&quot;</span>    <span class="p">:</span> <span class="s">&quot;Exp 1&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span>    <span class="p">:</span> <span class="s">&quot;user1&quot;</span><span class="p">,</span>
+      <span class="s">&quot;well&quot;</span>    <span class="p">:</span> <span class="mi">96</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">}],</span>
+      <span class="s">&quot;factors&quot;</span> <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Dose&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Decimal&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Gene&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Category&quot;</span><span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Output</strong></dt>
+<dd><blockquote class="first">
+<div>Updated experiment object, with possible altered IDs, e.g.,</div></blockquote>
+<div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;experiment&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>      <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s">&quot;name&quot;</span>    <span class="p">:</span> <span class="s">&quot;Exp 1&quot;</span><span class="p">,</span>
+      <span class="s">&quot;user&quot;</span>    <span class="p">:</span> <span class="s">&quot;user1&quot;</span><span class="p">,</span>
+      <span class="s">&quot;well&quot;</span>    <span class="p">:</span> <span class="mi">96</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">}],</span>
+      <span class="s">&quot;factors&quot;</span> <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Dose&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Decimal&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Gene&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Category&quot;</span><span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="layout-information">
+<h2>3. Layout information<a class="headerlink" href="#layout-information" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id2">
+<h3>1. Summary<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Retrieve, upload and update layout information, including layout name,
+especially the levels of factors at each well.</p>
+<p>A summary of all HTTP verbs used for this endpoint:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Verb</th>
+<th class="head">Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>Retrieve layout information for a specific experiment</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>Upload a new layout for a specific experiment</td>
+</tr>
+<tr class="row-even"><td>PUT</td>
+<td>Update existing layout(s) information</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id3">
+<h3>2. GET<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><code class="docutils literal"><span class="pre">?eid=exp_id</span></code>, mandatory, experiment id.</dd>
+<dt><strong>Input</strong></dt>
+<dd>None.</dd>
+<dt><strong>Output</strong></dt>
+<dd><p class="first">A JSON object that specifies experiment id and maps layout IDs to layout
+descriptions, for expample:</p>
+<div class="highlight-python"><div class="highlight"><pre>{
+  &quot;layout&quot;:
+  [
+    {
+      &quot;id&quot;:   layout_id,
+      &quot;name&quot;: layout_name,
+      &quot;factors&quot;:
+      [
+        {
+          &quot;id&quot;    : factor_id,
+          &quot;name&quot;  : factor_name,
+          &quot;levels&quot;: {well: level, ...}
+        },
+        ...
+      ],
+    },
+    ...
+  ]
+}
+</pre></div>
+</div>
+<p>The unquoted variables are:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">layout_id</span></code>:   Integer. Layout ID.</li>
+<li><code class="docutils literal"><span class="pre">layout_name</span></code>: String.  Layout name.</li>
+<li><code class="docutils literal"><span class="pre">factor_id</span></code>:   Integer. Factor id.</li>
+<li><code class="docutils literal"><span class="pre">factor_name</span></code>: String.  Factor name.</li>
+<li><code class="docutils literal"><span class="pre">well</span></code>:        String.  Well name, e.g., &#8220;A01&#8221;, &#8220;C04&#8221;</li>
+<li><code class="docutils literal"><span class="pre">level</span></code>:           String.  Factor level.</li>
+</ul>
+<p>Here is an expample:</p>
+<div class="last highlight-python"><div class="highlight"><pre>{
+  &quot;layout&quot;:
+  [
+    {
+      &quot;id&quot;: 1,
+      &quot;name&quot;: &quot;Layout 1&quot;,
+      &quot;factors&quot;: [
+        {
+          &quot;id&quot;    : 1,
+          &quot;name&quot;  : &quot;Dose&quot;,
+          &quot;levels&quot;: {&#39;A01&#39;:&#39;42&#39;, &#39;A02&#39;:&#39;42&#39;, ...}
+        },
+        {
+          &quot;id&quot;    : 2,
+          &quot;name&quot;  : &quot;Gene&quot;,
+          &quot;levels&quot;: {&#39;A01&#39;:&#39;aa&#39;, &#39;A02&#39;:&#39;aa&#39;, ...}
+        }
+      ]
+    },
+    {
+      &quot;id&quot;:   2,
+      &quot;name&quot;: &quot;Layout 2&quot;,
+      &quot;factors&quot;:
+      [
+        {
+          &quot;id&quot;    : 3,
+          &quot;name&quot;  : &quot;Dose&quot;,
+          &quot;levels&quot;: {&#39;A01&#39;:&#39;42&#39;, &#39;A02&#39;:&#39;42&#39;, ...}
+        },
+        {
+          &quot;id&quot;    : 4,
+          &quot;name&quot;  : &quot;Gene&quot;,
+          &quot;levels&quot;: {&#39;A01&#39;:&#39;bb&#39;, &#39;A02&#39;:&#39;bb&#39;, ...}}
+      ]
+    }
+  ]
+}
+
+# The factor levels are not shown in full here.
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="id4">
+<h3>3. POST<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><code class="docutils literal"><span class="pre">?eid=exp_id</span></code>, mandatory, experiment id.</dd>
+<dt><strong>Input</strong></dt>
+<dd><p class="first">A JSON object with the same format as described in <code class="docutils literal"><span class="pre">GET</span></code>.</p>
+<p><strong>Note</strong> <code class="docutils literal"><span class="pre">layout_id</span></code> for a new layout should be zero.</p>
+<p>Here is an example:</p>
+<div class="last highlight-python"><div class="highlight"><pre>{
+  &quot;layout&quot;:
+  [
+    {
+      &quot;id&quot;        : 0,
+      &quot;name&quot;      : &quot;Layout 1&quot;,
+      &quot;factors&quot;   :
+      [
+        {
+          &quot;id&quot;    : 1,
+          &quot;name&quot;  : &quot;Dose&quot;,
+          &quot;levels&quot;: {&quot;A01&quot;:&quot;42&quot;, &quot;A02&quot;:&quot;42&quot;, &quot;A03&quot;:&quot;42&quot;, ...}
+        },
+        {
+          &quot;id&quot;    : &quot;2&quot;,
+          &quot;name&quot;  : &quot;Gene&quot;,
+          &quot;levels&quot;: {&quot;A01&quot;:&quot;aa&quot;, &quot;A02&quot;:&quot;aa&quot;, &quot;A03&quot;:&quot;aa&quot;, ...}
+        }
+      ]
+    }
+  ]
+}
+
+# The factor levels are not shown in full here.
+</pre></div>
+</div>
+</dd>
+<dt><strong>Output</strong></dt>
+<dd><p class="first">Newly created factors, eg,</p>
+<div class="last highlight-python"><div class="highlight"><pre>{
+  &quot;layout&quot;:
+  [
+    {
+      &quot;id&quot;        : &quot;1&quot;,
+      &quot;name&quot;      : &quot;Layout 1&quot;,
+      &quot;factors&quot;   :
+      [
+        {
+          &quot;id&quot;    : &quot;1&quot;,
+          &quot;name&quot;  : &quot;Dose&quot;,
+          &quot;levels&quot;: {&quot;A01&quot;:&quot;42&quot;, &quot;A02&quot;:&quot;42&quot;, &quot;A03&quot;:&quot;42&quot;, ...}
+        },
+        {
+          &quot;id&quot;    : &quot;2&quot;,
+          &quot;name&quot;  : &quot;Gene&quot;,
+          &quot;levels&quot;: {&quot;A01&quot;:&quot;aa&quot;, &quot;A02&quot;:&quot;aa&quot;, &quot;A03&quot;:&quot;aa&quot;, ...}
+        }
+      ]
+    }
+  ]
+}
+
+# The factor levels are not shown in full here.
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="id5">
+<h3>4. PUT<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><code class="docutils literal"><span class="pre">?eid=exp_id</span></code>, mandatory, experiment id.</dd>
+<dt><strong>Input</strong></dt>
+<dd><p class="first">A JSON object with the same format as described in <code class="docutils literal"><span class="pre">GET</span></code>. Only one layout
+is allowed to be updated at a time.</p>
+<p>Here is an example:</p>
+<div class="last highlight-python"><div class="highlight"><pre>{
+  &quot;layout&quot;:
+  [
+    {
+      &quot;id&quot;        : &quot;1&quot;,
+      &quot;name&quot;      : &quot;Layout 1&quot;,
+      &quot;factors&quot;:
+      [
+        {
+          &quot;id&quot;    : &quot;1&quot;,
+          &quot;name&quot;  : &quot;Dose&quot;,
+          &quot;levels&quot;: {&quot;A01&quot;:&quot;42&quot;, &quot;A02&quot;:&quot;42&quot;, &quot;A03&quot;:&quot;42&quot;, ...}
+        },
+        {
+          &quot;id&quot;    : &quot;2&quot;,
+          &quot;name&quot;  : &quot;Gene&quot;,
+          &quot;levels&quot;: {&quot;A01&quot;:&quot;bb&quot;, &quot;A02&quot;:&quot;bb&quot;, &quot;A03&quot;:&quot;bb&quot;, ...}
+        }
+      ]
+    }
+  ]
+}
+
+# The factor levels are not shown in full here.
+</pre></div>
+</div>
+</dd>
+<dt><strong>Output</strong></dt>
+<dd>Update layout obj with possible altered IDs.</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="plate-information">
+<h2>3. Plate information<a class="headerlink" href="#plate-information" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h3>1. Summary<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p>Retrieve, upload and update plate data, including channels and time series data.</p>
+<p>A summary of all HTTP verbs used for this endpoint is as follows:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="11%" />
+<col width="89%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Verb</th>
+<th class="head">Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>Retrieve plate information for a particular layout within a
+certain experiments. The returned data can be for single or
+multiple plates</td>
+</tr>
+<tr class="row-odd"><td>POST</td>
+<td>Upload plate data for a layout of an experiment</td>
+</tr>
+<tr class="row-even"><td>PUT</td>
+<td>Update existing plate(s) information</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id7">
+<h3>2. GET<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><code class="docutils literal"><span class="pre">?lid=layout_id</span></code>, mandatory, Layout ID.</dd>
+<dt><strong>Input</strong></dt>
+<dd>None.</dd>
+<dt><strong>Output</strong></dt>
+<dd><p class="first">A JSON object mapping experiment IDs to experiment descriptions, for
+expample:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;plate&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>        <span class="p">:</span> <span class="n">plate_id</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span>  <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="s">&quot;id&quot;</span>    <span class="p">:</span> <span class="n">channel_id</span><span class="p">,</span>
+          <span class="s">&quot;name&quot;</span>  <span class="p">:</span> <span class="n">channel_name</span><span class="p">,</span>
+          <span class="s">&quot;time&quot;</span>  <span class="p">:</span> <span class="n">time</span><span class="p">,</span>
+          <span class="s">&quot;well&quot;</span>  <span class="p">:</span> <span class="n">well</span><span class="p">,</span>
+          <span class="s">&quot;value&quot;</span> <span class="p">:</span> <span class="p">[</span><span class="n">value</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="o">...</span>
+      <span class="p">]</span>
+    <span class="p">},</span>
+    <span class="o">...</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Unquoted variables are:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">plate_id</span></code>:     Integer. Plate id.</li>
+<li><code class="docutils literal"><span class="pre">channel_id</span></code>:   Integer. Channel id.</li>
+<li><code class="docutils literal"><span class="pre">channel_name</span></code>: String.  Channel name.</li>
+<li><code class="docutils literal"><span class="pre">time</span></code>:                 Array of strings. Measurement time point,
+should have the same dimension as the value arrays</li>
+<li><code class="docutils literal"><span class="pre">well</span></code>:         String. Well name array, e.g., &#8220;A01&#8221;, &#8220;C04&#8221;</li>
+<li><code class="docutils literal"><span class="pre">value</span></code>:        Decimals. Value array. Record channel measurement at all
+wells at a given time point. The well order is the same as <code class="docutils literal"><span class="pre">well</span></code>
+field, and the time point order is corresponding to the time order in
+<code class="docutils literal"><span class="pre">time</span></code> field.</li>
+</ul>
+<p>Here is an expample:</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;plate&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>        <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span>  <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="s">&quot;id&quot;</span>    <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="s">&quot;name&quot;</span>  <span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">,</span>
+          <span class="s">&quot;time&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="s">&quot;00:00:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:05:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:10:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:15:00&quot;</span><span class="p">],</span>
+          <span class="s">&quot;well&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="s">&quot;A01&quot;</span><span class="p">,</span> <span class="s">&quot;A02&quot;</span><span class="p">,</span> <span class="s">&quot;A03&quot;</span><span class="p">,</span> <span class="s">&quot;A04&quot;</span><span class="p">,</span> <span class="s">&quot;A05&quot;</span><span class="p">,</span> <span class="s">&quot;A06&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+          <span class="s">&quot;value&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">...</span> <span class="p">],</span> <span class="o">...</span> <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="id8">
+<h3>2. POST<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><code class="docutils literal"><span class="pre">?lid=layout_id</span></code>, mandatory, Layout ID.</dd>
+<dt><strong>Input</strong></dt>
+<dd><p class="first">A JSON object with the same format as described in <code class="docutils literal"><span class="pre">GET</span></code>. Only one plate
+is allowed to be uploaded per request. <strong>Note</strong> <code class="docutils literal"><span class="pre">plate_id</span></code> for a new
+layout should be 0, e.g.,</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;plate&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>        <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span>  <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="s">&quot;id&quot;</span>    <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="s">&quot;name&quot;</span>  <span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">,</span>
+          <span class="s">&quot;time&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="s">&quot;00:00:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:05:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:10:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:15:00&quot;</span><span class="p">],</span>
+          <span class="s">&quot;well&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="s">&quot;A01&quot;</span><span class="p">,</span> <span class="s">&quot;A02&quot;</span><span class="p">,</span> <span class="s">&quot;A03&quot;</span><span class="p">,</span> <span class="s">&quot;A04&quot;</span><span class="p">,</span> <span class="s">&quot;A05&quot;</span><span class="p">,</span> <span class="s">&quot;A06&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+          <span class="s">&quot;value&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">...</span> <span class="p">],</span> <span class="o">...</span> <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Output</strong></dt>
+<dd><p class="first">Newly created plate object, eg.,</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;plate&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>        <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span>  <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="s">&quot;id&quot;</span>    <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="s">&quot;name&quot;</span>  <span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">,</span>
+          <span class="s">&quot;time&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="s">&quot;00:00:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:05:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:10:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:15:00&quot;</span><span class="p">],</span>
+          <span class="s">&quot;well&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="s">&quot;A01&quot;</span><span class="p">,</span> <span class="s">&quot;A02&quot;</span><span class="p">,</span> <span class="s">&quot;A03&quot;</span><span class="p">,</span> <span class="s">&quot;A04&quot;</span><span class="p">,</span> <span class="s">&quot;A05&quot;</span><span class="p">,</span> <span class="s">&quot;A06&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+          <span class="s">&quot;value&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">...</span> <span class="p">],</span> <span class="o">...</span> <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+<div class="section" id="id9">
+<h3>3. PUT<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd>None. <code class="docutils literal"><span class="pre">plate_id</span></code> is unique and no <code class="docutils literal"><span class="pre">layout_id</span></code> is necessary.</dd>
+<dt><strong>Input</strong></dt>
+<dd><p class="first">A JSON object with the same format as described in <code class="docutils literal"><span class="pre">GET</span></code>, eg.,</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;plate&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>        <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span>  <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="s">&quot;id&quot;</span>    <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="s">&quot;name&quot;</span>  <span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">,</span>
+          <span class="s">&quot;time&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="s">&quot;00:00:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:05:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:10:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:15:00&quot;</span><span class="p">],</span>
+          <span class="s">&quot;well&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="s">&quot;A01&quot;</span><span class="p">,</span> <span class="s">&quot;A02&quot;</span><span class="p">,</span> <span class="s">&quot;A03&quot;</span><span class="p">,</span> <span class="s">&quot;A04&quot;</span><span class="p">,</span> <span class="s">&quot;A05&quot;</span><span class="p">,</span> <span class="s">&quot;A06&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+          <span class="s">&quot;value&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">...</span> <span class="p">],</span> <span class="o">...</span> <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+<dt><strong>Output</strong></dt>
+<dd><p class="first">Newly altered plate object, eg.,</p>
+<div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;plate&quot;</span><span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>        <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s">&quot;channels&quot;</span>  <span class="p">:</span>
+      <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="s">&quot;id&quot;</span>    <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+          <span class="s">&quot;name&quot;</span>  <span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">,</span>
+          <span class="s">&quot;time&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="s">&quot;00:00:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:05:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:10:00&quot;</span><span class="p">,</span> <span class="s">&quot;00:15:00&quot;</span><span class="p">],</span>
+          <span class="s">&quot;well&quot;</span>  <span class="p">:</span> <span class="p">[</span><span class="s">&quot;A01&quot;</span><span class="p">,</span> <span class="s">&quot;A02&quot;</span><span class="p">,</span> <span class="s">&quot;A03&quot;</span><span class="p">,</span> <span class="s">&quot;A04&quot;</span><span class="p">,</span> <span class="s">&quot;A05&quot;</span><span class="p">,</span> <span class="s">&quot;A06&quot;</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+          <span class="s">&quot;value&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">...</span> <span class="p">],</span> <span class="o">...</span> <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="time-series">
+<h2>5. Time Series<a class="headerlink" href="#time-series" title="Permalink to this headline">¶</a></h2>
+<p>A summary of all HTTP verbs used for this endpoint:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="15%" />
+<col width="85%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Verb</th>
+<th class="head">Function</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GET</td>
+<td>Retrieve information for all experiments</td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="id10">
+<h3>1. GET<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd>None</dd>
+<dt><strong>Input</strong></dt>
+<dd>A JSON object describing query criteria. Mandatory.</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre>{
+  &quot;exp_id&quot;   : &quot;exp_id1&quot;,
+  &quot;channel&quot;  : &quot;GFP&quot;,
+  &quot;factors&quot;  : {
+    &quot;factor1&quot;:  [4.2, 4.2, 42, 42, ...],
+    &quot;factor2&quot;:  [4.2, 4.2, 42, 42, ...],
+    ...
+  }
+}
+</pre></div>
+</div>
+<dl class="docutils">
+<dt><strong>Output</strong></dt>
+<dd>A JSON object containing time series data, for expample:</dd>
+</dl>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;query_id&quot;</span>   <span class="p">:</span> <span class="s">&quot;query_id1&quot;</span><span class="p">,</span>
+  <span class="s">&quot;query&quot;</span> <span class="p">:</span> <span class="p">{},</span>
+  <span class="s">&quot;Result&quot;</span> <span class="p">:</span>
+  <span class="p">[{</span>
+     <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.1618426259</span><span class="p">,</span>
+     <span class="s">&quot;time&quot;</span><span class="p">:</span> <span class="s">&quot;00:00:00&quot;</span><span class="p">,</span>
+     <span class="s">&quot;l&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.6017329022</span><span class="p">,</span>
+     <span class="s">&quot;u&quot;</span><span class="p">:</span> <span class="mf">0.2949717757</span>
+    <span class="p">},{</span>
+     <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.1618426259</span><span class="p">,</span>
+     <span class="s">&quot;time&quot;</span><span class="p">:</span> <span class="s">&quot;00:00:05&quot;</span><span class="p">,</span>
+     <span class="s">&quot;l&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.6017329022</span><span class="p">,</span>
+     <span class="s">&quot;u&quot;</span><span class="p">:</span> <span class="mf">0.2949717757</span>
+    <span class="p">},</span>
+    <span class="o">...</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API Documentation</a><ul>
+<li><a class="reference internal" href="#summary">1. Summary</a></li>
+<li><a class="reference internal" href="#experiment-information">2. Experiment information</a><ul>
+<li><a class="reference internal" href="#id1">1. Summary</a></li>
+<li><a class="reference internal" href="#get">2. GET</a></li>
+<li><a class="reference internal" href="#post">3. POST</a></li>
+<li><a class="reference internal" href="#put">4. PUT</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#layout-information">3. Layout information</a><ul>
+<li><a class="reference internal" href="#id2">1. Summary</a></li>
+<li><a class="reference internal" href="#id3">2. GET</a></li>
+<li><a class="reference internal" href="#id4">3. POST</a></li>
+<li><a class="reference internal" href="#id5">4. PUT</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#plate-information">3. Plate information</a><ul>
+<li><a class="reference internal" href="#id6">1. Summary</a></li>
+<li><a class="reference internal" href="#id7">2. GET</a></li>
+<li><a class="reference internal" href="#id8">2. POST</a></li>
+<li><a class="reference internal" href="#id9">3. PUT</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#time-series">5. Time Series</a><ul>
+<li><a class="reference internal" href="#id10">1. GET</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="design.html"
+                        title="previous chapter">Design of Software</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="database.html"
+                        title="next chapter">Database design</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Ce Gao.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

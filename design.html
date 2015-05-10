@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Design of Software &mdash; TimeVisAn 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TimeVisAn 0.1 documentation" href="index.html" />
+    <link rel="next" title="API Documentation" href="api_v2.html" />
+    <link rel="prev" title="Welcome to TimeVisAn" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="api_v2.html" title="API Documentation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to TimeVisAn"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">TimeVisAn 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="design-of-software">
+<h1>Design of Software<a class="headerlink" href="#design-of-software" title="Permalink to this headline">¶</a></h1>
+<p>The cell array research can be organized at three different levels: experiment,
+layout and plate. Accordingly, the data are organized with these three levels
+too.</p>
+<div class="section" id="experiment">
+<h2>1. Experiment<a class="headerlink" href="#experiment" title="Permalink to this headline">¶</a></h2>
+<p>A single experiment aims to answer one question: how different factors
+(independent variables) influence channels (dependent variables). The experiment
+information consists experiment name, user and number of wells for microplates,
+as well as meta information about factors and channels.</p>
+</div>
+<div class="section" id="layout">
+<h2>2. Layout<a class="headerlink" href="#layout" title="Permalink to this headline">¶</a></h2>
+<p>A unique layout is determined by the specific combination of factors in all the
+wells. For example:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="26%" />
+<col width="26%" />
+<col width="26%" />
+<col width="22%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Well</th>
+<th class="head">Gene</th>
+<th class="head">Dose</th>
+<th class="head">...</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>1</td>
+<td>&#8216;aa&#8217;</td>
+<td>42</td>
+<td>...</td>
+</tr>
+<tr class="row-odd"><td>2</td>
+<td>&#8216;aa&#8217;</td>
+<td>4.2</td>
+<td>...</td>
+</tr>
+<tr class="row-even"><td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="plate">
+<h2>3. Plate<a class="headerlink" href="#plate" title="Permalink to this headline">¶</a></h2>
+<p>A unique plate is foundamental unit of experimetn. Plate information includes
+the experiment measures.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Design of Software</a><ul>
+<li><a class="reference internal" href="#experiment">1. Experiment</a></li>
+<li><a class="reference internal" href="#layout">2. Layout</a></li>
+<li><a class="reference internal" href="#plate">3. Plate</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to TimeVisAn</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api_v2.html"
+                        title="next chapter">API Documentation</a></p>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Ce Gao.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

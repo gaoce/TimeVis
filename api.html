@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API Documentation &mdash; TimeVisAn 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TimeVisAn 0.1 documentation" href="index.html" />
+    <link rel="prev" title="Design of Software" href="design.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="design.html" title="Design of Software"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">TimeVisAn 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="api-documentation">
+<h1>API Documentation<a class="headerlink" href="#api-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="basic-functions">
+<h2>1. Basic functions<a class="headerlink" href="#basic-functions" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="44%" />
+<col width="56%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">URI</th>
+<th class="head">Functions</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">/api/v2/experiment</span></code></td>
+<td>experiment information</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">/api/v2/layout</span></code></td>
+<td>layout information</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">/api/v2/plate</span></code></td>
+<td>plate data</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">/api/v2/timeseries</span></code></td>
+<td>time series data for a gene</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="experiment">
+<h2>2. Experiment<a class="headerlink" href="#experiment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="endpoint">
+<h3>1. Endpoint<a class="headerlink" href="#endpoint" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal"><span class="pre">/api/v2/experiment</span></code></p>
+</div>
+<div class="section" id="http-verbs">
+<h3>2. HTTP verbs<a class="headerlink" href="#http-verbs" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="get">
+<h4>1. Get<a class="headerlink" href="#get" title="Permalink to this headline">¶</a></h4>
+<p>Some source code:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;exp_id1&quot;</span><span class="p">:</span>
+  <span class="p">{</span>
+    <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;exp_name1&quot;</span><span class="p">,</span>
+    <span class="s">&quot;users&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;user1&quot;</span><span class="p">,</span> <span class="s">&quot;user2&quot;</span><span class="p">],</span>
+    <span class="s">&quot;well&quot;</span><span class="p">:</span> <span class="mi">384</span><span class="p">,</span>
+    <span class="s">&quot;chanels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;channel1&quot;</span><span class="p">,</span> <span class="s">&quot;chanel2&quot;</span><span class="p">],</span>
+    <span class="s">&quot;factors&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;factor1&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;decimal&quot;</span><span class="p">}]</span>
+  <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="post">
+<h4>2. Post<a class="headerlink" href="#post" title="Permalink to this headline">¶</a></h4>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API Documentation</a><ul>
+<li><a class="reference internal" href="#basic-functions">1. Basic functions</a></li>
+<li><a class="reference internal" href="#experiment">2. Experiment</a><ul>
+<li><a class="reference internal" href="#endpoint">1. Endpoint</a></li>
+<li><a class="reference internal" href="#http-verbs">2. HTTP verbs</a><ul>
+<li><a class="reference internal" href="#get">1. Get</a></li>
+<li><a class="reference internal" href="#post">2. Post</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="design.html"
+                        title="previous chapter">Design of Software</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/api.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Ce Gao.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      
+      |
+      <a href="_sources/api.txt"
+          rel="nofollow">Page source</a></li>
+    </div>
+
+    
+
+    
+  </body>
+</html>
