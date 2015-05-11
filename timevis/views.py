@@ -378,7 +378,7 @@ class PlateEP(Resource):
 
 
 class TimeSeriesEP(Resource):
-    def get(self):
+    def post(self):
         """
         select values.time, values.value, levels.level
             from values
@@ -397,25 +397,24 @@ class TimeSeriesEP(Resource):
         # need to include "Content-type: application/json"
         # TODO check input validity
         json = request.get_json(force=True)
+        import ipdb; ipdb.set_trace()  # XXX BREAKPOINT
 
-        res = session.query(Value.time, Value.value).\
+        factor_filter = [and_(Factor.id == f['id'], Level.level.in_(f['level']))
+                         for f in json['factors']]
+
+        res = session.query(Value).\
             join(Plate).\
             join(Channel).\
             join(Level, Level.id_layout == Plate.id_layout).\
             join(Factor, Level.id_factor == Factor.id).\
             join(Layout, Plate.id_layout == Layout.id).\
             join(Experiment, Layout.id_experiment == Experiment.id).\
-            order_by(Value.time).\
-            filter(Experiment.id == json['exp_id']).\
+            filter(Experiment.id == json['experiment']).\
             filter(Level.well == Value.well).\
-            filter(Channel.name == json['channel']).\
-            filter(or_(*[and_(Factor.id == f.id, Level.level.in_(f.levels))
-                         for f in json['factors']]
-                       )
-                   ).\
-            all()
+            filter(Channel.id == json['channel']).\
+            filter(and_(*factor_filter)).all()
 
-        return json, res
+        return res
 
 
 api = Api(app)
