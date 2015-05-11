@@ -7,11 +7,11 @@ A visualization tool to visualize gene expression time series data.
 
 We recommend you install the package under virtualenv
 
-    pip install git+https://github.com/gaoce/TimeVisAn
+    pip install git+https://github.com/gaoce/TimeVis
 
 # Documentation
 
-Documentation can be seen from [Github Pages](http://gaoce.github.io/TimeVisAn)
+Documentation can be seen from [Github Pages](http://gaoce.github.io/TimeVis)
 
 # Compatibility
 IE 9 and above
