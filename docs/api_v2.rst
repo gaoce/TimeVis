@@ -725,18 +725,21 @@ A summary of all HTTP verbs used for this endpoint:
         "experiment": eid,
         "channel"   : cid,
         "factors"   :
-        {
-          fid:  fvals,
+        [
+          {
+            "id"    : fid,
+            "level" : flvl,
+          },
           ...
-        }
+        ]
       }
 
     Unquoted variables are
 
-    * ``eid``:    Integer. Experiment ID.
-    * ``cid``:    Integer. Channel ID.
-    * ``fid``:    Integer. Factor ID.
-    * ``fvals``:  Array of strings. Levels of factor.
+    * ``eid``:   Integer. Experiment ID.
+    * ``cid``:   Integer. Channel ID.
+    * ``fid``:   Integer. Factor ID.
+    * ``flvl``:  Array of strings. Levels of factor.
 
 **Output**
     A JSON object containing time series data, for expample:
