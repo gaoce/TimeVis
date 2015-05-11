@@ -133,9 +133,18 @@ class ExperimentEP(Resource):
                "user": e.user,
                "well": e.well,
                "channels": [{"id": c.id, "name": c.name} for c in e.channels],
-               "factors": [{"id": f.id, "name": f.name, "type": f.type}
-                           for f in e.factors]}
+               "factors": [{"id": f.id, "name": f.name, "type": f.type,
+                            "levels": self.uni_lvl(f.id)} for f in e.factors]}
         return ret
+
+    def uni_lvl(self, fid):
+        """Helper function. Get unique levels given a factor ID.
+        """
+        res = []
+        for row in session.query(Level.level).filter_by(id_factor=fid).\
+                distinct().all():
+            res.append(row[0])
+        return res
 
 
 class LayoutEP(Resource):
