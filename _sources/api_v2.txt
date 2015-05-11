@@ -771,5 +771,5 @@ A summary of all HTTP verbs used for this endpoint:
 
     * ``qid``:    Integer. Query ID. Internal use only.
     * ``query``:  Object.  Input query body.
-    * `l` and `u` are lower and upper limits (95% confidence interval) of time
+    * ``l`` and ``u`` are lower and upper limits (95% confidence interval) of time
       series data
