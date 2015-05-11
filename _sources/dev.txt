@@ -21,7 +21,7 @@ following commands.
   $ make html
 
 To see the html files on browser, issue the following commands, then the 
-generated web pages can be access at `http://localhost:8000`
+generated web pages can be access at http://localhost:8000
 
 ::
 
@@ -41,18 +41,4 @@ commands in the root directory. The documentation can be now visited from
 
   # Deploy
   $ make github
-
-2. Developing environment
-=========================
-
-It is recommended that you use `virtualenv
-<https://virtualenv.pypa.io/en/latest/>`_ (or even better, together with
-`virtualenvwrapper <https://virtualenvwrapper.readthedocs.org/en/latest/>`). See
-those websites for instructions.
-
-There are several targets in make system that will come in hand for development.
-See the `Makefile` in the root directory for more information. Some of the
-useful targets are::
-
-  $ make local # Run the software locally on port 8000
 

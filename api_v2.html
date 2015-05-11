@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="TimeVisAn 0.1 documentation" href="index.html" />
     <link rel="next" title="Database design" href="database.html" />
-    <link rel="prev" title="Development" href="dev.html" />
+    <link rel="prev" title="Design of Software" href="design.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -45,7 +45,7 @@
           <a href="database.html" title="Database design"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="dev.html" title="Development"
+          <a href="design.html" title="Design of Software"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">TimeVisAn 0.1 documentation</a> &raquo;</li> 
       </ul>
@@ -86,7 +86,8 @@
 </tr>
 </tbody>
 </table>
-<p>The data exchanged are generally in the following JSON format:</p>
+<p>The data exchanged, except <code class="docutils literal"><span class="pre">timeseries</span></code> are generally in the following JSON
+format:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
   <span class="n">endpoint_name</span><span class="p">:</span> <span class="n">obj_array</span><span class="p">,</span>
 <span class="p">}</span>
@@ -791,43 +792,62 @@ layout should be 0, e.g.,</p>
 <dt><strong>Parameters</strong></dt>
 <dd>None</dd>
 <dt><strong>Input</strong></dt>
-<dd>A JSON object describing query criteria. Mandatory.</dd>
-</dl>
-<div class="highlight-python"><div class="highlight"><pre>{
-  &quot;exp_id&quot;   : &quot;exp_id1&quot;,
-  &quot;channel&quot;  : &quot;GFP&quot;,
-  &quot;factors&quot;  : {
-    &quot;factor1&quot;:  [4.2, 4.2, 42, 42, ...],
-    &quot;factor2&quot;:  [4.2, 4.2, 42, 42, ...],
-    ...
-  }
-}
-</pre></div>
-</div>
-<dl class="docutils">
-<dt><strong>Output</strong></dt>
-<dd>A JSON object containing time series data, for expample:</dd>
-</dl>
+<dd><p class="first">A JSON object describing query criteria. Mandatory.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
-  <span class="s">&quot;query_id&quot;</span>   <span class="p">:</span> <span class="s">&quot;query_id1&quot;</span><span class="p">,</span>
-  <span class="s">&quot;query&quot;</span> <span class="p">:</span> <span class="p">{},</span>
-  <span class="s">&quot;Result&quot;</span> <span class="p">:</span>
-  <span class="p">[{</span>
-     <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.1618426259</span><span class="p">,</span>
-     <span class="s">&quot;time&quot;</span><span class="p">:</span> <span class="s">&quot;00:00:00&quot;</span><span class="p">,</span>
-     <span class="s">&quot;l&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.6017329022</span><span class="p">,</span>
-     <span class="s">&quot;u&quot;</span><span class="p">:</span> <span class="mf">0.2949717757</span>
-    <span class="p">},{</span>
-     <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.1618426259</span><span class="p">,</span>
-     <span class="s">&quot;time&quot;</span><span class="p">:</span> <span class="s">&quot;00:00:05&quot;</span><span class="p">,</span>
-     <span class="s">&quot;l&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.6017329022</span><span class="p">,</span>
-     <span class="s">&quot;u&quot;</span><span class="p">:</span> <span class="mf">0.2949717757</span>
+  <span class="s">&quot;experiment&quot;</span><span class="p">:</span> <span class="n">eid</span><span class="p">,</span>
+  <span class="s">&quot;channel&quot;</span>   <span class="p">:</span> <span class="n">cid</span><span class="p">,</span>
+  <span class="s">&quot;factors&quot;</span>   <span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="s">&quot;id&quot;</span>    <span class="p">:</span> <span class="n">fid</span><span class="p">,</span>
+      <span class="s">&quot;level&quot;</span> <span class="p">:</span> <span class="n">flvl</span><span class="p">,</span>
     <span class="p">},</span>
     <span class="o">...</span>
   <span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p>Unquoted variables are</p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">eid</span></code>:   Integer. Experiment ID.</li>
+<li><code class="docutils literal"><span class="pre">cid</span></code>:   Integer. Channel ID.</li>
+<li><code class="docutils literal"><span class="pre">fid</span></code>:   Integer. Factor ID.</li>
+<li><code class="docutils literal"><span class="pre">flvl</span></code>:  Array of strings. Levels of factor.</li>
+</ul>
+</dd>
+<dt><strong>Output</strong></dt>
+<dd><p class="first">A JSON object containing time series data, for expample:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+  <span class="s">&quot;id&quot;</span>     <span class="p">:</span> <span class="n">qid</span><span class="p">,</span>
+  <span class="s">&quot;query&quot;</span>  <span class="p">:</span> <span class="n">query</span><span class="p">,</span>
+  <span class="s">&quot;result&quot;</span> <span class="p">:</span>
+  <span class="p">[</span>
+    <span class="p">{</span>
+     <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.1618426259</span><span class="p">,</span>
+     <span class="s">&quot;time&quot;</span> <span class="p">:</span> <span class="s">&quot;00:00:00&quot;</span><span class="p">,</span>
+     <span class="s">&quot;l&quot;</span>    <span class="p">:</span> <span class="o">-</span><span class="mf">2.6017329022</span><span class="p">,</span>
+     <span class="s">&quot;u&quot;</span>    <span class="p">:</span> <span class="mf">0.2949717757</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+     <span class="s">&quot;value&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.1618426259</span><span class="p">,</span>
+     <span class="s">&quot;time&quot;</span> <span class="p">:</span> <span class="s">&quot;00:00:05&quot;</span><span class="p">,</span>
+     <span class="s">&quot;l&quot;</span>    <span class="p">:</span> <span class="o">-</span><span class="mf">2.6017329022</span><span class="p">,</span>
+     <span class="s">&quot;u&quot;</span>    <span class="p">:</span> <span class="mf">0.2949717757</span>
+    <span class="p">},</span>
+    <span class="o">...</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Unquoted variables are</p>
+<ul class="last simple">
+<li><code class="docutils literal"><span class="pre">qid</span></code>:    Integer. Query ID. Internal use only.</li>
+<li><code class="docutils literal"><span class="pre">query</span></code>:  Object.  Input query body.</li>
+<li><cite>l</cite> and <cite>u</cite> are lower and upper limits (95% confidence interval) of time
+series data</li>
+</ul>
+</dd>
+</dl>
 </div>
 </div>
 </div>
@@ -872,8 +892,8 @@ layout should be 0, e.g.,</p>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="dev.html"
-                        title="previous chapter">Development</a></p>
+  <p class="topless"><a href="design.html"
+                        title="previous chapter">Design of Software</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="database.html"
                         title="next chapter">Database design</a></p>
