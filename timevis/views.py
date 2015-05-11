@@ -3,9 +3,8 @@ from flask import render_template, request
 from flask.ext.restful import Api, Resource, reqparse
 from timevis.models import (Experiment, Layout, Factor, Channel, Level, Plate,
                             Value, session)
-from sqlalchemy import and_, or_
-
 from datetime import datetime
+from sqlalchemy.orm import aliased
 
 
 @app.route('/')
@@ -397,23 +396,21 @@ class TimeSeriesEP(Resource):
         # need to include "Content-type: application/json"
         # TODO check input validity
         json = request.get_json(force=True)
-        import ipdb; ipdb.set_trace()  # XXX BREAKPOINT
 
-        factor_filter = [and_(Factor.id == f['id'], Level.level.in_(f['level']))
-                         for f in json['factors']]
-
-        res = session.query(Value).\
+        q = session.query(Value).\
             join(Plate).\
             join(Channel).\
-            join(Level, Level.id_layout == Plate.id_layout).\
-            join(Factor, Level.id_factor == Factor.id).\
-            join(Layout, Plate.id_layout == Layout.id).\
-            join(Experiment, Layout.id_experiment == Experiment.id).\
-            filter(Experiment.id == json['experiment']).\
-            filter(Level.well == Value.well).\
-            filter(Channel.id == json['channel']).\
-            filter(and_(*factor_filter)).all()
+            filter(Channel.id == json['channel'])
 
+        for f in json['factors']:
+            Level_a = aliased(Level)
+            Factor_a = aliased(Factor)
+            q = q.join(Level_a, Level_a.well == Value.well).\
+                join(Factor_a, Factor_a.id == Level_a.id_factor).\
+                filter(Level_a.level.in_(f['level'])).\
+                filter(Factor_a.id == f['id'])
+
+        res = q.all()
         return res
 
 
