@@ -1,2 +1,2 @@
 # Ignore everything except docs, Makefile and all generated pages
-timevis/
+timevis/*
