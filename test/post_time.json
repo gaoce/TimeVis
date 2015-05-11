@@ -1,0 +1,15 @@
+{
+  "experiment": 1,
+  "channel"   : 1,
+  "factors"   : 
+  [
+    {
+      "id"    : 1,
+      "level" : ["42"]
+    },
+    {
+      "id"    : 2,
+      "level" : ["cc"]
+    }
+  ]
+}

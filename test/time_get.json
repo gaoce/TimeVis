@@ -1,9 +1,0 @@
-      {
-        "experiment": eid,
-        "channel"   : cid,
-        "factors"   : 
-        {
-          fid:  fvals,
-          ...
-        }
-      }
