@@ -5,6 +5,9 @@ from timevis.models import (Experiment, Layout, Factor, Channel, Level, Plate,
                             Value, session)
 from datetime import datetime
 from sqlalchemy.orm import aliased
+import pandas
+from scikits.bootstrap import ci
+from numpy import mean
 
 
 @app.route('/')
@@ -397,7 +400,7 @@ class TimeSeriesEP(Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
-        q = session.query(Value).\
+        q = session.query(Value.time, Value.value).\
             join(Plate).\
             join(Channel).\
             filter(Channel.id == json['channel'])
@@ -410,8 +413,10 @@ class TimeSeriesEP(Resource):
                 filter(Level_a.level.in_(f['level'])).\
                 filter(Factor_a.id == f['id'])
 
-        res = q.all()
-        return res
+        # Get data frame
+        df = pandas.read_sql(q.statement, q.session.bind)
+        res = df.groupby(['time']+col_names).aggregate([mean, ci])
+        return json
 
 
 api = Api(app)
