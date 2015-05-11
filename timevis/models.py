@@ -20,6 +20,7 @@ Base = declarative_base()
 db_path = os.path.join(os.path.dirname(__file__), 'db', 'timevis.db')
 engine = create_engine('sqlite:///{}'.format(db_path))
 Session = sessionmaker(bind=engine)
+session = Session()
 
 
 class Experiment(Base):
@@ -31,7 +32,6 @@ class Experiment(Base):
     """
 
     __tablename__ = 'experiments'
-
     id = Column(Integer, primary_key=True)
 
     # Experiment name, must be unique
@@ -57,7 +57,6 @@ class Factor(Base):
         levels
     """
     __tablename__ = 'factors'
-
     id = Column(Integer, primary_key=True)
 
     # Name of factor, usually a controlled condition, like dose
@@ -85,8 +84,9 @@ class Channel(Base):
         values
     """
     __tablename__ = 'channels'
-
     id = Column(Integer, primary_key=True)
+
+    # Channel name
     name = Column(String(255), nullable=False)
 
     # Foreign key
@@ -109,8 +109,9 @@ class Layout(Base):
         levels
     """
     __tablename__ = 'layouts'
-
     id = Column(Integer, primary_key=True)
+
+    # Layout name
     name = Column(String, nullable=False)
 
     # Foreign key
@@ -131,7 +132,6 @@ class Plate(Base):
         values
     """
     __tablename__ = 'plates'
-
     id = Column(Integer, primary_key=True)
 
     # Foreign key
@@ -148,7 +148,6 @@ class Level(Base):
     """A table contains all factor levels for different layouts
     """
     __tablename__ = 'levels'
-
     id = Column(Integer, primary_key=True)
 
     # Well name, eg, "A01" or "C04"
@@ -179,7 +178,6 @@ class Value(Base):
     """A table contains all time series data
     """
     __tablename__ = 'values'
-
     id = Column(Integer, primary_key=True)
 
     # Well name, eg, "A01" or "C04"
