@@ -41,6 +41,31 @@
                 </tbody>
             </table>
 
+            <h2 class="table-title">Factors</h2>
+            <p class="table-title">(Independent Variables)</p>
+            <table class="table table-bordered" width="70%">
+                <thead>
+                    <tr>
+                        <th width="40%">Name</th>
+                        <th width="35%">Type</th>
+                        <th width="25%"><button class="btn btn-primary" data-bind='click: add_fact'>Add Factor</button></th>
+                    </tr>
+                </thead>
+                <tbody data-bind='foreach: exp_fact'>
+                    <tr>
+                        <td>
+                            <p class="plain"><input class="form-control" data-bind="value: name" /></p>
+                        </td>
+                        <td>
+                            <select class="form-control" data-bind='options: $parent.var_types, optionsCaption: "Select...", value: type'> </select>
+                        </td>
+                        <td>
+                            <a href='#' data-bind='click: $parent.del_fact'>Remove</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
             <h2 class="table-title">Channels</h2>
             <p class="table-title">(Dependent Variables)</p>
             <table class="table table-bordered">
@@ -63,34 +88,8 @@
                     </tr>
                 </tbody>
             </table>
-
-            <h2 class="table-title">Factors</h2>
-            <p class="table-title">(Independent Variables)</p>
-            <table class="table table-bordered" width="70%">
-                <thead>
-                    <tr>
-                        <th width="40%">Name</th>
-                        <th width="35%">Type</th>
-                        <th width="25%"><button class="btn btn-primary"
-                                data-bind='click: add_fact'>Add Factor</button></th>
-                    </tr>
-                </thead>
-                <tbody data-bind='foreach: exp_fact'>
-                    <tr>
-                        <td>
-                            <p class="plain"><input class="form-control" data-bind="value: name" /></p>
-                        </td>
-                        <td>
-                            <select class="form-control" data-bind='options: $parent.var_types, optionsCaption: "Select...", value: type'> </select>
-                        </td>
-                        <td>
-                            <a href='#' data-bind='click: $parent.del_fact'>Remove</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <button class="btn btn-primary" data-bind="visible:fun()=='old', click: update_exp">Update</button>
-            <button class="btn btn-primary" data-bind="visible:fun()=='new'">Add</button>
+            <button class="btn btn-primary" data-bind="visible:fun()=='old', click: update_exp">Update Experiment</button>
+            <button class="btn btn-primary" data-bind="visible:fun()=='new'">Add Experiment</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 </div>

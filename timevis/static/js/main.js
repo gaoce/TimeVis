@@ -27,6 +27,9 @@ function viewModel(){
     // Experiment subpage
     self.exp = new ExpVM();
 
+    // Experiment subpage
+    self.gene = new GeneVM();
+
     // ========================================================================
     // Layout subpage
     // ========================================================================
@@ -43,42 +46,6 @@ function viewModel(){
     // Visualize plate
     self.vis_plate = ko.observable(false);
 
-    // ========================================================================
-    // Genes Vis: Factor selection and query
-    // ========================================================================
-    // Available factor for visualization
-    self.factors = getFactors();
-
-    // Factor chosen to be added
-    self.factor_chosen = ko.observable();
-
-    // Factor selected
-    self.factor_panels = ko.observableArray();
-
-    // Add a factor selection panel
-    self.add_panel = function() {
-        if (self.factor_chosen()){
-            self.factor_panels.push(self.factor_chosen());
-            self.factors.remove(self.factor_chosen());
-            self.factor_chosen();
-        }
-    };
-
-    // Remove a factor
-    self.del_panel = function(fact) {
-        self.factor_panels.remove(fact);
-        self.factors.push(fact);
-        self.factors.sort(function(left, right) {
-            return left.name == right.name ? 0 :
-            (left.name < right.name ? -1 : 1)
-        });
-        self.factor_chosen();
-
-        // console.log(fact);
-        // self.factor_panels.remove(fact)
-        // fact._destroy = false;
-        // self.factors.valueHasMutated();
-    };
 
     // ========================================================================
     // Genes Vis: Time series curve vis
@@ -88,9 +55,9 @@ function viewModel(){
 
 }
 
-// ========================================================================
-// Experiment viewModel class
-// ========================================================================
+// ============================================================================
+// Experiment View Model
+// ============================================================================
 function ExpVM() {
     var self = this;
 
@@ -195,11 +162,87 @@ function ExpVM() {
     self.del_fact = function(fact) { self.exp_fact.remove(fact) };
 }
 
-// ========================================================================
+// ============================================================================
+// Gene View Model
+// ============================================================================
+function GeneVM() {
+    var self = this;
+
+    // =====================
+    // Experiment objs
+    // =====================
+    self.experiments = ko.observableArray();
+    self.current_exp = ko.observable();           // Current experiment
+
+
+    // TODO: trigger by switching to gene page.
+    $.ajax({
+        url: "/api/v2/experiment",
+        type: "GET",
+        success: function(data){
+            for (e in data.experiment){
+                self.experiments.push(data.experiment[e]);
+            }
+        }
+    });
+
+    // ========================================================================
+    // Factor selection and query
+    // ========================================================================
+    self.current_exp.subscribe(function(exp){
+        // Fill in self.factors
+        if (exp){
+            self.factors([]);
+            for (var i in exp.factors){
+                f = exp.factors[i];
+                self.factors.push(new Factor(f.id, f.name, f.levels))
+            }
+        } else {
+            self.factor_panels.removeAll();
+        }
+    });
+    // Available factor for visualization
+    self.factors = ko.observableArray();
+
+    // Factor selected
+    self.factor_panels = ko.observableArray();
+
+    // Factor chosen to be added
+    self.factor_chosen = ko.observable();
+
+    // Add a factor selection panel
+    self.add_panel = function() {
+        if (self.factor_chosen()){
+            self.factor_panels.push(self.factor_chosen());
+            self.factors.remove(self.factor_chosen());
+            self.factor_chosen(null);
+        }
+    };
+
+    // Remove a factor
+    self.del_panel = function(fact) {
+        self.factor_panels.remove(fact);
+        self.factors.push(fact);
+        self.factors.sort(function(left, right) {
+            return left.name == right.name ? 0 :
+            (left.name < right.name ? -1 : 1)
+        });
+        self.factor_chosen();
+    };
+
+    // ========================================================================
+    // Visualization
+    // ========================================================================
+    self.visualize = function(){};
+    self.row = ko.observable();           // Current experiment
+}
+
+// ============================================================================
 // Experiment class
-// ========================================================================
+// ============================================================================
 function Exp(name, user, well_num) {
     var self = this;
+    self.id = eid;
     self.name = name;
     self.user = user;
     self.well_num = 96;
@@ -207,50 +250,59 @@ function Exp(name, user, well_num) {
     self.layouts = ko.observableArray();
 }
 
+
+// ============================================================================
+// Factor class
+// ============================================================================
+var Factor = function(id, name, levels) {
+    var self = this;
+    self.id = id;
+    self.name = name;
+    self.query = ko.observable();
+
+    //TODO keep the selection status while hidden
+    self.query.subscribe(function(val){
+        // check if string is empty
+        if (val){
+            for (g in self.levels()){
+                if (self.levels()[g].name.search(val) === -1){
+                    self.levels()[g]._destroy = true;
+                } else {
+                    self.levels()[g]._destroy = false;
+                }
+            }
+        } else {
+            for (g in self.levels()){
+                self.levels()[g]._destroy = false;
+            }
+        }
+        self.levels.valueHasMutated();
+    }, self);
+
+    self.levels = ko.observableArray();
+    for (var i in levels){
+        self.levels.push(new Level(levels[i]))
+    }
+
+    self.chosen_levels = ko.observableArray();
+}
+
 // ========================================================================
-// Experiment class
+// Layout class
 // ========================================================================
 function Layout(name, well_num) {
     var self = this;
 }
 
 // Get Factor for experiment
-// return a observableArray of FactorPanel
+// return a observableArray of Factor
 function getFactors(exp) {
-    return ko.observableArray([new FactorPanel('A'),
-                               new FactorPanel('B')]);
+    return ko.observableArray([new Factor('A'),
+                               new Factor('B')]);
 }
 
 // Search
-function searchLevel(val) {
-    var self = this;
-    // check if string is empty
-    if (val){
-        for (g in self.levels()){
-            if (self.levels()[g].name.search(val) === -1){
-                self.levels()[g]._destroy = true;
-            } else {
-                self.levels()[g]._destroy = false;
-            }
-        }
-    } else {
-        for (g in self.levels()){
-            self.levels()[g]._destroy = false;
-        }
-    }
-    self.levels.valueHasMutated();
-}
 
-// Factor class
-var FactorPanel = function(name) {
-    var self = this;
-    self.name = name;
-    self.query = ko.observable();
-    self.query.subscribe(searchLevel, self);
-
-    self.levels = ko.observableArray([new Level('1'), new Level('2')]);
-    self.chosen_levels = ko.observable([]);
-}
 
 var Level = function(name){
     var self = this;

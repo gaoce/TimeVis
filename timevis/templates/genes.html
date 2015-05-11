@@ -1,15 +1,15 @@
-<div class="container" data-bind="visible: opt()=='genes'">
+<div class="container" data-bind="with:gene, visible: $root.opt()=='genes' ">
     {# Tabs: place holder to keep UI consistent, nothing happens here -#}
     <div class="row">
         <div class="col-md-6">
-          <ul class="nav nav-tabs" role="tablist" id="import-tabs">
-              <li role="presentation" class="active">
-                  <a role="tab" data-toggle="tab" href="#">Genes View</a>
+          <ul class="nav nav-tabs">
+              <li class="active">
+                  <a href="#">Gene View</a>
               </li>
           </ul>
         </div>
     </div> <!-- row -->
-    {# Select exp and layout -#}
+    {# Experiment and layout panel -#}
     <div class="row">
         <div class="col-md-4">
             <div class="sep"></div>
@@ -18,7 +18,7 @@
                     <tr>
                         <td>Experiment</th>
                         <td>
-                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Experiment...'"></select>
+                            <select class="form-control auto-width" data-bind="options: experiments, value: current_exp, optionsText:'name', optionsCaption: 'Select Experiment...'"></select>
                         </td>
                     </tr>
                     <tr>
@@ -33,6 +33,7 @@
             </table>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
+
     {# Factor Panels: each panel is a box allowing user the select levels -#}
     <div class="row">
         {# Leave some space to the top -#}
@@ -43,14 +44,15 @@
                 <h3 class="plain" data-bind="text: name"></h3>
                 {# Search box to filter levels -#}
                 <input class="form-control" placeholder="Search…" type="search" autocomplete="off" data-bind="value: query, valueUpdate: 'keyup'">
-                <select class="form-control" multiple="multiple" data-bind="options: levels, optionsText: 'name', selectedOptions: chosen_levels"></select>
+                <select class="form-control" multiple="multiple" data-bind="options: levels, optionsText:'name', selectedOptions: chosen_levels"></select>
                 {# Delete button -#}
-                <button class="btn btn-primary center-block" data-bind='click: $root.del_panel'>Remove</button>
+                <button class="btn btn-primary center-block" data-bind='click: $parent.del_panel'>Remove</button>
             </div> <!-- col-md-x -->
         </div> <!-- col-md-x -->
     </div> <!-- row -->
+
     {# Start Visualization #}
-    <button class="btn btn-primary" data-bind="click: function(){}">Visualize</button>
+    <button class="btn btn-primary" data-bind="click: visualize">Visualize</button>
     {# Canvas #}
     <div class="row">
         <div id="time_canvas" class="col-md-8 fix-300" data-bind="foreach: row">
