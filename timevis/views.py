@@ -2,7 +2,8 @@ from timevis import app
 from flask import render_template, request
 from flask.ext.restful import Api, Resource, reqparse
 from timevis.models import (Experiment, Layout, Factor, Channel, Level, Plate,
-                            Value, Session)
+                            Value, session)
+from sqlalchemy import and_, or_
 
 from datetime import datetime
 
@@ -20,12 +21,8 @@ class ExperimentEP(Resource):
         # Result
         ret = {"experiment": []}
 
-        # Create query session
-        # TODO: session scope and context manager
-        s = Session()
-
         # Get Experiment instance and fill in the result dict
-        for e in s.query(Experiment).all():
+        for e in session.query(Experiment).all():
             ret["experiment"].append(self.construct_exp(e))
 
         return ret
@@ -35,9 +32,6 @@ class ExperimentEP(Resource):
             1. Create a new record in Experiment table;
             2. Create new records in Channel and Factor tables.
         """
-        # Create query session
-        s = Session()
-
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
         # TODO check input validity
@@ -65,9 +59,9 @@ class ExperimentEP(Resource):
                 Factor(name=f['name'], type=f['type'], experiment=e)
 
             # Commit the changes for experiment, channels and factors
-            s.add(e)
+            session.add(e)
             # TODO try except
-            s.commit()
+            session.commit()
 
             experiments.append(self.construct_exp(e))
 
@@ -79,9 +73,6 @@ class ExperimentEP(Resource):
             1. Update experiment record;
             3. Add new channel and factor records
         """
-
-        # Create query session
-        s = Session()
 
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
@@ -96,11 +87,11 @@ class ExperimentEP(Resource):
             eid = obj['id']
             # Exp record must exist and be only one
             # TODO try except
-            e = s.query(Experiment).filter_by(id=eid).one()
+            e = session.query(Experiment).filter_by(id=eid).one()
             e.name, e.user, e.well = obj['name'], obj['user'], obj['well']
 
             # Update channel record in database, delete un-associated channel
-            for c in s.query(Channel).filter_by(id_experiment=eid).all():
+            for c in session.query(Channel).filter_by(id_experiment=eid).all():
                 # A flag
                 found_c = 0
                 for ch in obj['channels']:
@@ -111,9 +102,9 @@ class ExperimentEP(Resource):
                         # considered it too dangerous
                         break
                 if found_c == 0:
-                    s.delete(c)
+                    session.delete(c)
 
-            for f in s.query(Factor).filter_by(id_experiment=eid).all():
+            for f in session.query(Factor).filter_by(id_experiment=eid).all():
                 # A flag
                 found_f = 0
                 for fa in obj['factors']:
@@ -122,11 +113,11 @@ class ExperimentEP(Resource):
                         found_f = 1
                         break
                 if found_f == 0:
-                    s.delete(f)
+                    session.delete(f)
 
             # Commit the changes
             # TODO try except
-            s.commit()
+            session.commit()
             experiments.append(self.construct_exp(e))
 
         # Return the updated experiment obj
@@ -156,25 +147,22 @@ class LayoutEP(Resource):
         args = parser.parse_args()
         eid = args.eid
 
-        # Create query session
-        s = Session()
-
         # Result
         ret = {"layout": []}
 
-        for l in s.query(Layout).filter_by(id_experiment=eid).all():
+        for l in session.query(Layout).filter_by(id_experiment=eid).all():
             layout_obj = {}
             layout_obj["id"] = l.id
             layout_obj["name"] = l.name
             layout_obj["factors"] = []
 
-            for f in s.query(Factor).filter_by(id_experiment=eid).all():
+            for f in session.query(Factor).filter_by(id_experiment=eid).all():
                 fac = {}
                 fac['id'] = f.id
                 fac['name'] = f.name
                 fac['levels'] = {}
 
-                for well, lvl in s.query(Level.well, Level.level).\
+                for well, lvl in session.query(Level.well, Level.level).\
                         filter(Level.id_factor == f.id).\
                         filter(Level.id_layout == l.id).all():
                     fac['levels'][well] = lvl
@@ -194,9 +182,6 @@ class LayoutEP(Resource):
         parser.add_argument('eid', type=int, help="experiment id")
         args = parser.parse_args()
         eid = args.eid
-
-        # Create query session
-        s = Session()
 
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
@@ -220,8 +205,8 @@ class LayoutEP(Resource):
             layouts.append(l)
 
         # Commit the changes
-        s.add_all(layouts)
-        s.commit()
+        session.add_all(layouts)
+        session.commit()
 
         for idx, l in enumerate(layouts):
             # Only Layout id is changed (a new one is given)
@@ -237,14 +222,11 @@ class LayoutEP(Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
-        # Create query session
-        s = Session()
-
         # Get layout id and data
         for data in json["layout"]:
             # Got layout obj and modify it
             lid = data['id']
-            l = s.query(Layout).filter_by(id=lid)
+            l = session.query(Layout).filter_by(id=lid)
             l.name = data['name']
 
             # Update level records
@@ -253,13 +235,13 @@ class LayoutEP(Resource):
                 fid = f['id']
                 flvl = f['levels']
                 # levels = []
-                for lvl in s.query(Level).\
+                for lvl in session.query(Level).\
                         filter(Level.id_layout == lid).\
                         filter(Level.id_factor == fid).all():
                     lvl.level = flvl[lvl.well]
 
         # Commit the changes
-        s.commit()
+        session.commit()
 
         # Nothing to change, really
         return json
@@ -279,11 +261,8 @@ class PlateEP(Resource):
         # Return value
         ret = {"plate": []}
 
-        # Create query session
-        s = Session()
-
         # Layout obj
-        l = s.query(Layout).filter_by(id=lid).first()
+        l = session.query(Layout).filter_by(id=lid).first()
 
         # Plate inside layout
         for p in l.plates:
@@ -291,14 +270,15 @@ class PlateEP(Resource):
 
             for ch in l.experiment.channels:
                 ch_obj = {"id": ch.id, "name": ch.name, "value": []}
-                ch_obj['time'] = [str(t[0]) for t in s.query(Value.time).
+                ch_obj['time'] = [str(t[0]) for t in session.query(Value.time).
                                   distinct().order_by(Value.time).all()]
-                ch_obj['well'] = [v[0] for v in s.query(Value.well).distinct().
-                                  order_by(Value.well).all()]
+                ch_obj['well'] = [v[0] for v in session.query(Value.well).
+                                  distinct().order_by(Value.well).all()]
                 # Current time point
                 curr_time = None
                 values = None
-                for v in s.query(Value).order_by(Value.time, Value.well).all():
+                for v in session.query(Value).order_by(Value.time, Value.well).\
+                        all():
                     if curr_time != v.time:
                         curr_time = v.time
                         # Just finish a loop
@@ -329,9 +309,6 @@ class PlateEP(Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
-        # Create query session
-        s = Session()
-
         # For commit purpose
         plates = []
 
@@ -341,7 +318,7 @@ class PlateEP(Resource):
             plates.append(p)
 
             for ch in data['channels']:
-                c = s.query(Channel).filter_by(id=ch['id']).first()
+                c = session.query(Channel).filter_by(id=ch['id']).first()
 
                 # Parse time
                 time_array = [datetime.strptime(t, "%H:%M:%S").time()
@@ -351,9 +328,9 @@ class PlateEP(Resource):
                     for well, val in zip(well_array, val_array):
                         Value(well=well, time=t, value=val, plate=p, channel=c)
 
-        s.add_all(plates)
+        session.add_all(plates)
         try:
-            s.commit()
+            session.commit()
         except Exception as e:
             print e
             return 'failed'
@@ -370,9 +347,6 @@ class PlateEP(Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
-        # Create query session
-        s = Session()
-
         # Newly created value
         values = []
 
@@ -380,12 +354,12 @@ class PlateEP(Resource):
         for data in json['plate']:
             # Plate id
             pid = data['id']
-            p = s.query(Plate).filter_by(id=pid).first()
+            p = session.query(Plate).filter_by(id=pid).first()
 
-            s.query(Value).filter_by(id_plate=pid).delete()
+            session.query(Value).filter_by(id_plate=pid).delete()
 
             for ch in data['channels']:
-                c = s.query(Channel).filter_by(id=ch['id']).first()
+                c = session.query(Channel).filter_by(id=ch['id']).first()
 
                 # Parse time
                 time_array = [datetime.strptime(t, "%H:%M:%S").time()
@@ -396,8 +370,8 @@ class PlateEP(Resource):
                         values.append(Value(well=well, time=t, value=val,
                                             plate=p, channel=c))
 
-        s.add_all(values)
-        s.commit()
+        session.add_all(values)
+        session.commit()
 
         # Nothing to change
         return json
@@ -406,13 +380,42 @@ class PlateEP(Resource):
 class TimeSeriesEP(Resource):
     def get(self):
         """
-        sqlite> select "values".time, "values".value, levels.level from "values" join plates join channels join levels on plates.id_layout = levels.id_layout join factors on levels.id_factor = factors.id where channels.id = 1 and ((factors.id=2 and levels.level in ('42', 'bb')) or (factors.id=1));
+        select values.time, values.value, levels.level
+            from values
+                join plates
+                join channels
+                join levels on plates.id_layout = levels.id_layout
+                join factors on levels.id_factor = factors.id
+            where channels.id = 1 and
+                ((factors.id=2 and
+                  levels.level in ('42', 'bb')) or
+                  (factors.id=1)
+                );
 
         """
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
         # TODO check input validity
         json = request.get_json(force=True)
+
+        res = session.query(Value.time, Value.value).\
+            join(Plate).\
+            join(Channel).\
+            join(Level, Level.id_layout == Plate.id_layout).\
+            join(Factor, Level.id_factor == Factor.id).\
+            join(Layout, Plate.id_layout == Layout.id).\
+            join(Experiment, Layout.id_experiment == Experiment.id).\
+            order_by(Value.time).\
+            filter(Experiment.id == json['exp_id']).\
+            filter(Level.well == Value.well).\
+            filter(Channel.name == json['channel']).\
+            filter(or_(*[and_(Factor.id == f.id, Level.level.in_(f.levels))
+                         for f in json['factors']]
+                       )
+                   ).\
+            all()
+
+        return json, res
 
 
 api = Api(app)

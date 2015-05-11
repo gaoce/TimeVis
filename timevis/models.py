@@ -20,6 +20,7 @@ Base = declarative_base()
 db_path = os.path.join(os.path.dirname(__file__), 'db', 'timevis.db')
 engine = create_engine('sqlite:///{}'.format(db_path))
 Session = sessionmaker(bind=engine)
+session = Session()
 
 
 class Experiment(Base):
