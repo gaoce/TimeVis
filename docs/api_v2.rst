@@ -20,7 +20,8 @@ The endpoints are summarized in the following table:
 | ``/api/v2/timeseries`` | (Transformed) time series data  |
 +------------------------+---------------------------------+
 
-The data exchanged are generally in the following JSON format:
+The data exchanged, except ``timeseries`` are generally in the following JSON
+format:
 
 ::
 
@@ -29,8 +30,8 @@ The data exchanged are generally in the following JSON format:
   }
 
 ``endpoint_name``
-    Name of the endpoint, could be ``experiment``, ``layout``, etc. 
-``obj_array`` 
+    Name of the endpoint, could be ``experiment``, ``layout``, etc.
+``obj_array``
 	An array of objects describing experiment, layout, etc, as discussed below.
 
 ..
@@ -718,38 +719,57 @@ A summary of all HTTP verbs used for this endpoint:
 **Input**
     A JSON object describing query criteria. Mandatory.
 
-::
+    ::
 
-  {
-    "exp_id"   : "exp_id1",
-    "channel"  : "GFP",
-    "factors"  : {
-      "factor1":  [4.2, 4.2, 42, 42, ...],
-      "factor2":  [4.2, 4.2, 42, 42, ...],
-      ...
-    }
-  }
+      {
+        "experiment": eid,
+        "channel"   : cid,
+        "factors"   :
+        [
+          {
+            "id"    : fid,
+            "level" : flvl,
+          },
+          ...
+        ]
+      }
+
+    Unquoted variables are
+
+    * ``eid``:   Integer. Experiment ID.
+    * ``cid``:   Integer. Channel ID.
+    * ``fid``:   Integer. Factor ID.
+    * ``flvl``:  Array of strings. Levels of factor.
 
 **Output**
-  A JSON object containing time series data, for expample:
+    A JSON object containing time series data, for expample:
 
-::
+    ::
 
-  {
-    "query_id"   : "query_id1",
-    "query" : {},
-    "Result" :
-    [{
-       "value": -1.1618426259,
-       "time": "00:00:00",
-       "l": -2.6017329022,
-       "u": 0.2949717757
-      },{
-       "value": -1.1618426259,
-       "time": "00:00:05",
-       "l": -2.6017329022,
-       "u": 0.2949717757
-      },
-      ...
-    ]
-  }
+      {
+        "id"     : qid,
+        "query"  : query,
+        "result" :
+        [
+          {
+           "value": -1.1618426259,
+           "time" : "00:00:00",
+           "l"    : -2.6017329022,
+           "u"    : 0.2949717757
+          },
+          {
+           "value": -1.1618426259,
+           "time" : "00:00:05",
+           "l"    : -2.6017329022,
+           "u"    : 0.2949717757
+          },
+          ...
+        ]
+      }
+
+    Unquoted variables are
+
+    * ``qid``:    Integer. Query ID. Internal use only.
+    * ``query``:  Object.  Input query body.
+    * ``l`` and ``u`` are lower and upper limits (95% confidence interval) of time
+      series data
