@@ -11,7 +11,7 @@ We recommend you install the package under virtualenv
 
 # Documentation
 
-Documentation can be seen from [Github Pages](http://gaoce.github.io/TimeVis)
+Documentation can be seen from [Github Page](http://gaoce.github.io/TimeVis)
 
 # Compatibility
 IE 9 and above
