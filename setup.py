@@ -33,6 +33,7 @@ setup(
         "Flask>=0.10.1",
         "Flask-RESTful>=0.3.1",
         "SQLAlchemy>=1.0.3",
+        "pandas>=0.16.1",
     ],
     packages=['timevis'],
     package_dir={"timevis": "timevis"},
