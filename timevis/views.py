@@ -415,8 +415,21 @@ class TimeSeriesEP(Resource):
 
         # Get data frame
         df = pandas.read_sql(q.statement, q.session.bind)
-        res = df.groupby(['time']+col_names).aggregate([mean, ci])
-        return json
+
+        def cc(x):
+            cis = ci(x)
+            return (cis[1] - cis[0])/2
+
+        res = {'id': 0, 'query': json, 'result': []}
+        df_g = df.groupby(['time']).aggregate([mean, cc])
+        for row in df_g.iterrows():
+            res['result'].append({
+                "value": row[1][0],
+                "time": str(row[0]),
+                "l": row[1][0] - row[1][1],
+                "u": row[1][0] + row[1][1]})
+
+        return res
 
 
 api = Api(app)
