@@ -30,6 +30,9 @@ restart-devserver: stopdevserver run
 
 # Run without deployment
 local: init-db
+	python run.py
+
+local-bg: init-db
 	python run.py &
 
 stop-local:
@@ -39,7 +42,6 @@ restart-local: stop-local local
 
 local-test:
 	cd test; make -f Makefile all
-
 
 github:
 	@echo "Issue this command after checking out to gh-pages branch"

@@ -5,6 +5,7 @@ from timevis.models import (Experiment, Layout, Factor, Channel, Level, Plate,
                             Value, session)
 from datetime import datetime
 from sqlalchemy.orm import aliased
+from sqlalchemy.exc import SQLAlchemyError
 import pandas
 from scikits.bootstrap import ci
 from numpy import mean
@@ -62,8 +63,11 @@ class ExperimentEP(Resource):
 
             # Commit the changes for experiment, channels and factors
             session.add(e)
-            # TODO try except
-            session.commit()
+            try:
+                session.commit()
+            except SQLAlchemyError as e:
+                session.rollback()
+                return {"experiment": e.message}
 
             experiments.append(self.construct_exp(e))
 
@@ -75,7 +79,6 @@ class ExperimentEP(Resource):
             1. Update experiment record;
             3. Add new channel and factor records
         """
-
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
         # TODO check input validity
@@ -88,20 +91,17 @@ class ExperimentEP(Resource):
         for obj in json['experiment']:
             eid = obj['id']
             # Exp record must exist and be only one
-            # TODO try except
             e = session.query(Experiment).filter_by(id=eid).one()
             e.name, e.user, e.well = obj['name'], obj['user'], obj['well']
 
             # Update channel record in database, delete un-associated channel
             for c in session.query(Channel).filter_by(id_experiment=eid).all():
-                # A flag
                 found_c = 0
                 for ch in obj['channels']:
                     if c.id == ch['id']:
                         c.name = ch['name']
                         found_c = 1
-                        # I tried to remove ch from obj['channels'] here, but
-                        # considered it too dangerous
+                        # I tried to remove ch from obj['channels'] here
                         break
                 if found_c == 0:
                     session.delete(c)
@@ -117,9 +117,11 @@ class ExperimentEP(Resource):
                 if found_f == 0:
                     session.delete(f)
 
-            # Commit the changes
-            # TODO try except
-            session.commit()
+            try:
+                session.commit()
+            except SQLAlchemyError as e:
+                session.rollback()
+                return {"experiment": e.message}
             experiments.append(self.construct_exp(e))
 
         # Return the updated experiment obj
