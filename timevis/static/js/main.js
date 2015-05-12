@@ -265,19 +265,30 @@ function GeneVM() {
         		self.current_graph_id = "id" + self.current_graph;
                 self.graphs.push({id: self.current_graph_id})
 
+            	var target = "#" + self.current_graph_id;
                 var data = json.result;
                 data = MG.convert.date(data, 'time', "%H:%M:%S");
             	MG.data_graphic({
                         title: "",
                         description: "",
                         data: data,
-                        target: "#" + self.current_graph_id,
+                        target: target, 
                         show_confidence_band: ['l', 'u'],
                     	width: 500,
                         height: 300,
                         area: false,
                     	x_accessor: 'time',
-                        y_accessor: 'value'
+                        y_accessor: 'value',
+                        show_secondary_x_label: false,
+                        mouseover: function(d, i) {
+                            // custom format the rollover text, show days
+                            var prefix = d3.formatPrefix(d.value);
+                            // d3.select('#custom-rollover svg .mg-active-datapoint')
+                            //     .text('Day ' + (i + 1) + '   ' + prefix.scale(d.value).toFixed(2) + prefix.symbol);
+                            d3.select(target + ' svg .mg-active-datapoint')
+                    			.text("Value: " + prefix.scale(d.value).
+                                    toFixed(2));
+                        }
                     });
                 self.current_graph += 1;
             }
