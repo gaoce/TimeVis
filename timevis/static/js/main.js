@@ -269,25 +269,24 @@ function GeneVM() {
                 var data = json.result;
                 data = MG.convert.date(data, 'time', "%H:%M:%S");
                 MG.data_graphic({
-                        title: "Title",
+                        title: "Hover to see query conditions",
                         description: JSON.stringify(json.query, ' ', 4),
                         data: data,
                         target: target, 
                         show_confidence_band: ['l', 'u'],
-                        width: 500,
-                        height: 300,
+                        full_width: true,
+                        point_size: 5,
                         area: false,
-                        // linked: true,
                         x_accessor: 'time',
                         y_accessor: 'value',
                         show_secondary_x_label: false,
                         mouseover: function(d, i) {
                             // custom format the rollover text, show days
                             var prefix = d3.formatPrefix(d.value);
-                            // d3.select('#custom-rollover svg .mg-active-datapoint')
-                            //     .text('Day ' + (i + 1) + '   ' + prefix.scale(d.value).toFixed(2) + prefix.symbol);
-                            d3.select('div' + target + ' svg .mg-active-datapoint')
-                                .text("Value: " + prefix.scale(d.value).toFixed(2));
+                            var t = 'div' + target + ' svg .mg-active-datapoint'
+                            d3.select(t)
+                                .text("Value: " + prefix.scale(d.value).
+                                    toFixed(2));
                         }
                     });
                 self.current_graph += 1;
@@ -433,4 +432,3 @@ var container2 = document.getElementById("data_table");
 var hot2 = new Handsontable(container2, setting);
 
 $("#time-slider").slider();
-
