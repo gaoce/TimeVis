@@ -34,6 +34,7 @@ setup(
         "Flask-RESTful>=0.3.1",
         "SQLAlchemy>=1.0.3",
         "pandas>=0.16.1",
+        "scikits.bootstrap",
     ],
     packages=['timevis'],
     package_dir={"timevis": "timevis"},
