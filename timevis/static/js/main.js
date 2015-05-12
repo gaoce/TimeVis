@@ -189,15 +189,24 @@ function GeneVM() {
     // ========================================================================
     // Factor selection and query
     // ========================================================================
+    self.channels = ko.observableArray();
+    self.current_channel = ko.observable();
+
+    // ========================================================================
+    // Factor selection and query
+    // ========================================================================
     self.current_exp.subscribe(function(exp){
         // Fill in self.factors
         if (exp){
             self.factors([]);
-            for (var i in exp.factors){
-                f = exp.factors[i];
+            $.map(exp.factors, function(f){
                 self.factors.push(new Factor(f.id, f.name, f.levels))
-            }
+            })
+            $.map(exp.channels, function(c){
+                self.channels.push(new Channel(c.id, c.name))
+            })
         } else {
+            self.current_channel(null);
             self.factor_panels.removeAll();
         }
     });
@@ -233,7 +242,44 @@ function GeneVM() {
     // ========================================================================
     // Visualization
     // ========================================================================
-    self.visualize = function(){};
+    self.graphs = ko.observableArray();
+    self.current_graph = 0;
+    self.current_graph_id = "id0";
+    self.visualize = function(){
+        var factors = $.map(self.factor_panels(), function(f){
+            return {"id": f.id, "level": f.get_chosen_levels()}
+        })
+        var res = {
+            experiment: self.current_exp().id,
+            channel: self.current_channel().id,
+            factors: factors
+
+        }
+        $.ajax({
+            url: "/api/v2/timeseries",
+            type: "POST",
+            dataType: "json",
+            data: JSON.stringify(res),
+            contentType: "application/json; charset=utf-8",
+        	success: function(json){
+                self.graphs.push({id: self.current_graph_id})
+        		self.current_graph_id = "#id" + self.current_graph;
+
+                var data = json.result;
+                data = MG.convert.date(data, 'time', "%H:%M:%S");
+            	MG.data_graphic({
+                        title: "Confidence Band",
+                        description: "This is an example of a graphic with a confidence band and extended x-axis ticks enabled.",
+                        data: data,
+                        target: self.current_graph_id,
+                        show_confidence_band: ['l', 'u'],
+                    	x_accessor: 'time',
+                        y_accessor: 'value'
+                    });
+                self.current_graph += 1;
+            }
+        });
+    };
     self.row = ko.observable();           // Current experiment
 }
 
@@ -285,6 +331,10 @@ var Factor = function(id, name, levels) {
     }
 
     self.chosen_levels = ko.observableArray();
+
+    self.get_chosen_levels = function(){
+        return $.map(self.chosen_levels(), function(l){return l.name})
+    }
 }
 
 // ========================================================================
@@ -292,6 +342,15 @@ var Factor = function(id, name, levels) {
 // ========================================================================
 function Layout(name, well_num) {
     var self = this;
+}
+
+// ========================================================================
+// Channel class
+// ========================================================================
+function Channel(id, name) {
+    var self = this;
+    self.id = id;
+    self.name = name;
 }
 
 // Get Factor for experiment
