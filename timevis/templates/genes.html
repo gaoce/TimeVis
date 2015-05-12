@@ -60,9 +60,11 @@
     {# Start Visualization #}
     <button class="btn btn-primary" data-bind="click: visualize">Visualize</button>
     {# Canvas #}
-    <div class="row" data-bind="foreach: graphs">
-      <div class="col-md-5">
-          <div data-bind="attr:{id: id}"></div>
-      </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="row-fluid" data-bind="foreach: graphs">
+          <div class="col-md-5 plain" data-bind="attr:{id: id}"></div>
+        </div>  <!-- row -->
+      </div> <!-- col-md-x -->
     </div>  <!-- row -->
 </div>

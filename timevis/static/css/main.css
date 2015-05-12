@@ -19,7 +19,7 @@ div.plain {
 
 /*
  * Fix div height with scroll
- */                 
+ */
 div.fix-100 {
     height: 100px;
     overflow-y: auto;
@@ -146,4 +146,11 @@ select {
 
 .table > tbody > tr > td {
     vertical-align: middle;
+}
+
+/*
+ * Metrics Graphics title popover description window size
+ */
+.popover {
+    width: 100%; /* Max Width of the popover (depending on the container!) */
 }

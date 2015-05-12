@@ -268,13 +268,18 @@ function GeneVM() {
                 var target = "#" + self.current_graph_id;
                 var data = json.result;
                 data = MG.convert.date(data, 'time', "%H:%M:%S");
+
+                des = "<pre>" + JSON.stringify(json.query, ' ', 2) + "</pre>";
                 MG.data_graphic({
-                        title: "Hover to see query conditions",
-                        description: JSON.stringify(json.query, ' ', 4),
+                        title: "Hover for Information",
+                        description: des,
                         data: data,
                         target: target, 
                         show_confidence_band: ['l', 'u'],
                         full_width: true,
+                        top: 25,
+                        left: 20,
+                        right: 20,
                         point_size: 5,
                         area: false,
                         x_accessor: 'time',
@@ -282,11 +287,14 @@ function GeneVM() {
                         show_secondary_x_label: false,
                         mouseover: function(d, i) {
                             // custom format the rollover text, show days
-                            var prefix = d3.formatPrefix(d.value);
-                            var t = 'div' + target + ' svg .mg-active-datapoint'
-                            d3.select(t)
-                                .text("Value: " + prefix.scale(d.value).
-                                    toFixed(2));
+                			var timeFmt = d3.time.format('%H:%M');
+                    		var time = timeFmt(d.time);
+                            var val = d3.formatPrefix(d.value)
+                                        .scale(d.value)
+                                        .toFixed(2);
+                            var selector = target + ' svg .mg-active-datapoint';
+                            d3.select(selector).text("[" + time + "]: " + val);
+                            d3.select(selector).style({'font-size': '1em'});
                         }
                     });
                 self.current_graph += 1;

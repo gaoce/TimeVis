@@ -29,7 +29,9 @@ t = {"plate": [{"id": 1,
 
 np.random.seed(42)
 for i in range(3, 7):
-    v = i/2 * np.random.randn(96) + i
+    v1 = i/2 * np.random.randn(48) + i
+    v2 = i * np.random.randn(48) + i/2
+    v = v1 + v2
     t['plate'][0]['channels'][0]['value'].append(v.tolist())
 
 with open('put_plate.json', 'w') as j:
