@@ -247,7 +247,7 @@ function GeneVM() {
     self.current_graph_id = "";
     self.visualize = function(){
         var factors = $.map(self.factor_panels(), function(f){
-            return {"id": f.id, "level": f.get_chosen_levels()}
+            return {"id": f.id, "levels": f.get_chosen_levels()}
         })
         var res = {
             experiment: self.current_exp().id,

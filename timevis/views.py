@@ -389,6 +389,9 @@ class PlateEP(Resource):
 
 
 class TimeSeriesEP(Resource):
+    # A list of past queries
+    queries = []
+
     def post(self):
         """
         select values.time, values.value, levels.level
@@ -409,6 +412,14 @@ class TimeSeriesEP(Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
+        # Construct returning query
+        query = {}
+        query['experiment'] = session.query(Experiment.name).\
+            filter_by(id=json['experiment']).one()[0]
+        query['channel'] = session.query(Channel.name).\
+            filter_by(id=json['channel']).one()[0]
+        query['factors'] = []
+
         q = session.query(Value.time, Value.value).\
             join(Plate).\
             join(Channel).\
@@ -419,8 +430,10 @@ class TimeSeriesEP(Resource):
             Factor_a = aliased(Factor)
             q = q.join(Level_a, Level_a.well == Value.well).\
                 join(Factor_a, Factor_a.id == Level_a.id_factor).\
-                filter(Level_a.level.in_(f['level'])).\
+                filter(Level_a.level.in_(f['levels'])).\
                 filter(Factor_a.id == f['id'])
+            fname = session.query(Factor.name).filter_by(id=f['id']).one()[0]
+            query['factors'].append({"name": fname, "levels": f['levels']})
 
         # Get data frame
         df = pandas.read_sql(q.statement, q.session.bind)
@@ -429,7 +442,10 @@ class TimeSeriesEP(Resource):
             cis = ci(x)
             return (cis[1] - cis[0])/2
 
-        res = {'id': 0, 'query': json, 'result': []}
+        # Record query
+        res = {'id': len(self.queries), 'query': query, 'result': []}
+        self.queries.append(json)
+
         df_g = df.groupby(['time']).aggregate([mean, cc])
         for row in df_g.iterrows():
             res['result'].append({

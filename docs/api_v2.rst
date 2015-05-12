@@ -732,7 +732,7 @@ A summary of all HTTP verbs used for this endpoint:
         [
           {
             "id"    : fid,
-            "level" : flvl,
+            "levels": flvl,
           },
           ...
         ]
