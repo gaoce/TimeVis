@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Interface Development &mdash; TimeVis 0.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="TimeVis 0.2 documentation" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">TimeVis 0.2 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="interface-development">
+<h1>Interface Development<a class="headerlink" href="#interface-development" title="Permalink to this headline">¶</a></h1>
+<p>The user interface of <code class="docutils literal"><span class="pre">timevis</span></code> is web based. The whole application is a
+single webpage. Thanks to HTML template engine <a class="reference external" href="http://jinja.pocoo.org/">Jinja2</a>, we are able to separate different functionalities
+into individual modular pages, see <code class="docutils literal"><span class="pre">timevis/template</span></code> folder.</p>
+<div class="section" id="knockout-view-models">
+<h2>1. Knockout View Models<a class="headerlink" href="#knockout-view-models" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="expvm">
+<h3>1. ExpVM<a class="headerlink" href="#expvm" title="Permalink to this headline">¶</a></h3>
+<p>A view model for experiment information. Available attributes of an <code class="docutils literal"><span class="pre">ExpVM</span></code>
+object are:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">fun:</th><td class="field-body">observable. Functionality currently used.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">experiments:</th><td class="field-body">observableArray. A list of <code class="docutils literal"><span class="pre">Exp</span></code> objects.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="exp">
+<h3>2. Exp<a class="headerlink" href="#exp" title="Permalink to this headline">¶</a></h3>
+<p>A object to repsent experiment information, used by both frontend and API (see
+API). Available fields are:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">id:</th><td class="field-body"><p class="first">Integer. Experiment ID.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">name:</th><td class="field-body"><p class="first">String. Experiment name.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">user:</th><td class="field-body"><p class="first">String. Experiment user names.</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">well:</th><td class="field-body"><p class="first">Integer. Number of well on the plate.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">channels:</th><td class="field-body"><p class="first">Array of channel objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">id:</th><td class="field-body">Integer. Channel ID.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">name:</th><td class="field-body">String. Channel name.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">factors:</th><td class="field-body"><p class="first">Array of factor objects.</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">id:</th><td class="field-body">Integer. Factor ID.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">name:</th><td class="field-body">String. Factor name.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">type:</th><td class="field-body">String. Factor type.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Interface Development</a><ul>
+<li><a class="reference internal" href="#knockout-view-models">1. Knockout View Models</a><ul>
+<li><a class="reference internal" href="#expvm">1. ExpVM</a></li>
+<li><a class="reference internal" href="#exp">2. Exp</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, Ce Gao.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

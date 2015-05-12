@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Design of Software &mdash; TimeVis 0.2 documentation</title>
+    <title>Design Principles &mdash; TimeVis 0.2 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="TimeVis 0.2 documentation" href="index.html" />
-    <link rel="next" title="API Documentation" href="api_v2.html" />
+    <link rel="next" title="User Instruction" href="instruction.html" />
     <link rel="prev" title="Installation" href="install.html" />
    
   
@@ -42,7 +42,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="api_v2.html" title="API Documentation"
+          <a href="instruction.html" title="User Instruction"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="install.html" title="Installation"
@@ -56,8 +56,8 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="design-of-software">
-<h1>Design of Software<a class="headerlink" href="#design-of-software" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="design-principles">
+<h1>Design Principles<a class="headerlink" href="#design-principles" title="Permalink to this headline">¶</a></h1>
 <p>The cell array research can be organized at three different levels: experiment,
 layout and plate. Accordingly, the data are organized with these three levels
 too.</p>
@@ -87,12 +87,12 @@ wells. For example:</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td>1</td>
+<tr class="row-even"><td>A01</td>
 <td>&#8216;aa&#8217;</td>
 <td>42</td>
 <td>...</td>
 </tr>
-<tr class="row-odd"><td>2</td>
+<tr class="row-odd"><td>A02</td>
 <td>&#8216;aa&#8217;</td>
 <td>4.2</td>
 <td>...</td>
@@ -100,6 +100,11 @@ wells. For example:</p>
 <tr class="row-even"><td>...</td>
 <td>...</td>
 <td>...</td>
+<td>...</td>
+</tr>
+<tr class="row-odd"><td>H12</td>
+<td>&#8216;cc&#8217;</td>
+<td>4.2</td>
 <td>...</td>
 </tr>
 </tbody>
@@ -120,7 +125,7 @@ the experiment measures.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Design of Software</a><ul>
+<li><a class="reference internal" href="#">Design Principles</a><ul>
 <li><a class="reference internal" href="#experiment">1. Experiment</a></li>
 <li><a class="reference internal" href="#layout">2. Layout</a></li>
 <li><a class="reference internal" href="#plate">3. Plate</a></li>
@@ -132,8 +137,8 @@ the experiment measures.</p>
   <p class="topless"><a href="install.html"
                         title="previous chapter">Installation</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="api_v2.html"
-                        title="next chapter">API Documentation</a></p>
+  <p class="topless"><a href="instruction.html"
+                        title="next chapter">User Instruction</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">

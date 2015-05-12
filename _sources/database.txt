@@ -1,5 +1,5 @@
 ***************
-Database design
+Database Design
 ***************
 
 The following image shows the design of database:

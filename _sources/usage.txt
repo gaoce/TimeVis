@@ -1,0 +1,12 @@
+****************
+User Instruction
+****************
+
+1. Experiment Information
+=========================
+
+.. image:: /images/experiment.png
+
+.. image:: /images/layout.png
+
+.. image:: /images/gene_vis.png
