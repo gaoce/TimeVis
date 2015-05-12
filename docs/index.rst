@@ -15,6 +15,7 @@ User's Guide
 
    install
    design
+   instruction
 
 Developer's Guide
 -----------------
@@ -25,4 +26,4 @@ Developer's Guide
    dev
    api_v2
    database
-   frontend
+   interface

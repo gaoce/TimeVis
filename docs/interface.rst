@@ -1,6 +1,11 @@
-***********************
-Front End Documentation
-***********************
+*********************
+Interface Development
+*********************
+
+The user interface of ``timevis`` is web based. The whole application is a
+single webpage. Thanks to HTML template engine `Jinja2
+<http://jinja.pocoo.org/>`_, we are able to separate different functionalities
+into individual modular pages, see ``timevis/template`` folder.
 
 1. Knockout View Models
 =======================

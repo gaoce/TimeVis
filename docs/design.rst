@@ -1,6 +1,7 @@
-******************
-Design of Software
-******************
+*****************
+Design Principles
+*****************
+
 The cell array research can be organized at three different levels: experiment,
 layout and plate. Accordingly, the data are organized with these three levels
 too.
@@ -20,11 +21,13 @@ wells. For example:
 +------+------+------+-----+
 | Well | Gene | Dose | ... |
 +======+======+======+=====+
-| 1    | 'aa' | 42   | ... |
+| A01  | 'aa' | 42   | ... |
 +------+------+------+-----+
-| 2    | 'aa' | 4.2  | ... |
+| A02  | 'aa' | 4.2  | ... |
 +------+------+------+-----+
 | ...  | ...  | ...  | ... |
++------+------+------+-----+
+| H12  | 'cc' | 4.2  | ... |
 +------+------+------+-----+
 
 
