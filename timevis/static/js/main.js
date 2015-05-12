@@ -261,23 +261,24 @@ function GeneVM() {
             dataType: "json",
             data: JSON.stringify(res),
             contentType: "application/json; charset=utf-8",
-        	success: function(json){
-        		self.current_graph_id = "id" + self.current_graph;
+            success: function(json){
+                self.current_graph_id = "id" + self.current_graph;
                 self.graphs.push({id: self.current_graph_id})
 
-            	var target = "#" + self.current_graph_id;
+                var target = "#" + self.current_graph_id;
                 var data = json.result;
                 data = MG.convert.date(data, 'time', "%H:%M:%S");
-            	MG.data_graphic({
-                        title: "",
-                        description: "",
+                MG.data_graphic({
+                        title: "Title",
+                        description: JSON.stringify(json.query, ' ', 4),
                         data: data,
                         target: target, 
                         show_confidence_band: ['l', 'u'],
-                    	width: 500,
+                        width: 500,
                         height: 300,
                         area: false,
-                    	x_accessor: 'time',
+                        // linked: true,
+                        x_accessor: 'time',
                         y_accessor: 'value',
                         show_secondary_x_label: false,
                         mouseover: function(d, i) {
@@ -285,9 +286,8 @@ function GeneVM() {
                             var prefix = d3.formatPrefix(d.value);
                             // d3.select('#custom-rollover svg .mg-active-datapoint')
                             //     .text('Day ' + (i + 1) + '   ' + prefix.scale(d.value).toFixed(2) + prefix.symbol);
-                            d3.select(target + ' svg .mg-active-datapoint')
-                    			.text("Value: " + prefix.scale(d.value).
-                                    toFixed(2));
+                            d3.select('div' + target + ' svg .mg-active-datapoint')
+                                .text("Value: " + prefix.scale(d.value).toFixed(2));
                         }
                     });
                 self.current_graph += 1;
