@@ -60,13 +60,9 @@
     {# Start Visualization #}
     <button class="btn btn-primary" data-bind="click: visualize">Visualize</button>
     {# Canvas #}
-    <div class="row">
-        <div id="time_canvas" class="col-md-8 fix-300">
-            <div class="row" data-bind="foreach: graphs">
-                <div class="col-md-4">
-                    <div data-bind="attr:{id: id}">A</div>
-                </div>
-            </div>  <!-- row -->
-        </div>  <!-- container -->
+    <div class="row" data-bind="foreach: graphs">
+      <div class="col-md-5">
+          <div data-bind="attr:{id: id}"></div>
+      </div>
     </div>  <!-- row -->
 </div>

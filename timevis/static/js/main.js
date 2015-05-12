@@ -244,7 +244,7 @@ function GeneVM() {
     // ========================================================================
     self.graphs = ko.observableArray();
     self.current_graph = 0;
-    self.current_graph_id = "id0";
+    self.current_graph_id = "";
     self.visualize = function(){
         var factors = $.map(self.factor_panels(), function(f){
             return {"id": f.id, "level": f.get_chosen_levels()}
@@ -262,17 +262,20 @@ function GeneVM() {
             data: JSON.stringify(res),
             contentType: "application/json; charset=utf-8",
         	success: function(json){
+        		self.current_graph_id = "id" + self.current_graph;
                 self.graphs.push({id: self.current_graph_id})
-        		self.current_graph_id = "#id" + self.current_graph;
 
                 var data = json.result;
                 data = MG.convert.date(data, 'time', "%H:%M:%S");
             	MG.data_graphic({
-                        title: "Confidence Band",
-                        description: "This is an example of a graphic with a confidence band and extended x-axis ticks enabled.",
+                        title: "",
+                        description: "",
                         data: data,
-                        target: self.current_graph_id,
+                        target: "#" + self.current_graph_id,
                         show_confidence_band: ['l', 'u'],
+                    	width: 500,
+                        height: 300,
+                        area: false,
                     	x_accessor: 'time',
                         y_accessor: 'value'
                     });
