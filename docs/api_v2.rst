@@ -93,7 +93,8 @@ endpoint is shown below:
             ],
             "factors" :
             [
-              {"id": factor_id, "name": factor_name, "type": factor_type},
+              {"id": factor_id, "name": factor_name, "type": factor_type,
+               "levels": factor_levels},
               ...
             ]
           },
@@ -119,6 +120,8 @@ endpoint is shown below:
     * ``factor_name``:  String.  Factor name.
     * ``factor_type``:  String.  Factor type, can be either "Category",
       "Integer", or "Decimal"
+    * ``factor_levels``:  Array of Strings.  Unique factor levels. This is an
+      addon feature, only available for GET method.
 
     Here is an expample:
 
@@ -139,7 +142,8 @@ endpoint is shown below:
             ],
             "factors" :
             [
-              {"id": 1, "name": "Dose", "type": "Decimal"}
+              {"id": 1, "name": "Dose", "type": "Decimal", 
+              "levels": ["42", "43"]}
             ]
           },
           {
@@ -150,8 +154,8 @@ endpoint is shown below:
             "channels": [{"id": "3", "name": "GFP"}],
             "factors" :
             [
-              {"id": 2, "name": "Dose", "type": "Decimal"},
-              {"id": 3, "name": "Gene", "type": "Category"}
+              {"id": 2, "name": "Dose", "type": "Decimal", "levels": ["42"]},
+              {"id": 3, "name": "Gene", "type": "Category", "levels": ["bb"]}
             ]
           }
         ]
@@ -728,7 +732,7 @@ A summary of all HTTP verbs used for this endpoint:
         [
           {
             "id"    : fid,
-            "level" : flvl,
+            "levels": flvl,
           },
           ...
         ]

@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="TimeVis 0.2 documentation" href="index.html" />
     <link rel="next" title="Database design" href="database.html" />
-    <link rel="prev" title="Design of Software" href="design.html" />
+    <link rel="prev" title="Development" href="dev.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -45,7 +45,7 @@
           <a href="database.html" title="Database design"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="design.html" title="Design of Software"
+          <a href="dev.html" title="Development"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">TimeVis 0.2 documentation</a> &raquo;</li> 
       </ul>
@@ -157,7 +157,8 @@ information.</p>
       <span class="p">],</span>
       <span class="s">&quot;factors&quot;</span> <span class="p">:</span>
       <span class="p">[</span>
-        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="n">factor_id</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">factor_name</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="n">factor_type</span><span class="p">},</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="n">factor_id</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">factor_name</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="n">factor_type</span><span class="p">,</span>
+         <span class="s">&quot;levels&quot;</span><span class="p">:</span> <span class="n">factor_levels</span><span class="p">},</span>
         <span class="o">...</span>
       <span class="p">]</span>
     <span class="p">},</span>
@@ -178,6 +179,8 @@ information.</p>
 <li><code class="docutils literal"><span class="pre">factor_name</span></code>:  String.  Factor name.</li>
 <li><code class="docutils literal"><span class="pre">factor_type</span></code>:  String.  Factor type, can be either &#8220;Category&#8221;,
 &#8220;Integer&#8221;, or &#8220;Decimal&#8221;</li>
+<li><code class="docutils literal"><span class="pre">factor_levels</span></code>:  Array of Strings.  Unique factor levels. This is an
+addon feature, only available for GET method.</li>
 </ul>
 <p>Here is an expample:</p>
 <div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
@@ -195,7 +198,8 @@ information.</p>
       <span class="p">],</span>
       <span class="s">&quot;factors&quot;</span> <span class="p">:</span>
       <span class="p">[</span>
-        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Dose&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Decimal&quot;</span><span class="p">}</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Dose&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Decimal&quot;</span><span class="p">,</span>
+        <span class="s">&quot;levels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;42&quot;</span><span class="p">,</span> <span class="s">&quot;43&quot;</span><span class="p">]}</span>
       <span class="p">]</span>
     <span class="p">},</span>
     <span class="p">{</span>
@@ -206,8 +210,8 @@ information.</p>
       <span class="s">&quot;channels&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;3&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">}],</span>
       <span class="s">&quot;factors&quot;</span> <span class="p">:</span>
       <span class="p">[</span>
-        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Dose&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Decimal&quot;</span><span class="p">},</span>
-        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Gene&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Category&quot;</span><span class="p">}</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Dose&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Decimal&quot;</span><span class="p">,</span> <span class="s">&quot;levels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;42&quot;</span><span class="p">]},</span>
+        <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Gene&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Category&quot;</span><span class="p">,</span> <span class="s">&quot;levels&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s">&quot;bb&quot;</span><span class="p">]}</span>
       <span class="p">]</span>
     <span class="p">}</span>
   <span class="p">]</span>
@@ -800,7 +804,7 @@ layout should be 0, e.g.,</p>
   <span class="p">[</span>
     <span class="p">{</span>
       <span class="s">&quot;id&quot;</span>    <span class="p">:</span> <span class="n">fid</span><span class="p">,</span>
-      <span class="s">&quot;level&quot;</span> <span class="p">:</span> <span class="n">flvl</span><span class="p">,</span>
+      <span class="s">&quot;levels&quot;</span><span class="p">:</span> <span class="n">flvl</span><span class="p">,</span>
     <span class="p">},</span>
     <span class="o">...</span>
   <span class="p">]</span>
@@ -892,8 +896,8 @@ series data</li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="design.html"
-                        title="previous chapter">Design of Software</a></p>
+  <p class="topless"><a href="dev.html"
+                        title="previous chapter">Development</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="database.html"
                         title="next chapter">Database design</a></p>
