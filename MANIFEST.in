@@ -1,2 +1,2 @@
 recursive-include static *
-recursive-include templates *s
+recursive-include templates *
