@@ -1,4 +1,4 @@
-# TimeVisAn
+# TimeVis
 Time series visualization and analysis. 
 
 A visualization tool to visualize gene expression time series data.
