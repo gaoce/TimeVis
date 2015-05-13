@@ -31,4 +31,4 @@ interest.
 
 # Software Structure
 
-![Structure](/docs/images/structure.png)
+![Structure](/docs/images/arch.png)
