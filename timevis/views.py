@@ -3,9 +3,9 @@ from flask import render_template, request
 from flask.ext.restful import Api, Resource, reqparse
 from timevis.models import (Experiment, Layout, Factor, Channel, Level, Plate,
                             Value, session)
+from timevis.transaction import get_exps, insert_exps, update_exps
 from datetime import datetime
 from sqlalchemy.orm import aliased
-from sqlalchemy.exc import SQLAlchemyError
 import pandas
 from scikits.bootstrap import ci
 from numpy import mean
@@ -21,132 +21,33 @@ class ExperimentEP(Resource):
     This endpoint mainly deals with Experiment, Channel and Factor tables.
     """
     def get(self):
-        # Result
-        ret = {"experiment": []}
-
-        # Get Experiment instance and fill in the result dict
-        for e in session.query(Experiment).all():
-            ret["experiment"].append(self.construct_exp(e))
-
-        return ret
+        return {'experiment': get_exps()}
 
     def post(self):
-        """Create a new experiment:
-            1. Create a new record in Experiment table;
-            2. Create new records in Channel and Factor tables.
+        """Insert new Experiment records
         """
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
-        # TODO check input validity
         json = request.get_json(force=True)
 
-        # Experiment obj array for return purpose
-        experiments = []
-
-        # Insert each experiment obj to table, creating new factors and channels
-        for obj in json['experiment']:
-            # The new experiment obj should have a exp_id of 0
-            if str(obj['id']) != '0':
-                return "New experiment ID should be '0'"
-
-            # New experiment record
-            e = Experiment(name=obj['name'], user=obj['user'], well=obj['well'])
-
-            # Create a Channel object, associate it with e, it will be inserted
-            # when we add e to experiment table through cascading
-            for c in obj['channels']:
-                Channel(name=c['name'], experiment=e)
-
-            # Insert new factors
-            for f in obj['factors']:
-                Factor(name=f['name'], type=f['type'], experiment=e)
-
-            # Commit the changes for experiment, channels and factors
-            session.add(e)
-            try:
-                session.commit()
-            except SQLAlchemyError as e:
-                session.rollback()
-                return {"experiment": e.message}
-
-            experiments.append(self.construct_exp(e))
+        # Insert each experiment obj to table, and get list of exps inserted
+        exps = insert_exps(json['experiment'])
 
         # Return the updated experiment obj
-        return {"experiment": experiments}
+        return {"experiment": exps}
 
     def put(self):
-        """Update experiment information:
-            1. Update experiment record;
-            3. Add new channel and factor records
+        """Update Experiment records
         """
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
-        # TODO check input validity
         json = request.get_json(force=True)
 
-        # Array of experiment obj, return purpose
-        experiments = []
-
         # Get experimen id and data body
-        for obj in json['experiment']:
-            eid = obj['id']
-            # Exp record must exist and be only one
-            e = session.query(Experiment).filter_by(id=eid).one()
-            e.name, e.user, e.well = obj['name'], obj['user'], obj['well']
-
-            # Update channel record in database, delete un-associated channel
-            for c in session.query(Channel).filter_by(id_experiment=eid).all():
-                found_c = 0
-                for ch in obj['channels']:
-                    if c.id == ch['id']:
-                        c.name = ch['name']
-                        found_c = 1
-                        # I tried to remove ch from obj['channels'] here
-                        break
-                if found_c == 0:
-                    session.delete(c)
-
-            for f in session.query(Factor).filter_by(id_experiment=eid).all():
-                # A flag
-                found_f = 0
-                for fa in obj['factors']:
-                    if f.id == fa['id']:
-                        f.name, f.type = fa['name'], fa['type']
-                        found_f = 1
-                        break
-                if found_f == 0:
-                    session.delete(f)
-
-            try:
-                session.commit()
-            except SQLAlchemyError as e:
-                session.rollback()
-                return {"experiment": e.message}
-            experiments.append(self.construct_exp(e))
+        exps = update_exps(json['experiment'])
 
         # Return the updated experiment obj
-        return {"experiment": experiments}
-
-    def construct_exp(self, e):
-        """Helper function, construct exp obj using an Experiment record
-        """
-        ret = {"id": e.id,
-               "name": e.name,
-               "user": e.user,
-               "well": e.well,
-               "channels": [{"id": c.id, "name": c.name} for c in e.channels],
-               "factors": [{"id": f.id, "name": f.name, "type": f.type,
-                            "levels": self.uni_lvl(f.id)} for f in e.factors]}
-        return ret
-
-    def uni_lvl(self, fid):
-        """Helper function. Get unique levels given a factor ID.
-        """
-        res = []
-        for row in session.query(Level.level).filter_by(id_factor=fid).\
-                distinct().all():
-            res.append(row[0])
-        return res
+        return {"experiment": exps}
 
 
 class LayoutEP(Resource):
