@@ -27,3 +27,4 @@ Developer's Guide
    api_v2
    database
    interface
+   plugins
