@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Development &mdash; TimeVis 0.2 documentation</title>
+    <title>Software Architecture &mdash; TimeVis 0.2 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="TimeVis 0.2 documentation" href="index.html" />
-    <link rel="next" title="Software Architecture" href="arch.html" />
-    <link rel="prev" title="User Instruction" href="instruction.html" />
+    <link rel="next" title="API Documentation" href="api_v2.html" />
+    <link rel="prev" title="Development" href="dev.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -42,10 +42,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="arch.html" title="Software Architecture"
+          <a href="api_v2.html" title="API Documentation"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="instruction.html" title="User Instruction"
+          <a href="dev.html" title="Development"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="index.html">TimeVis 0.2 documentation</a> &raquo;</li> 
       </ul>
@@ -56,40 +56,9 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="development">
-<h1>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h1>
-<p>This page describes the commands used during development.</p>
-<div class="section" id="documentation">
-<h2>1. Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="documentation-and-sphinx">
-<h3>1.1 Documentation and sphinx<a class="headerlink" href="#documentation-and-sphinx" title="Permalink to this headline">¶</a></h3>
-<p>All the documents are in docs/ folder under the root directory. The
-documentation of this project is using <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a>.</p>
-<p>To convert the .rst file into visually appealling HTML files, issue the
-following commands.</p>
-<div class="highlight-python"><div class="highlight"><pre>$ cd docs
-$ make html
-</pre></div>
-</div>
-<p>To see the html files on browser, issue the following commands, then the
-generated web pages can be access at <a class="reference external" href="http://localhost:8000">http://localhost:8000</a></p>
-<div class="highlight-python"><div class="highlight"><pre>$ cd docs
-$ make test
-</pre></div>
-</div>
-<p>1.2 Github pages</p>
-<p>To deploy the generated documentation to github pages, issue the following
-commands in the root directory. The documentation can be now visited from
-<cite>&lt;username&gt;.github.io/&lt;project_name&gt;</cite>.</p>
-<div class="highlight-python"><div class="highlight"><pre># Switch to gh-pages branch
-$ git checkout gh-pages
-
-# Deploy
-$ make github
-</pre></div>
-</div>
-</div>
-</div>
+  <div class="section" id="software-architecture">
+<h1>Software Architecture<a class="headerlink" href="#software-architecture" title="Permalink to this headline">¶</a></h1>
+<a class="reference internal image-reference" href="_images/arch.png"><img alt="_images/arch.png" src="_images/arch.png" /></a>
 </div>
 
 
@@ -98,23 +67,12 @@ $ make github
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Development</a><ul>
-<li><a class="reference internal" href="#documentation">1. Documentation</a><ul>
-<li><a class="reference internal" href="#documentation-and-sphinx">1.1 Documentation and sphinx</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
   <h4>Previous topic</h4>
-  <p class="topless"><a href="instruction.html"
-                        title="previous chapter">User Instruction</a></p>
+  <p class="topless"><a href="dev.html"
+                        title="previous chapter">Development</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="arch.html"
-                        title="next chapter">Software Architecture</a></p>
+  <p class="topless"><a href="api_v2.html"
+                        title="next chapter">API Documentation</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
