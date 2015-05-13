@@ -26,5 +26,6 @@ Developer's Guide
    dev
    arch
    api_v2
+   plugins
    database
    interface

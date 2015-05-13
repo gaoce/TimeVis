@@ -1,6 +1,6 @@
-**************************************
-Cell Array Experiment Design Hierarchy
-**************************************
+***************************
+Experiment Design Hierarchy
+***************************
 
 The cell array research can be organized at three different levels: experiment,
 layout and plate. Accordingly, the data are organized with these three levels
