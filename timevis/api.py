@@ -3,7 +3,7 @@ from flask import request
 from flask.ext.restful import Api, Resource, reqparse
 from timevis.models import (Experiment, Layout, Factor, Channel, Level, Plate,
                             Value, session)
-from timevis.transaction import get_exps, insert_exps, update_exps
+from timevis.controller import get_exps, insert_exps, update_exps
 from datetime import datetime
 from sqlalchemy.orm import aliased
 import pandas
