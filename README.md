@@ -19,6 +19,10 @@ interest.
 
 ![Visualization](/docs/images/gene_vis.png)
 
+# Software Structure
+
+![Structure](/docs/images/structure.png)
+
 # Installation
 
 We recommend you install the package under virtualenv
