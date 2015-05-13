@@ -24,6 +24,7 @@ Developer's Guide
    :maxdepth: 2
 
    dev
+   structure
    api_v2
    database
    interface
