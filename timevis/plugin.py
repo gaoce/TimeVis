@@ -15,3 +15,15 @@ class PluginMeta(type):
 
 class Plugin(object):
     __metaclass__ = PluginMeta
+
+    @property
+    def experiment(self):
+        pass
+
+    @property
+    def layout(self):
+        pass
+
+    @property
+    def plate(self):
+        pass
