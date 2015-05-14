@@ -3,7 +3,9 @@
 from sqlalchemy.exc import SQLAlchemyError
 
 from timevis.models import session
-from timevis.models import Experiment, Layout, Channel, Factor, Level
+from timevis.models import (Experiment, Layout, Channel, Factor, Level, Value,
+                            Plate)
+from datetime import datetime
 
 
 def get_exps():
@@ -236,3 +238,115 @@ def put_layouts(layouts_in):
         return err.message
 
     return layouts_in
+
+
+def get_plates(lid):
+    """
+    """
+    plates = []
+
+    # Layout obj
+    layout_rec = session.query(Layout).filter_by(id=lid).first()
+
+    # Plate inside layout
+    for plate_rec in layout_rec.plates:
+        plate_out = {"id": plate_rec.id, "channels": []}
+
+        for cha_rec in layout_rec.experiment.channels:
+            cha_out = {"id": cha_rec.id, "name": cha_rec.name, "value": []}
+            cha_out['time'] = [str(t[0]) for t in session.query(Value.time).
+                               distinct().order_by(Value.time).all()]
+            cha_out['well'] = [val[0] for val in session.query(Value.well).
+                               distinct().order_by(Value.well).all()]
+            # Current time point
+            curr_time = None
+            values = None
+            for val in session.query(Value).order_by(Value.time, Value.well).\
+                    all():
+                if curr_time != val.time:
+                    curr_time = val.time
+                    # Just finish a loop
+                    if values is not None:
+                        cha_out['value'].append(values)
+                    # Reset
+                    values = []
+                values.append(val.value)
+
+            # Append the last time point
+            cha_out['value'].append(values)
+            plate_out['channels'].append(cha_out)
+
+        plates.append(plate_out)
+
+    return plates
+
+
+def post_plates(plates_in, lid):
+    """
+    """
+    # For commit purpose
+    plates_rec = []
+
+    # Get layout id and data
+    for plate_in in plates_in:
+        plate_rec = Plate(id_layout=lid)
+        plates_rec.append(plate_rec)
+
+        for cha_in in plate_in['channels']:
+            cha_rec = session.query(Channel).filter_by(id=cha_in['id']).first()
+
+            # Parse time
+            time_array = [datetime.strptime(t, "%H:%M:%S").time()
+                          for t in cha_in['time']]
+            well_array = cha_in['well']
+            for t, val_array in zip(time_array, cha_in['value']):
+                for well, val in zip(well_array, val_array):
+                    Value(well=well, time=t, value=val, plate=plate_rec,
+                          channel=cha_rec)
+
+    session.add_all(plates_rec)
+    try:
+        session.commit()
+    except SQLAlchemyError as err:
+        session.rollback()
+        return err.message
+
+    # The plate id is now available, update json obj with it
+    for idx, plate_rec in enumerate(plates_rec):
+        plates_in[idx]['id'] = plate_rec.id
+
+    return plates_in
+
+
+def put_plates(plates_in):
+    # Newly created value
+    plates_rec = []
+
+    # Get layout id and data
+    for plate_in in plates_in:
+        # Plate id
+        pid = plate_in['id']
+        plate_rec = session.query(Plate).filter_by(id=pid).first()
+
+        session.query(Value).filter_by(id_plate=pid).delete()
+
+        for cha_in in plate_in['channels']:
+            cha_rec = session.query(Channel).filter_by(id=cha_in['id']).first()
+
+            # Parse time
+            time_array = [datetime.strptime(t, "%H:%M:%S").time()
+                          for t in cha_in['time']]
+            well_array = cha_in['well']
+            for t, val_array in zip(time_array, cha_in['value']):
+                for well, val in zip(well_array, val_array):
+                    plates_rec.append(Value(well=well, time=t, value=val,
+                                      plate=plate_rec, channel=cha_rec))
+
+    session.add_all(plates_rec)
+    try:
+        session.commit()
+    except SQLAlchemyError as err:
+        session.rollback()
+        return err.message
+
+    return plates_in

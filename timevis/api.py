@@ -1,10 +1,9 @@
 from timevis import app
 from flask import request
 from flask.ext.restful import Api, Resource, reqparse
-from timevis.models import (Experiment, Layout, Factor, Channel, Level, Plate,
+from timevis.models import (Experiment, Factor, Channel, Level, Plate,
                             Value, session)
 import timevis.controller as ctrl
-from datetime import datetime
 from sqlalchemy.orm import aliased
 import pandas
 from scikits.bootstrap import ci
@@ -90,7 +89,7 @@ class LayoutEP(Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
-		layouts = ctrl.put_layouts(json['layout'])
+        layouts = ctrl.put_layouts(json['layout'])
 
         # Nothing to change, really
         return {'layout': layouts}
@@ -108,41 +107,9 @@ class PlateEP(Resource):
         lid = args.lid
 
         # Return value
-        ret = {"plate": []}
+        plates = ctrl.get_plates(lid)
 
-        # Layout obj
-        l = session.query(Layout).filter_by(id=lid).first()
-
-        # Plate inside layout
-        for p in l.plates:
-            p_obj = {"id": p.id, "channels": []}
-
-            for ch in l.experiment.channels:
-                ch_obj = {"id": ch.id, "name": ch.name, "value": []}
-                ch_obj['time'] = [str(t[0]) for t in session.query(Value.time).
-                                  distinct().order_by(Value.time).all()]
-                ch_obj['well'] = [v[0] for v in session.query(Value.well).
-                                  distinct().order_by(Value.well).all()]
-                # Current time point
-                curr_time = None
-                values = None
-                for v in session.query(Value).order_by(Value.time, Value.well).\
-                        all():
-                    if curr_time != v.time:
-                        curr_time = v.time
-                        # Just finish a loop
-                        if values is not None:
-                            ch_obj['value'].append(values)
-                        # Reset
-                        values = []
-                    values.append(v.value)
-
-                # Append the last time point
-                ch_obj['value'].append(values)
-                p_obj['channels'].append(ch_obj)
-
-            ret["plate"].append(p_obj)
-        return ret
+        return {'plate': plates}
 
     def post(self):
         """Input new plates"""
@@ -155,75 +122,22 @@ class PlateEP(Resource):
 
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
-        # TODO check input validity
         json = request.get_json(force=True)
 
-        # For commit purpose
-        plates = []
+        plates = ctrl.post_plates(json['plate'], lid)
 
-        # Get layout id and data
-        for data in json['plate']:
-            p = Plate(id_layout=lid)
-            plates.append(p)
-
-            for ch in data['channels']:
-                c = session.query(Channel).filter_by(id=ch['id']).first()
-
-                # Parse time
-                time_array = [datetime.strptime(t, "%H:%M:%S").time()
-                              for t in ch['time']]
-                well_array = ch['well']
-                for t, val_array in zip(time_array, ch['value']):
-                    for well, val in zip(well_array, val_array):
-                        Value(well=well, time=t, value=val, plate=p, channel=c)
-
-        session.add_all(plates)
-        try:
-            session.commit()
-        except Exception as e:
-            print e
-            return 'failed'
-
-        # The plate id is now available, update json obj with it
-        for idx, p in enumerate(plates):
-            json['plate'][idx]['id'] = p.id
-        return json
+        return {'plate': plates}
 
     def put(self):
         """Update plates data"""
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
-        # TODO check input validity
         json = request.get_json(force=True)
 
-        # Newly created value
-        values = []
-
-        # Get layout id and data
-        for data in json['plate']:
-            # Plate id
-            pid = data['id']
-            p = session.query(Plate).filter_by(id=pid).first()
-
-            session.query(Value).filter_by(id_plate=pid).delete()
-
-            for ch in data['channels']:
-                c = session.query(Channel).filter_by(id=ch['id']).first()
-
-                # Parse time
-                time_array = [datetime.strptime(t, "%H:%M:%S").time()
-                              for t in ch['time']]
-                well_array = ch['well']
-                for t, val_array in zip(time_array, ch['value']):
-                    for well, val in zip(well_array, val_array):
-                        values.append(Value(well=well, time=t, value=val,
-                                            plate=p, channel=c))
-
-        session.add_all(values)
-        session.commit()
+        plates = ctrl.put_plates(json['plate'])
 
         # Nothing to change
-        return json
+        return {'plate': plates}
 
 
 class TimeSeriesEP(Resource):
