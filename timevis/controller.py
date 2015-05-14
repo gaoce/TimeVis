@@ -6,6 +6,10 @@ from timevis.models import session
 from timevis.models import (Experiment, Layout, Channel, Factor, Level, Value,
                             Plate)
 from datetime import datetime
+from sqlalchemy.orm import aliased
+import pandas
+from scikits.bootstrap import ci
+from numpy import mean
 
 
 def get_exps():
@@ -350,3 +354,66 @@ def put_plates(plates_in):
         return err.message
 
     return plates_in
+
+
+queries = []
+
+
+def post_time(json):
+    """
+    select values.time, values.value, levels.level
+        from values
+            join plates
+            join channels
+            join levels on plates.id_layout = levels.id_layout
+            join factors on levels.id_factor = factors.id
+        where channels.id = 1 and
+            ((factors.id=2 and
+              levels.level in ('42', 'bb')) or
+              (factors.id=1)
+            );
+
+    """
+    # Construct returning query
+    query = {}
+    query['experiment'] = session.query(Experiment.name).\
+        filter_by(id=json['experiment']).one()[0]
+    query['channel'] = session.query(Channel.name).\
+        filter_by(id=json['channel']).one()[0]
+    query['factors'] = []
+
+    q = session.query(Value.time, Value.value).\
+        join(Plate).\
+        join(Channel).\
+        filter(Channel.id == json['channel'])
+
+    for f in json['factors']:
+        Level_a = aliased(Level)
+        Factor_a = aliased(Factor)
+        q = q.join(Level_a, Level_a.well == Value.well).\
+            join(Factor_a, Factor_a.id == Level_a.id_factor).\
+            filter(Level_a.level.in_(f['levels'])).\
+            filter(Factor_a.id == f['id'])
+        fname = session.query(Factor.name).filter_by(id=f['id']).one()[0]
+        query['factors'].append({"name": fname, "levels": f['levels']})
+
+    # Get data frame
+    df = pandas.read_sql(q.statement, q.session.bind)
+
+    def cc(x):
+        cis = ci(x)
+        return (cis[1] - cis[0])/2
+
+    # Record query
+    res = {'id': len(queries), 'query': query, 'result': []}
+    queries.append(json)
+
+    df_g = df.groupby(['time']).aggregate([mean, cc])
+    for row in df_g.iterrows():
+        res['result'].append({
+            "value": row[1][0],
+            "time": str(row[0]),
+            "l": row[1][0] - row[1][1],
+            "u": row[1][0] + row[1][1]})
+
+    return res
