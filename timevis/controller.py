@@ -12,6 +12,18 @@ from scikits.bootstrap import ci
 from numpy import mean
 
 
+def commit():
+    """Commit the changes.
+    If error occurs, rollback session and re-throw the exception, which will be
+    bubbled up and handled by ``api`` module
+    """
+    try:
+        session.commit()
+    except:
+        session.rollback()
+        raise
+
+
 def get_exps():
     """
     """
@@ -100,21 +112,27 @@ def update_exps(exps_in):
 
         # Update channel record in database, delete un-associated channel
         for ch_rec in session.query(Channel).filter_by(id_experiment=eid).all():
+            delete_ch = 1
             for ch_in in exp_in['channels']:
                 if ch_rec.id == ch_in['id']:
                     ch_rec.name = ch_in['name']
+                    delete_ch = 0
                     break
+            if delete_ch == 1:
+                session.delete(ch_rec)
 
         for f_rec in session.query(Factor).filter_by(id_experiment=eid).all():
+            delete_f = 1
             for f_in in exp_in['factors']:
                 if f_rec.id == f_in['id']:
                     f_rec.name, f_rec.type = f_in['name'], f_in['type']
+                    delete_f = 0
                     break
-        try:
-            session.commit()
-        except SQLAlchemyError as err:
-            session.rollback()
-            return err.message
+            if delete_f == 1:
+                session.delete(f_rec)
+
+        # Commit the changes
+        commit()
 
         exps_out.append(construct_exp(exp_rec))
 
@@ -361,41 +379,21 @@ queries = []
 
 def post_time(json):
     """
-    select values.time, values.value, levels.level
-        from values
-            join plates
-            join channels
-            join levels on plates.id_layout = levels.id_layout
-            join factors on levels.id_factor = factors.id
-        where channels.id = 1 and
-            ((factors.id=2 and
-              levels.level in ('42', 'bb')) or
-              (factors.id=1)
-            );
-
     """
-    # Construct returning query
-    query = {}
-    query['experiment'] = session.query(Experiment.name).\
-        filter_by(id=json['experiment']).one()[0]
-    query['channel'] = session.query(Channel.name).\
-        filter_by(id=json['channel']).one()[0]
-    query['factors'] = []
 
+    # Construct query
     q = session.query(Value.time, Value.value).\
         join(Plate).\
         join(Channel).\
         filter(Channel.id == json['channel'])
 
-    for f in json['factors']:
+    for fac_in in json['factors']:
         Level_a = aliased(Level)
         Factor_a = aliased(Factor)
         q = q.join(Level_a, Level_a.well == Value.well).\
             join(Factor_a, Factor_a.id == Level_a.id_factor).\
-            filter(Level_a.level.in_(f['levels'])).\
-            filter(Factor_a.id == f['id'])
-        fname = session.query(Factor.name).filter_by(id=f['id']).one()[0]
-        query['factors'].append({"name": fname, "levels": f['levels']})
+            filter(Level_a.level.in_(fac_in['levels'])).\
+            filter(Factor_a.id == fac_in['id'])
 
     # Get data frame
     df = pandas.read_sql(q.statement, q.session.bind)
@@ -405,7 +403,7 @@ def post_time(json):
         return (cis[1] - cis[0])/2
 
     # Record query
-    res = {'id': len(queries), 'query': query, 'result': []}
+    res = {'id': len(queries), 'query': get_ret_query(json), 'result': []}
     queries.append(json)
 
     df_g = df.groupby(['time']).aggregate([mean, cc])
@@ -417,3 +415,43 @@ def post_time(json):
             "u": row[1][0] + row[1][1]})
 
     return res
+
+
+def get_ret_query(json):
+    """Construct a dict to display query nicely, i.e.,
+    Original query format::
+
+        {
+          "experiment": eid,
+          "channel"   : cid,
+          "factors"   :
+          [
+            {
+              "id"    : fid,
+              "levels": flvl,
+            },
+            ...
+          ]
+        }
+
+    Returned query format::
+        {
+          "experiment": ename,
+          "channel"   : cname,
+          "factor1"	  : levels,
+          ...
+        }
+
+    """
+    # Construct returning query
+    query = {}
+    query['Experiment'] = session.query(Experiment.name).\
+        filter_by(id=json['experiment']).one()[0]
+    query['Channel'] = session.query(Channel.name).\
+        filter_by(id=json['channel']).one()[0]
+
+    for fac_in in json['factors']:
+        fname = session.query(Factor.name).filter_by(id=fac_in['id']).one()[0]
+        query[fname] = fac_in['levels']
+
+    return query

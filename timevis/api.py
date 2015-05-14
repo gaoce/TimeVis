@@ -1,15 +1,20 @@
-from timevis import app
 from flask import request
 from flask.ext.restful import Api, Resource, reqparse
+
+from timevis import app
 import timevis.controller as ctrl
+
+
+__api_version__ = 2
 
 
 class ExperimentEP(Resource):
     """Endpoint for experiment information
-    This endpoint mainly deals with Experiment, Channel and Factor tables.
     """
     def get(self):
-        # Experiment objs
+        """Return a list of Experiment objs
+        """
+        # Get experiment objs
         exps = ctrl.get_exps()
 
         return {'experiment': exps}
@@ -35,7 +40,10 @@ class ExperimentEP(Resource):
         json = request.get_json(force=True)
 
         # Get experimen id and data body
-        exps = ctrl.update_exps(json['experiment'])
+        try:
+            exps = ctrl.update_exps(json['experiment'])
+        except Exception as e:
+            return {"Error": e.message}, 500
 
         # Return the updated experiment obj
         return {"experiment": exps}
@@ -106,8 +114,8 @@ class PlateEP(Resource):
         return {'plate': plates}
 
     def post(self):
-        """Input new plates"""
-
+        """Input new plates
+        """
         # Parse args
         parser = reqparse.RequestParser()
         parser.add_argument('lid', type=int, help="layout id")
@@ -135,13 +143,12 @@ class PlateEP(Resource):
 
 
 class TimeSeriesEP(Resource):
-    """
+    """Endpoint for TimeSeries
     """
     # A list of past queries
     def post(self):
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
-        # TODO check input validity
         json = request.get_json(force=True)
 
         res = ctrl.post_time(json)

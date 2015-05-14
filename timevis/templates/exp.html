@@ -2,10 +2,10 @@
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
-              <li role="presentation" class="active">
+              <li role="presentation" data-bind="css:{active: fun() == 'old'}">
                   <a role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('old')}">Available</a>
               </li>
-              <li role="presentation">
+              <li role="presentation" data-bind="css:{active: fun() == 'new'}">
                   <a role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('new')}">New</a></li>
           </ul>
         </div>
@@ -90,6 +90,7 @@
             </table>
             <button class="btn btn-primary" data-bind="visible:fun()=='old', click: update_exp">Update Experiment</button>
             <button class="btn btn-primary" data-bind="visible:fun()=='new'">Add Experiment</button>
+            <div id="exp-notice"></div>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 </div>

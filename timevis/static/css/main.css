@@ -166,3 +166,10 @@ select {
 .panel-heading {
     border-radius: 0px;
 }
+
+/*
+ *
+ */
+#exp-notice {
+    color: blue;
+}

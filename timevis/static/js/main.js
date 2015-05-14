@@ -1,3 +1,24 @@
+// Set cookie
+function setCookie(cname, cvalue) {
+ 	var exdays = 1;
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+// Get cookie
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return "";
+}
+
 // ========================================================================
 // viewModel class
 // ========================================================================
@@ -21,8 +42,23 @@ function viewModel(){
     // |          |  expt   |           |           |
     //
     self.sec = ko.observable('design');  // Active section
-    self.opt = ko.observable('exp');     // Active option
-    self.fun = ko.observable('exp_old'); // Active function
+
+    var opt = getCookie('opt');
+    if (opt) {
+        self.opt = ko.observable(opt);
+    } else {
+        self.opt = ko.observable('exp');     // Active option
+    }
+    self.opt.subscribe(function (newOpt){ setCookie('opt', newOpt)})
+
+    // TODO: implement this at option level
+    var fun = getCookie('fun');
+    if (fun) {
+        self.fun = ko.observable(fun);
+    } else {
+        self.fun = ko.observable('exp');     // Active funion
+    }
+    self.fun.subscribe(function (newFun){ setCookie('fun', newFun)})
 
     // Experiment subpage
     self.exp = new ExpVM();
@@ -61,14 +97,21 @@ function viewModel(){
 function ExpVM() {
     var self = this;
 
-    // =====================
-    // Current functionality
-    // =====================
-    // Possible values: old, new
-    self.fun = ko.observable('old');
+    // ================================================
+    // Current functionality, possible values: old, new
+    // ================================================
+    var exp_fun = getCookie('exp_fun');
+    if (exp_fun) {
+        self.fun = ko.observable(exp_fun);
+    } else {
+        self.fun = ko.observable('old');     // Active funion
+    }
 
     // Reset current_exp every time fun changes
-    self.fun.subscribe(function(){self.current_exp(null);})
+    self.fun.subscribe(function(newFun){
+        self.current_exp(null);
+        setCookie('exp_fun', newFun);
+    })
 
     // =====================
     // Experiment objs
@@ -76,7 +119,7 @@ function ExpVM() {
     self.experiments = ko.observableArray();
     self.current_exp = ko.observable();
     // Factor (independent variables)
-    self.exp_fact = ko.observableArray([new ExpVar()]);
+    self.exp_fact = ko.observableArray();
     // Channels (dependent variables)
     self.exp_chnl = ko.observableArray();
 
@@ -132,8 +175,15 @@ function ExpVM() {
         }
     });
 
+    self.flash = function(msg) {
+        $("#exp-notice").html(msg).show().delay(2000).fadeOut();
+    }
+
     // TODO disable update button if there is no change
+    // TODO flash message success or not
     self.update_exp = function() {
+        self.current_exp().factors = self.exp_fact();
+        self.current_exp().channels = self.exp_chnl();
         $.ajax({
             url: "/api/v2/experiment",
             type: "PUT",
@@ -142,6 +192,10 @@ function ExpVM() {
             contentType: "application/json; charset=utf-8",
             success: function(data){
                 self.current_exp(data);
+                self.flash('Succeed!');
+            },
+            error: function(data){
+                self.flash('Failed! ' + $.parseJSON(data.responseText)['Error']);
             }
         });
     };
