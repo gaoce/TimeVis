@@ -3,7 +3,7 @@
 from sqlalchemy.exc import SQLAlchemyError
 
 from timevis.models import session
-from timevis.models import Experiment, Channel, Factor, Level
+from timevis.models import Experiment, Layout, Channel, Factor, Level
 
 
 def get_exps():
@@ -146,3 +146,93 @@ def uni_lvl(fid):
             distinct().all():
         res.append(row[0])
     return res
+
+
+def get_layouts(eid):
+    """
+    """
+
+    layouts_out = []
+    for layout_rec in session.query(Layout).filter_by(id_experiment=eid).all():
+        layout_out = {"id": layout_rec.id,
+                      "name": layout_rec.name,
+                      "factors": []}
+
+        for fac_rec in session.query(Factor).filter_by(id_experiment=eid).all():
+            fac_out = {"id": fac_rec.id,
+                       "name": fac_rec.name,
+                       "levels": {}}
+
+            for well, level in session.query(Level.well, Level.level).\
+                    filter(Level.id_factor == fac_rec.id).\
+                    filter(Level.id_layout == layout_rec.id).all():
+                fac_out['levels'][well] = level
+
+            layout_out['factors'].append(fac_out)
+
+        layouts_out.append(layout_out)
+
+    return layouts_out
+
+
+def post_layouts(layouts_in, eid):
+    """
+    """
+    # Get layout id and data, lid should be 0
+    layouts_rec = []
+    for layout_in in layouts_in:
+
+        # Create a new Layout record
+        layout_rec = Layout(name=layout_in['name'], id_experiment=eid)
+
+        # Update level records
+        for fac_in in layout_in['factors']:
+            # Factor ID
+            fid = fac_in['id']
+            for well, level in fac_in['levels'].items():
+                Level(well=well, level=level, layout=layout_rec, id_factor=fid)
+
+        layouts_rec.append(layout_rec)
+
+    # Commit the changes
+    session.add_all(layouts_rec)
+    try:
+        session.commit()
+    except SQLAlchemyError as err:
+        session.rollback()
+        return err.message
+
+    for idx, layout in enumerate(layouts_rec):
+        # Only Layout id is changed (a new one is given)
+        layouts_in[idx]['id'] = layout.id
+
+    return layouts_in
+
+
+def put_layouts(layouts_in):
+    # Get layout id and data
+    for layout_in in layouts_in:
+        # Got layout obj and modify it
+        lid = layout_in['id']
+        layout_rec = session.query(Layout).filter_by(id=lid)
+        layout_rec.name = layout_in['name']
+
+        # Update level records
+        # Only update factor provided
+        for fac_rec in layout_in['factors']:
+            fid = fac_rec['id']
+            flvl = fac_rec['levels']
+            # levels = []
+            for level in session.query(Level).\
+                    filter(Level.id_layout == lid).\
+                    filter(Level.id_factor == fid).all():
+                level.level = flvl[level.well]
+
+    # Commit the changes
+    try:
+        session.commit()
+    except SQLAlchemyError as err:
+        session.rollback()
+        return err.message
+
+    return layouts_in

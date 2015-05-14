@@ -3,7 +3,7 @@ from flask import request
 from flask.ext.restful import Api, Resource, reqparse
 from timevis.models import (Experiment, Layout, Factor, Channel, Level, Plate,
                             Value, session)
-from timevis.controller import get_exps, insert_exps, update_exps
+import timevis.controller as ctrl
 from datetime import datetime
 from sqlalchemy.orm import aliased
 import pandas
@@ -16,7 +16,10 @@ class ExperimentEP(Resource):
     This endpoint mainly deals with Experiment, Channel and Factor tables.
     """
     def get(self):
-        return {'experiment': get_exps()}
+        # Experiment objs
+        exps = ctrl.get_exps()
+
+        return {'experiment': exps}
 
     def post(self):
         """Insert new Experiment records
@@ -26,7 +29,7 @@ class ExperimentEP(Resource):
         json = request.get_json(force=True)
 
         # Insert each experiment obj to table, and get list of exps inserted
-        exps = insert_exps(json['experiment'])
+        exps = ctrl.insert_exps(json['experiment'])
 
         # Return the updated experiment obj
         return {"experiment": exps}
@@ -39,7 +42,7 @@ class ExperimentEP(Resource):
         json = request.get_json(force=True)
 
         # Get experimen id and data body
-        exps = update_exps(json['experiment'])
+        exps = ctrl.update_exps(json['experiment'])
 
         # Return the updated experiment obj
         return {"experiment": exps}
@@ -56,31 +59,10 @@ class LayoutEP(Resource):
         args = parser.parse_args()
         eid = args.eid
 
-        # Result
-        ret = {"layout": []}
+        # Layout objs
+        layouts = ctrl.get_layouts(eid)
 
-        for l in session.query(Layout).filter_by(id_experiment=eid).all():
-            layout_obj = {}
-            layout_obj["id"] = l.id
-            layout_obj["name"] = l.name
-            layout_obj["factors"] = []
-
-            for f in session.query(Factor).filter_by(id_experiment=eid).all():
-                fac = {}
-                fac['id'] = f.id
-                fac['name'] = f.name
-                fac['levels'] = {}
-
-                for well, lvl in session.query(Level.well, Level.level).\
-                        filter(Level.id_factor == f.id).\
-                        filter(Level.id_layout == l.id).all():
-                    fac['levels'][well] = lvl
-
-                layout_obj['factors'].append(fac)
-
-            ret["layout"].append(layout_obj)
-
-        return ret
+        return {"layout": layouts}
 
     def post(self):
         """Create a new layout obj:
@@ -94,35 +76,12 @@ class LayoutEP(Resource):
 
         # Get json from POST data, force is True so the request header don't
         # need to include "Content-type: application/json"
-        # TODO check input validity
         json = request.get_json(force=True)
 
-        # Get layout id and data, lid should be 0
-        layouts = []
-        for data in json["layout"]:
-
-            # Create a new Layout record
-            l = Layout(name=data['name'], id_experiment=eid)
-
-            # Update level records
-            for f in data['factors']:
-                # Factor ID
-                fid = f['id']
-                for well, level in f['levels'].items():
-                    Level(well=well, level=level, layout=l, id_factor=fid)
-
-            layouts.append(l)
-
-        # Commit the changes
-        session.add_all(layouts)
-        session.commit()
-
-        for idx, l in enumerate(layouts):
-            # Only Layout id is changed (a new one is given)
-            json['layout'][idx]['id'] = l.id
+        layouts = ctrl.post_layouts(json['layout'], eid)
 
         # Return newly create obj
-        return json
+        return {'layout': layouts}
 
     def put(self):
         """Update a layout's name and its levels"""
@@ -131,29 +90,10 @@ class LayoutEP(Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
-        # Get layout id and data
-        for data in json["layout"]:
-            # Got layout obj and modify it
-            lid = data['id']
-            l = session.query(Layout).filter_by(id=lid)
-            l.name = data['name']
-
-            # Update level records
-            # Only update factor provided
-            for f in data['factors']:
-                fid = f['id']
-                flvl = f['levels']
-                # levels = []
-                for lvl in session.query(Level).\
-                        filter(Level.id_layout == lid).\
-                        filter(Level.id_factor == fid).all():
-                    lvl.level = flvl[lvl.well]
-
-        # Commit the changes
-        session.commit()
+		layouts = ctrl.put_layouts(json['layout'])
 
         # Nothing to change, really
-        return json
+        return {'layout': layouts}
 
 
 class PlateEP(Resource):
