@@ -2,11 +2,12 @@
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
-              <li role="presentation" data-bind="css:{active: fun() == 'old'}">
-                  <a role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('old')}">Available</a>
+              <li role="presentation" class="active">
+                  <a role="tab" data-toggle="tab" href="#">Experiment</a>
               </li>
-              <li role="presentation" data-bind="css:{active: fun() == 'new'}">
-                  <a role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('new')}">New</a></li>
+              {#-
+              <li role="presentation"><a role="tab" data-toggle="tab" href="#">New</a></li>
+              #}
           </ul>
         </div>
     </div> <!-- row -->
@@ -15,25 +16,24 @@
         <div class="col-md-6">
             <div class="sep"></div>
             <h2>General Information</h2>
-            <button class="btn btn-primary" data-bind="visible:fun()=='old', click: get_exp">Refresh</button>
             <div class="sep"></div>
-            <table class="table table-striped">
+            <table class="table table-striped" data-bind="with: current_exp">
                 <tbody>
-                    <tr data-bind="visible: fun()=='old' ">
-                        <td>Select Experiment</td>
+                    <tr>
+                        <td>Select</td>
                         <td>
-                            <select class="form-control" data-bind="options: experiments, optionsText: 'name', value: current_exp, optionsCaption: 'Choose...'"></select>
+                            <select class="form-control" data-bind="options: $parent.experiments, optionsText: 'dispName', value: $parent.current_exp"></select>
                         </td>
                     </tr>
-                    <tr data-bind="with: current_exp">
+                    <tr>
                         <td>Experiment Name (need to be unique)</td>
                         <td><input class="form-control" data-bind="value: name" /></td>
                     </tr>
-                    <tr data-bind="with: current_exp">
+                    <tr>
                         <td>User (comma separated)</td>
                         <td><input class="form-control" data-bind="value: user" /></td>
                     </tr>
-                    <tr data-bind="with: current_exp">
+                    <tr>
                         <td>Well Number</td>
                         <td>
                             <select class="form-control" data-bind="options: well_types, optionsCaption: 'Select Well Number...', value: well"> </select>
@@ -45,7 +45,7 @@
     </div> <!-- row -->
 
     <div class="row">
-        <div class="col-md-6 fix-600">
+        <div class="col-md-6">
             <h2 class="table-title">Factors</h2>
             <p class="table-title">(Independent Variables)</p>
             <table class="table table-bordered" data-bind="with: current_exp" width="70%">
@@ -62,8 +62,7 @@
                             <p class="plain"><input class="form-control" data-bind="value: name" /></p>
                         </td>
                         <td>
-                            <select class="form-control" data-bind='options:
-                                $parents[1].factor_types, optionsCaption: "Select...", value: type'> </select>
+                            <select class="form-control" data-bind='options: factor_types, optionsCaption: "Select...", value: type'> </select>
                         </td>
                         <td>
                             <a href='#' data-bind='click: $parent.del_fact'>Remove</a>
@@ -79,8 +78,7 @@
                     <tr>
                         <th width="40%">Name</th>
                         <th width="35%">Type</th>
-                        <th width="25%"><button class="btn btn-primary"
-                                data-bind='click: add_chnl'>Add Channel</button></th>
+                        <th width="25%"><button class="btn btn-primary" data-bind='click: add_chnl'>Add Channel</button></th>
                     </tr>
                 </thead>
                 <tbody data-bind='foreach: channels'>
@@ -95,8 +93,8 @@
                     </tr>
                 </tbody>
             </table>
-            <button class="btn btn-primary" data-bind="visible:fun()=='old', click: put_exp">Update Experiment</button>
-            <button class="btn btn-primary" data-bind="visible:fun()=='new', click: post_exp">Add Experiment</button>
+            <button class="btn btn-primary" data-bind="click: update_exp">Update</button>
+            <button class="btn btn-primary" data-bind="click: get_exp">Refresh</button>
             <div id="exp-notice"></div>
         </div> <!-- col-md-x -->
     </div> <!-- row -->

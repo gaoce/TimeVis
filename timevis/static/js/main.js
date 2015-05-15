@@ -30,8 +30,7 @@ function viewModel(){
     // ========================================================================
     // | Section  | Option  |  Function |  Comment  |
     // | -------- | ------- | --------- | --------- |
-    // | design   |  exp    |  exp_old  |           |
-    // |          |         |  exp_new  |           |
+    // | design   |  exp    |           |           |
     // |          |  lay    |  lay_old  |           |
     // |          |         |  lay_new  |           |
     // |          |  imp    |  imp_file |           |
@@ -97,17 +96,21 @@ function viewModel(){
 function ExpVM() {
     var self = this;
 
-    // =====================
-    // Experiment objs
-    // =====================
+    // API URL
+    self.url = "/api/v2/experiment";
+
+    // Observable array of experiment objs and current one displayed on the page
     self.experiments = ko.observableArray();
     self.current_exp = ko.observable();
 
+    // Retrieve exp objs through API
     self.get_exp = function() {
         $.ajax({
-            url: "/api/v2/experiment",
+            url: self.url,
             type: "GET",
-            success: function(data){
+            success: function(data) {
+                // Populate experiments with retrieved experiment objs
+                self.experiments.removeAll();
                 exps = data.experiment;
                 $.map(exps, function(exp){
                     self.experiments.push(
@@ -115,67 +118,18 @@ function ExpVM() {
                             exp.factors, exp.channels)
                     );
                 });
-                if (!self.current_exp()){
-                    self.current_exp(self.experiments()[0]);
-                }
+                // Add empty experiment in the front
+                self.experiments.unshift(new Exp(0, '', null, null, [], [],
+                        'Add New Experiment'));
+
+                // By default, current_exp is empty
+                self.current_exp(self.experiments()[0]);
             }
         });
     };
     self.get_exp();
 
-    self.update_current_exp = function(exp_obj) {
-        if (!self.current_exp()) {
-            self.current_exp(new Exp(null, null, null, null, [], []));
-        }
-        var e = self.current_exp();
-        e.id = exp_obj.id;
-        e.name(exp_obj.name);
-        e.user(exp_obj.user);
-        e.well(exp_obj.well);
-        e.factors(
-            $.map(exp_obj.factors, function(f){
-                return new Factor(f.id, f.name, f.type, f.levels);
-            })
-        );
-        e.channels(
-            $.map(exp_obj.channels, function(c){
-                return new Channel(c.id, c.name);
-            })
-        );
-
-        self.current_exp.valueHasMutated();
-    };
-
-    // ================================================
-    // Current functionality, possible values: old, new
-    // ================================================
-    switch(getCookie('exp_fun')) {
-        case '':
-        case 'old':
-        case 'new':
-            self.fun = ko.observable('old');
-            break;
-        // case 'new':
-        //     self.fun = ko.observable('new');
-        //     self.update_current_exp({id: 0, name: "", user: "", well: "",
-        //         factors: [], channels: [] })
-    }
-
-    // self.fun = exp_fun != '' ? ko.observable(exp_fun) : ko.observable('old');
-    // A holder for existing experiment obj
-    self.last_exp;
-    self.fun.subscribe(function(newFun){
-        setCookie('exp_fun', newFun)
-        if (newFun === 'new') {
-            self.last_exp = ko.toJS(self.current_exp);
-            self.update_current_exp({id: 0, name: "", user: "", well: "",
-                factors: [], channels: [] })
-        } else {
-            self.update_current_exp(self.last_exp)
-        }
-    });
-
-
+    // Flash information on the page
     self.flash = function(msg) {
         $("#exp-notice").html(msg).show().delay(2000).fadeOut();
     }
@@ -219,50 +173,44 @@ function ExpVM() {
         }
     }
 
-    // TODO disable update button if there is no change
-    self.put_exp = function() {
+    // POST (if id=0) or PUT current_exp thru API
+    self.update_exp = function() {
         if (self.validate() === 0){ return };
+
+        // HTTP method
+        var method;
+        if (self.current_exp().id === 0) {
+            method = "POST";
+        } else {
+            method = "PUT";
+        }
 
         // Send to server
         $.ajax({
-            url: "/api/v2/experiment",
-            type: "PUT",
+            url: self.url,
+            type: method,
             dataType: "json",
             data: JSON.stringify({experiment: [ko.toJS(self.current_exp())]}),
             contentType: "application/json; charset=utf-8",
             success: function(data){
-                self.current_exp(data.experiment[0]);
+                exp = data.experiment[0];
+                self.experiments.push(
+                    new Exp(exp.id, exp.name, exp.user, exp.well, exp.factors,
+                        exp.channels)
+                );
+                self.experiments.remove(self.current_exp());
+                if (method === "POST"){
+                    self.experiments.unshift(new Exp(0, '', null, null, [], [],
+                            'Add New Experiment'));
+                }
+                self.current_exp(self.experiments.slice(-1)[0]);
                 self.flash('Succeed!');
             },
             error: function(data){
-                self.flash('Failed! ' + $.parseJSON(data.responseText)['Error']);
+                self.flash('Failed! '+ $.parseJSON(data.responseText)['Error']);
             }
         });
     };
-
-    self.post_exp = function(){
-        if (self.validate() === 0){ return };
-
-        // Send to server
-        $.ajax({
-            url: "/api/v2/experiment",
-            type: "POST",
-            dataType: "json",
-            data: JSON.stringify({experiment: [ko.toJS(self.current_exp())]}),
-            contentType: "application/json; charset=utf-8",
-            success: function(data){
-                self.update_current_exp(data.experiment[0]);
-                self.flash('Succeed!');
-            },
-            error: function(data){
-                self.flash('Failed! ' + $.parseJSON(data.responseText)['Error']);
-            }
-        });
-    };
-
-
-    self.factor_types = ['Category', 'Integer', 'Decimal'];
-
 }
 
 // ============================================================================
@@ -410,7 +358,7 @@ function GeneVM() {
 // ============================================================================
 // Experiment class
 // ============================================================================
-function Exp(id, name, user, well, factors, channels) {
+function Exp(id, name, user, well, factors, channels, dispName) {
     // Parameters:
     //  id: integer. Experiment id
     //  name: string. Experiment name
@@ -418,6 +366,7 @@ function Exp(id, name, user, well, factors, channels) {
     //  well: integer. Number of wells
     //  factors: array of factors
     //  channels: array of channels
+    //  displayName
     var self = this;
 
     self.id = id;
@@ -425,6 +374,11 @@ function Exp(id, name, user, well, factors, channels) {
     self.user = ko.observable(user);
     self.well = ko.observable(well);
     self.well_types = [96, 384];
+    if (!dispName) {
+        self.dispName = name;
+    } else {
+        self.dispName = dispName;
+    }
 
     self.factors = ko.observableArray(
         $.map(factors, function(f){
@@ -440,7 +394,7 @@ function Exp(id, name, user, well, factors, channels) {
 
     // Add a new factor
     self.add_fact = function() {
-		// New Factor object should have a ID of 0
+		1// New Factor object should have a ID of 0
         self.factors.push(new Factor(0, '', null, []));
     };
 
@@ -496,6 +450,8 @@ var Factor = function(id, name, type, levels) {
     self.get_chosen_levels = function(){
         return $.map(self.chosen_levels(), function(l){return l.name})
     }
+
+    self.factor_types = ['Category', 'Integer', 'Decimal'];
 }
 
 // ============
