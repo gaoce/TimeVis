@@ -2,8 +2,8 @@
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
-              <li role="presentation" class="active"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('lay_old')}">Update Existing</a></li>
-              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('lay_new')}">Add New</a></li>
+              <li role="presentation" data-bind="css:{active: fun()==='lay_old'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('lay_old')}">Available</a></li>
+              <li role="presentation" data-bind="css:{active: fun()==='lay_new'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('lay_new')}">New</a></li>
           </ul>
         </div>
     </div> <!-- row -->

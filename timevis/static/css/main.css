@@ -154,3 +154,22 @@ select {
 .popover {
     width: 100%; /* Max Width of the popover (depending on the container!) */
 }
+
+/*
+ * Customize bootstrap behavior
+ */
+
+.panel-group .panel {
+    border-radius: 0px;
+}
+
+.panel-heading {
+    border-radius: 0px;
+}
+
+/*
+ *
+ */
+#exp-notice {
+    color: blue;
+}

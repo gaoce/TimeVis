@@ -247,7 +247,7 @@ endpoint is shown below:
             "name"    : "Exp 1",
             "user"    : "user1",
             "well"    : 96,
-            "channels": [{"id": "1", "name": "GFP"}],
+            "channels": [{"id": 1, "name": "GFP"}],
             "factors" :
             [
               {"id": 1, "name": "Dose", "type": "Decimal"},
@@ -256,6 +256,8 @@ endpoint is shown below:
           }
         ]
       }
+
+    Note: ``id`` for newly created Channel or Factor should be 0
 
 **Output**
 	Updated experiment object, with possible altered IDs, e.g.,
