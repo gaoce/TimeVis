@@ -157,7 +157,7 @@ function ExpVM() {
             break;
         // case 'new':
         //     self.fun = ko.observable('new');
-        //     self.update_current_exp({id: 0, name: "", user: "", well: "", 
+        //     self.update_current_exp({id: 0, name: "", user: "", well: "",
         //         factors: [], channels: [] })
     }
 
@@ -168,7 +168,7 @@ function ExpVM() {
         setCookie('exp_fun', newFun)
         if (newFun === 'new') {
             self.last_exp = ko.toJS(self.current_exp);
-            self.update_current_exp({id: 0, name: "", user: "", well: "", 
+            self.update_current_exp({id: 0, name: "", user: "", well: "",
                 factors: [], channels: [] })
         } else {
             self.update_current_exp(self.last_exp)
@@ -532,9 +532,6 @@ var Level = function(name){
     self.value = 1;
 }
 
-var vm = new viewModel();
-ko.applyBindings(vm);
-
 // ========================================================================
 // handsontable
 // ========================================================================
@@ -577,3 +574,9 @@ var container2 = document.getElementById("data_table");
 var hot2 = new Handsontable(container2, setting);
 
 $("#time-slider").slider();
+
+var vm;
+$(function(){
+    vm = new viewModel();
+    ko.applyBindings(vm);
+});
