@@ -12,9 +12,10 @@
     </div> <!-- row -->
 
     <div class="row">
-        <div class="col-md-6 fix-600">
+        <div class="col-md-6">
             <div class="sep"></div>
             <h2>General Information</h2>
+            <button class="btn btn-primary" data-bind="visible:fun()=='old', click: get_exp">Refresh</button>
             <div class="sep"></div>
             <table class="table table-striped">
                 <tbody>
@@ -24,15 +25,15 @@
                             <select class="form-control" data-bind="options: experiments, optionsText: 'name', value: current_exp, optionsCaption: 'Choose...'"></select>
                         </td>
                     </tr>
-                    <tr>
+                    <tr data-bind="with: current_exp">
                         <td>Experiment Name (need to be unique)</td>
                         <td><input class="form-control" data-bind="value: name" /></td>
                     </tr>
-                    <tr>
+                    <tr data-bind="with: current_exp">
                         <td>User (comma separated)</td>
                         <td><input class="form-control" data-bind="value: user" /></td>
                     </tr>
-                    <tr>
+                    <tr data-bind="with: current_exp">
                         <td>Well Number</td>
                         <td>
                             <select class="form-control" data-bind="options: well_types, optionsCaption: 'Select Well Number...', value: well"> </select>
@@ -40,10 +41,14 @@
                     </tr>
                 </tbody>
             </table>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
 
+    <div class="row">
+        <div class="col-md-6 fix-600">
             <h2 class="table-title">Factors</h2>
             <p class="table-title">(Independent Variables)</p>
-            <table class="table table-bordered" width="70%">
+            <table class="table table-bordered" data-bind="with: current_exp" width="70%">
                 <thead>
                     <tr>
                         <th width="40%">Name</th>
@@ -51,13 +56,14 @@
                         <th width="25%"><button class="btn btn-primary" data-bind='click: add_fact'>Add Factor</button></th>
                     </tr>
                 </thead>
-                <tbody data-bind='foreach: exp_fact'>
+                <tbody data-bind='foreach: factors'>
                     <tr>
                         <td>
                             <p class="plain"><input class="form-control" data-bind="value: name" /></p>
                         </td>
                         <td>
-                            <select class="form-control" data-bind='options: $parent.var_types, optionsCaption: "Select...", value: type'> </select>
+                            <select class="form-control" data-bind='options:
+                                $parents[1].factor_types, optionsCaption: "Select...", value: type'> </select>
                         </td>
                         <td>
                             <a href='#' data-bind='click: $parent.del_fact'>Remove</a>
@@ -68,15 +74,16 @@
 
             <h2 class="table-title">Channels</h2>
             <p class="table-title">(Dependent Variables)</p>
-            <table class="table table-bordered">
+            <table class="table table-bordered" data-bind='with: current_exp'>
                 <thead>
                     <tr>
                         <th width="40%">Name</th>
                         <th width="35%">Type</th>
-                        <th width="25%"><button class="btn btn-primary" data-bind='click: add_chnl'>Add Channel</button></th>
+                        <th width="25%"><button class="btn btn-primary"
+                                data-bind='click: add_chnl'>Add Channel</button></th>
                     </tr>
                 </thead>
-                <tbody data-bind='foreach: exp_chnl'>
+                <tbody data-bind='foreach: channels'>
                     <tr>
                         <td>
                             <p class="plain"><input class="form-control" data-bind="value: name" /></p>
@@ -88,8 +95,8 @@
                     </tr>
                 </tbody>
             </table>
-            <button class="btn btn-primary" data-bind="visible:fun()=='old', click: update_exp">Update Experiment</button>
-            <button class="btn btn-primary" data-bind="visible:fun()=='new'">Add Experiment</button>
+            <button class="btn btn-primary" data-bind="visible:fun()=='old', click: put_exp">Update Experiment</button>
+            <button class="btn btn-primary" data-bind="visible:fun()=='new', click: post_exp">Add Experiment</button>
             <div id="exp-notice"></div>
         </div> <!-- col-md-x -->
     </div> <!-- row -->

@@ -35,7 +35,7 @@ def get_exps():
     return exps_out
 
 
-def insert_exps(exps_in):
+def post_exps(exps_in):
     """Insert experiment objects into database.
 
     Parameters
@@ -86,7 +86,7 @@ def insert_exps(exps_in):
     return exps_out
 
 
-def update_exps(exps_in):
+def put_exps(exps_in):
     """Update Experiment records according input experiment objs
 
     Parameters
@@ -110,26 +110,45 @@ def update_exps(exps_in):
         exp_rec.user = exp_in['user']
         exp_rec.well = exp_in['well']
 
-        # Update channel record in database, delete un-associated channel
+        # Update Channel record in database, delete un-associated channel
+        chs_update = {}  # Channels to be updated
+        chs_upload = []  # Newly created channels
+        for ch_in in exp_in['channels']:
+            if ch_in['id'] != 0:
+                chs_update[ch_in['id']] = ch_in
+            else:
+                chs_upload.append(ch_in)
+
         for ch_rec in session.query(Channel).filter_by(id_experiment=eid).all():
-            delete_ch = 1
-            for ch_in in exp_in['channels']:
-                if ch_rec.id == ch_in['id']:
-                    ch_rec.name = ch_in['name']
-                    delete_ch = 0
-                    break
-            if delete_ch == 1:
+            cid = ch_rec.id
+            if cid in chs_update:
+                ch_rec.name = chs_update[cid]['name']
+            else:
+                # Delete those not included in chs_update
                 session.delete(ch_rec)
 
-        for f_rec in session.query(Factor).filter_by(id_experiment=eid).all():
-            delete_f = 1
-            for f_in in exp_in['factors']:
-                if f_rec.id == f_in['id']:
-                    f_rec.name, f_rec.type = f_in['name'], f_in['type']
-                    delete_f = 0
-                    break
-            if delete_f == 1:
-                session.delete(f_rec)
+        for ch_in in chs_upload:
+            Channel(name=ch_in['name'], experiment=exp_rec)
+
+        # Update Factor record in database, delete un-associated channel
+        facs_update = {}
+        facs_upload = []
+        for fac_in in exp_in['factors']:
+            if fac_in['id'] != 0:
+                facs_update[fac_in['id']] = fac_in
+            else:
+                facs_upload.append(fac_in)
+
+        for fac_rec in session.query(Factor).filter_by(id_experiment=eid).all():
+            fid = fac_rec.id
+            if fid in facs_update:
+                fac_rec.name = facs_update[fid]['name']
+                fac_rec.type = facs_update[fid]['type']
+            else:
+                session.delete(fac_rec)
+
+        for fac_in in facs_upload:
+            Factor(name=fac_in['name'], type=fac_in['type'], experiment=exp_rec)
 
         # Commit the changes
         commit()

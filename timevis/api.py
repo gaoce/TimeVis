@@ -27,7 +27,7 @@ class ExperimentEP(Resource):
         json = request.get_json(force=True)
 
         # Insert each experiment obj to table, and get list of exps inserted
-        exps = ctrl.insert_exps(json['experiment'])
+        exps = ctrl.post_exps(json['experiment'])
 
         # Return the updated experiment obj
         return {"experiment": exps}
@@ -41,7 +41,7 @@ class ExperimentEP(Resource):
 
         # Get experimen id and data body
         try:
-            exps = ctrl.update_exps(json['experiment'])
+            exps = ctrl.put_exps(json['experiment'])
         except Exception as e:
             return {"Error": e.message}, 500
 
