@@ -210,7 +210,6 @@ function ExpVM() {
 // =================
 // Layout View Model
 // =================
-
 function LayoutVM() {
     var self = this;
 
@@ -259,14 +258,8 @@ function LayoutVM() {
 	                });
 	                self.layouts.push(layout_obj);
 	            });
-                var empty_layout = new Layout(0, '', 'Add New Layout');
-                // var factors = $.extend(true, {}, self.layouts()[0].factors());                
-                // factors = $.map(factors, function(factor){
-                //     for (var well in factor.levels) {
-                //         factor.levels[well] = '';
-                //     }
-                // });
 
+                // Create a place holder layout for adding new
                 var factors = $.map(layouts[0].factors, function(f) {
                     var factor = new Factor(f.id, f.name, '', f.levels);
                     $.map(factor.levels(), function(lvl){
@@ -275,8 +268,9 @@ function LayoutVM() {
                     });
                     return factor;
                 })
-                empty_layout.factors(factors);
 
+                var empty_layout = new Layout(0, '', 'Add New Layout');
+                empty_layout.factors(factors);
                 self.layouts.unshift(empty_layout);
 	        }
 	    });
@@ -321,10 +315,69 @@ function LayoutVM() {
         return ret;
     };
 
+    self.decodeData = function(data) {
+        var lvls = [];
+        $.map(data, function(arr){
+            $.map(arr, function(d){
+                lvls.push(d);
+            });
+        });
+        switch (lvls.length) {
+            case 96:
+                var nRow = 8;
+                var nCol = 12;
+                break;
+            case 384:
+                var nRow = 16;
+                var nCol = 24;
+                break;
+            default:
+                return;
+        }
+
+        var ret = {};
+        $.map(lvls, function(lvl, ind) {
+            // 1-based row and col num
+            var col = ind % nCol + 1;
+            var row = (ind - col + 1) / nCol + 1;
+    		var well = String.fromCharCode(64 + row) + (col < 10 ? '0' : '') + col;
+            ret[well] = '' + lvl;
+        })
+
+        return ret;
+    }
+
     self.current_factor.subscribe(function(factor){
         var lvls = self.encodeData(factor.levels());
         self.table.loadData(lvls);
     });
+
+    self.update_layout = function() {
+        var data = self.decodeData(self.table.getData());
+        var layout = ko.toJS(self.current_layout);
+        var factor ={id: self.current_factor().id, 
+            		name: self.current_factor().name(), 
+                    levels: data};
+        layout.factors = [factor];
+        var method;
+        if (self.current_layout().id === 0) {
+            method = "POST";
+        } else {
+            method = "PUT";
+        }
+
+        $.ajax({
+            url: self.layout_url + '?eid=' + self.current_exp().id,
+            type: method,
+            dataType: "json",
+            data: JSON.stringify({layout: [layout]}),
+            contentType: "application/json; charset=utf-8",
+            success: function(data){
+            },
+            error: function(data){
+            }
+        });
+    };
 }
 
 // ============================================================================
