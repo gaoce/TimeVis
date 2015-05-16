@@ -3,8 +3,13 @@
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="import-tabs">
+              {#-
               <li role="presentation" data-bind="css:{active: fun()=='imp_file'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('imp_file')}">Import Files</a></li>
-              <li role="presentation" data-bind="css:{active: fun()=='imp_manu'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('imp_manu')}">Manual Input</a></li>
+              #}
+              <li role="presentation" data-bind="css:{active:
+              fun()=='imp_manu'}"><a aria-controls="well" role="tab"
+              data-toggle="tab" href="#" data-bind="click:
+          function(){fun('imp_manu')}">Input Data</a></li>
           </ul>
         </div>
     </div> <!-- row -->
@@ -26,11 +31,19 @@
                             <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Layout...'"></select>
                         </td>
                     </tr>
+                    <tr>
+                        <td>Channel</th>
+                        <td>
+                            <select class="form-control auto-width"
+                                data-bind="options: layouts, optionsCaption:
+                            'Select Channel...'"></select>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
-    {# Upload a file -#}
+    {# Upload a file 
     <div class="row" data-bind="visible: fun()=='imp_file'">
         <div class="col-md-4">
             <div class="sep"></div>
@@ -40,6 +53,7 @@
             <div class="sep"></div>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
+    -#}
     {# Manual paste data #}
     <div class="row" data-bind="visible: fun()=='imp_manu'">
         <div class="col-md-8">
