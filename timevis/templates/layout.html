@@ -26,19 +26,21 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Layout Name</th>
+                        <td>Select Layout</th>
                         <td>
                             <select class="form-control auto-width" data-bind="options: layouts, value: current_layout, optionsText:'dispName', optionsCaption: 'Select Layout...'"></select>
-                            {#-
-                            <input class="form-control" name="" data-bind="with: current_layout, text: dispName">
-                            #}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Update Name</th>
+                        <td>
+                            <input class="form-control" name="" data-bind="value: current_layout() ?  current_layout().name : '' ">
                         </td>
                     </tr>
                     <tr>
                         <td>Factor</th>
                         <td>
-                            <select class="form-control auto-width"
-                                data-bind="options: factors, optionsText: 'name', optionsCaption: 'Select Factor...'"></select>
+                            <select class="form-control auto-width" data-bind="options: factors, value:current_factor, optionsText: 'name', optionsCaption: 'Select Factor...'"></select>
                         </td>
                     </tr>
                 </tbody>
@@ -51,6 +53,7 @@
             <div id="layout"></div>
             <div class="sep"></div>
             <button class="btn btn-primary">Update</button>
+            <button class="btn btn-primary">Refresh</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 </div>

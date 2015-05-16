@@ -220,8 +220,10 @@ function LayoutVM() {
     // Factor (independent variables)
     self.experiments = ko.observableArray();
     self.current_exp = ko.observable();
+
     self.layouts = ko.observableArray();
     self.current_layout = ko.observable();
+
     self.factors = ko.observableArray();
     self.current_factor = ko.observable();
 
@@ -238,7 +240,6 @@ function LayoutVM() {
                             exp.factors, exp.channels)
                     );
                 });
-                self.get_layouts(exps[0].id);
             }
         });
     };
@@ -253,26 +254,76 @@ function LayoutVM() {
 	            $.map(layouts, function(layout){
 	                var layout_obj = new Layout(layout.id, layout.name);
 	                $.map(layout.factors, function(factor){
-	                    layout_obj.factors.push(new Factor(factor.id, factor.name, 
-	                            '', factor.levels));
+	                    layout_obj.factors.push(new Factor(factor.id, 
+                                factor.name, '', factor.levels));
 	                });
 	                self.layouts.push(layout_obj);
-	                self.layouts.unshift(new Layout(0, '', 'Add New Layout'));
 	            });
-	            if (self.current_layout){
-	                self.current_layout(self.layouts()[0]);
-	            }
+                var empty_layout = new Layout(0, '', 'Add New Layout');
+                // var factors = $.extend(true, {}, self.layouts()[0].factors());                
+                // factors = $.map(factors, function(factor){
+                //     for (var well in factor.levels) {
+                //         factor.levels[well] = '';
+                //     }
+                // });
+
+                var factors = $.map(layouts[0].factors, function(f) {
+                    var factor = new Factor(f.id, f.name, '', f.levels);
+                    $.map(factor.levels(), function(lvl){
+                        lvl.name = '';
+                        lvl.value = null;
+                    });
+                    return factor;
+                })
+                empty_layout.factors(factors);
+
+                self.layouts.unshift(empty_layout);
 	        }
 	    });
 	}
 
     self.get_exps(self.experiments);
 
+    self.container = $('#layout')[0];
+    self.table;
     self.current_exp.subscribe(function(exp){
         self.get_layouts(exp.id);
+        var settings = new createSetting(exp.well());
+        self.table = new Handsontable(self.container, settings);
     });
+
     self.current_layout.subscribe(function(layout){
         self.factors(layout.factors());
+    });
+
+    self.encodeData = function(levels) {
+        var lvls = $.map(levels, function(level){return level.value;});
+        var ret = [];
+        switch (lvls.length) {
+            case 96:
+                var nCol = 12;
+                break;
+            case 384:
+                var nCol = 24;
+                break;
+            default:
+                return;
+        }
+        var cur_arr = [];
+        $.map(lvls, function(lvl, ind) {
+            cur_arr.push(lvl);
+            if ((ind + 1) % nCol === 0) {
+                ret.push(cur_arr);
+                cur_arr = [];
+            }
+        });
+
+        return ret;
+    };
+
+    self.current_factor.subscribe(function(factor){
+        var lvls = self.encodeData(factor.levels());
+        self.table.loadData(lvls);
     });
 }
 
@@ -524,7 +575,7 @@ function Layout(id, name, dispName) {
     var self = this;
 
     self.id = id;
-    self.name = name;
+    self.name = ko.observable(name);
     if (!dispName){
         self.dispName = name;
     } else {
@@ -561,7 +612,20 @@ var Level = function(name){
 // ========================================================================
 // handsontable
 // ========================================================================
-var createSetting = function(nRow, nCol, fixRow){
+var createSetting = function(nWell, fixRow){
+    var self = this;
+    switch (nWell) {
+        case 96:
+            var nRow = 8;
+            var nCol = 12;
+            break;
+        case 384:
+            var nRow = 16;
+            var nCol = 24;
+            break;
+        default:
+            return
+    }
     self.startRows = nRow;
     self.minRows = nRow;
     if (fixRow) {
