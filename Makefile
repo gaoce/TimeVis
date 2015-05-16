@@ -1,8 +1,7 @@
 .PHONY: init-db clean install uninstall run devserver stop-devserver restart-devserver local stop-local restart-local
 
 init-db:
-	rm timevis/db/timevis.db
-	touch timevis/db/timevis.db
+	cp test/timevis.db timevis/db/
 
 clean:
 	rm -rf TimeVis.egg-info/ build/ dist/ *.log
