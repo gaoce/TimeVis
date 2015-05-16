@@ -1,9 +1,13 @@
-<div class="container" data-bind="visible: opt()=='lay'">
+<div class="container" data-bind="with: layout, visible: $root.opt()=='lay' ">
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
-              <li role="presentation" data-bind="css:{active: fun()==='lay_old'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('lay_old')}">Available</a></li>
-              <li role="presentation" data-bind="css:{active: fun()==='lay_new'}"><a aria-controls="well" role="tab" data-toggle="tab" href="#" data-bind="click: function(){fun('lay_new')}">New</a></li>
+              <li role="presentation" class="active">
+                  <a aria-controls="well" role="tab" data-toggle="tab" href="#">Layout</a>
+              </li>
+              {#-
+              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#">New</a></li>
+              #}
           </ul>
         </div>
     </div> <!-- row -->
@@ -18,21 +22,23 @@
                     <tr>
                         <td>Experiment</th>
                         <td>
-                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Experiment...'"></select>
+                            <select class="form-control auto-width" data-bind="options: experiments, value: current_exp, optionsText:'dispName', optionsCaption: 'Select Experiment...'"></select>
                         </td>
                     </tr>
                     <tr>
                         <td>Layout Name</th>
                         <td>
-                            <select class="form-control auto-width"
-                                data-bind="visible: fun()=='lay_old', options: layouts, optionsCaption: 'Select Layout...'"></select>
-                            <input class="form-control" name="" data-bind="visible: fun()=='lay_new'">
+                            <select class="form-control auto-width" data-bind="options: layouts, value: current_layout, optionsText:'dispName', optionsCaption: 'Select Layout...'"></select>
+                            {#-
+                            <input class="form-control" name="" data-bind="with: current_layout, text: dispName">
+                            #}
                         </td>
                     </tr>
                     <tr>
                         <td>Factor</th>
                         <td>
-                            <select class="form-control auto-width" data-bind="options: exp_fact, optionsText: 'name', optionsCaption: 'Select Factor...'"></select>
+                            <select class="form-control auto-width"
+                                data-bind="options: factors, optionsText: 'name', optionsCaption: 'Select Factor...'"></select>
                         </td>
                     </tr>
                 </tbody>
@@ -42,10 +48,9 @@
 
     <div class="row">
         <div class="col-md-8 fix-500">
-            <div id="well"></div>
+            <div id="layout"></div>
             <div class="sep"></div>
-            <button class="btn btn-primary" data-bind="visible:fun()=='lay_old'">Update</button>
-            <button class="btn btn-primary" data-bind="visible:fun()=='lay_new'">Upload</button>
+            <button class="btn btn-primary">Update</button>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 </div>

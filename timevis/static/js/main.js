@@ -31,8 +31,7 @@ function viewModel(){
     // | Section  | Option  |  Function |  Comment  |
     // | -------- | ------- | --------- | --------- |
     // | design   |  exp    |           |           |
-    // |          |  lay    |  lay_old  |           |
-    // |          |         |  lay_new  |           |
+    // |          |  lay    |           |           |
     // |          |  imp    |  imp_file |           |
     // |          |         |  imp_manu |           |
     // | vis      |  plate  |           |           |
@@ -62,17 +61,12 @@ function viewModel(){
     // Experiment subpage
     self.exp = new ExpVM();
 
+    // Layout subpage
+    self.layout = new LayoutVM();
+    self.layouts = [];
+
     // Experiment subpage
     self.gene = new GeneVM();
-
-    // ========================================================================
-    // Layout subpage
-    // ========================================================================
-    //
-    // Factor (independent variables)
-    self.exp_fact = ko.observableArray([new Factor()]);
-    self.layouts = ko.observableArray(['AAA', 'BBB']);
-    self.layout_exps = ko.observableArray(['AAA','AAA']);
 
     // ========================================================================
     // Plates
@@ -90,9 +84,9 @@ function viewModel(){
 
 }
 
-// ============================================================================
+// =====================
 // Experiment View Model
-// ============================================================================
+// =====================
 function ExpVM() {
     var self = this;
 
@@ -211,6 +205,75 @@ function ExpVM() {
             }
         });
     };
+}
+
+// =================
+// Layout View Model
+// =================
+
+function LayoutVM() {
+    var self = this;
+
+    self.exp_url = '/api/v2/experiment';
+    self.layout_url = '/api/v2/layout';
+
+    // Factor (independent variables)
+    self.experiments = ko.observableArray();
+    self.current_exp = ko.observable();
+    self.layouts = ko.observableArray();
+    self.current_layout = ko.observable();
+    self.factors = ko.observableArray();
+    self.current_factor = ko.observable();
+
+	self.get_exps = function() {
+        $.ajax({
+            url: self.exp_url,
+            type: "GET",
+            success: function(data) {
+                // Populate experiments with retrieved experiment objs
+                exps = data.experiment;
+                $.map(exps, function(exp){
+                    self.experiments.push(
+                        new Exp(exp.id, exp.name, exp.user, exp.well,
+                            exp.factors, exp.channels)
+                    );
+                });
+                self.get_layouts(exps[0].id);
+            }
+        });
+    };
+
+	self.get_layouts = function(eid) {
+	    $.ajax({
+	        url: self.layout_url + '?eid=' + eid,
+	        type: "GET",
+	        success: function(data) {
+	            layouts = data.layout;
+                self.layouts.removeAll();
+	            $.map(layouts, function(layout){
+	                var layout_obj = new Layout(layout.id, layout.name);
+	                $.map(layout.factors, function(factor){
+	                    layout_obj.factors.push(new Factor(factor.id, factor.name, 
+	                            '', factor.levels));
+	                });
+	                self.layouts.push(layout_obj);
+	                self.layouts.unshift(new Layout(0, '', 'Add New Layout'));
+	            });
+	            if (self.current_layout){
+	                self.current_layout(self.layouts()[0]);
+	            }
+	        }
+	    });
+	}
+
+    self.get_exps(self.experiments);
+
+    self.current_exp.subscribe(function(exp){
+        self.get_layouts(exp.id);
+    });
+    self.current_layout.subscribe(function(layout){
+        self.factors(layout.factors());
+    });
 }
 
 // ============================================================================
@@ -457,11 +520,18 @@ var Factor = function(id, name, type, levels) {
 // ============
 // Layout class
 // ============
-function Layout(id, name) {
+function Layout(id, name, dispName) {
     var self = this;
 
     self.id = id;
     self.name = name;
+    if (!dispName){
+        self.dispName = name;
+    } else {
+        self.dispName = dispName;
+    }
+
+    self.factors = ko.observableArray();
 }
 
 // =============
@@ -524,10 +594,10 @@ var setting = {
     contextMenu: true
 };
 
-var container1 = document.getElementById("well");
-var hot1 = new Handsontable(container1, setting);
-var container2 = document.getElementById("data_table");
-var hot2 = new Handsontable(container2, setting);
+// var container1 = document.getElementById("well");
+// var hot1 = new Handsontable(container1, setting);
+// var container2 = document.getElementById("data_table");
+// var hot2 = new Handsontable(container2, setting);
 
 $("#time-slider").slider();
 
