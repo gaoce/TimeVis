@@ -36,7 +36,8 @@
                     <tr>
                         <td>Well Number</td>
                         <td>
-                            <select class="form-control" data-bind="options: well_types, optionsCaption: 'Select Well Number...', value: well"> </select>
+                            <select class="form-control"
+                                data-bind="disable:$data.id != 0, options: well_types, optionsCaption: 'Select Well Number...', value: well"> </select>
                         </td>
                     </tr>
                 </tbody>

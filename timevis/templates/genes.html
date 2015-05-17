@@ -41,7 +41,7 @@
     </div> <!-- row -->
 
     {# Factor Panels: each panel is a box allowing user the select levels -#}
-    <div class="row">
+    <div class="row" data-bind="visible: factor_panels().length > 0">
         {# Leave some space to the top -#}
         <div class="sep"></div>
         <div class="col-md-8 fix-200" data-bind="foreach: factor_panels">

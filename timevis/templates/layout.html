@@ -1,4 +1,4 @@
-<div class="container" data-bind="with: layout, visible: $root.opt()=='lay' ">
+<div class="container" data-bind="with: layout, visible: $root.opt()=='lay'">
     <div class="row">
         <div class="col-md-6">
           <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
@@ -40,7 +40,7 @@
                     <tr>
                         <td>Factor</th>
                         <td>
-                            <select class="form-control auto-width" data-bind="options: factors, value:current_factor, optionsText: 'name', optionsCaption: 'Select Factor...'"></select>
+                            <select class="form-control auto-width" data-bind="options: factors, value: current_factor, optionsText: 'name', optionsCaption: 'Select Factor...'"></select>
                         </td>
                     </tr>
                 </tbody>
@@ -49,8 +49,8 @@
     </div> <!-- row -->
 
     <div class="row">
-        <div class="col-md-8 fix-500">
-            <div id="layout"></div>
+        <div class="col-md-8 fix-400">
+            <div id="layout" data-bind="visible: current_factor()"></div>
             <div class="sep"></div>
             <button class="btn btn-primary" data-bind="click: update_layout">Update</button>
             <button class="btn btn-primary">Refresh</button>

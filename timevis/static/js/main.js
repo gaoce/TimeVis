@@ -32,8 +32,7 @@ function viewModel(){
     // | -------- | ------- | --------- | --------- |
     // | design   |  exp    |           |           |
     // |          |  lay    |           |           |
-    // |          |  imp    |  imp_file |           |
-    // |          |         |  imp_manu |           |
+    // |          |  imp    |           |           |
     // | vis      |  plate  |           |           |
     // |          |  genes  |           |           |
     // | analysis |  norm   |           |           |
@@ -47,7 +46,7 @@ function viewModel(){
     } else {
         self.opt = ko.observable('exp');     // Active option
     }
-    self.opt.subscribe(function (newOpt){ setCookie('opt', newOpt)})
+    self.opt.subscribe(function(newOpt){setCookie('opt', newOpt)});
 
     // TODO: implement this at option level
     var fun = getCookie('fun');
@@ -71,7 +70,6 @@ function viewModel(){
     // ========================================================================
     // Plates
     // ========================================================================
-
     // Visualize plate
     self.vis_plate = ko.observable(false);
 
@@ -89,9 +87,7 @@ function viewModel(){
 // =====================
 function ExpVM() {
     var self = this;
-
-    // API URL
-    self.url = "/api/v2/experiment";
+    self.url = "/api/v2/experiment";   // API url
 
     // Observable array of experiment objs and current one displayed on the page
     self.experiments = ko.observableArray();
@@ -231,17 +227,14 @@ function LayoutVM() {
             url: self.exp_url,
             type: "GET",
             success: function(data) {
-                // Populate experiments with retrieved experiment objs
-                exps = data.experiment;
-                $.map(exps, function(exp){
-                    self.experiments.push(
-                        new Exp(exp.id, exp.name, exp.user, exp.well,
-                            exp.factors, exp.channels)
-                    );
+                $.map(data.experiments, function(exp){
+                    self.experiments.push(new Exp(exp));
                 });
             }
         });
     };
+
+    self.get_exps();
 
 	self.get_layouts = function(eid) {
 	    $.ajax({
@@ -250,40 +243,42 @@ function LayoutVM() {
 	        success: function(data) {
 	            layouts = data.layout;
                 self.layouts.removeAll();
+
 	            $.map(layouts, function(layout){
 	                var layout_obj = new Layout(layout.id, layout.name);
-	                $.map(layout.factors, function(factor){
-	                    layout_obj.factors.push(new Factor(factor.id, 
-                                factor.name, '', factor.levels));
+	                $.map(layout.factors, function(fact){
+	                    layout_obj.factors.push(
+                            new Factor(fact.id, fact.name, '', fact.levels)
+                        );
 	                });
 	                self.layouts.push(layout_obj);
 	            });
 
                 // Create a place holder layout for adding new
-                var factors = $.map(layouts[0].factors, function(f) {
-                    var factor = new Factor(f.id, f.name, '', f.levels);
-                    $.map(factor.levels(), function(lvl){
-                        lvl.name = '';
-                        lvl.value = null;
-                    });
-                    return factor;
-                })
-
                 var empty_layout = new Layout(0, '', 'Add New Layout');
-                empty_layout.factors(factors);
+                empty_layout.factors(
+                	$.map(self.current_exp().factors(), function(f) {
+                        return new Factor(f.id, f.name());
+                    })
+                );
                 self.layouts.unshift(empty_layout);
 	        }
 	    });
 	}
 
-    self.get_exps(self.experiments);
-
     self.container = $('#layout')[0];
     self.table;
-    self.current_exp.subscribe(function(exp){
+    self.current_exp.subscribe(function(exp) {
         self.get_layouts(exp.id);
+
+        if (self.table) {
+            self.table.destroy();
+        }
+
         var settings = new createSetting(exp.well());
         self.table = new Handsontable(self.container, settings);
+        self.current_layout(self.layouts()[0]);
+        self.current_factor(null);
     });
 
     self.current_layout.subscribe(function(layout){
@@ -291,9 +286,14 @@ function LayoutVM() {
     });
 
     self.encodeData = function(levels) {
-        var lvls = $.map(levels, function(level){return level.value;});
+        var nWell = self.current_exp().well();
+        if (levels.length > 0) {
+            var lvls = $.map(levels, function(level){return level.value;});
+        } else {
+            var lvls = Array(nWell);
+        }
         var ret = [];
-        switch (lvls.length) {
+        switch (nWell) {
             case 96:
                 var nCol = 12;
                 break;
@@ -348,15 +348,17 @@ function LayoutVM() {
     }
 
     self.current_factor.subscribe(function(factor){
-        var lvls = self.encodeData(factor.levels());
-        self.table.loadData(lvls);
+        if (factor) {
+            var lvls = self.encodeData(factor.levels());
+            self.table.loadData(lvls);
+        }
     });
 
     self.update_layout = function() {
         var data = self.decodeData(self.table.getData());
         var layout = ko.toJS(self.current_layout);
-        var factor ={id: self.current_factor().id, 
-            		name: self.current_factor().name(), 
+        var factor ={id: self.current_factor().id,
+            		name: self.current_factor().name(),
                     levels: data};
         layout.factors = [factor];
         var method;
@@ -536,6 +538,16 @@ function Exp(id, name, user, well, factors, channels, dispName) {
     //  displayName
     var self = this;
 
+    if ((arguments.length === 1) && (typeof(arguments[0]) === 'object')){
+        var exp = arguments[0];
+        var id = exp.id;
+        var name = exp.name;
+        var user = exp.user;
+        var well = exp.well;
+        var factors = exp.factors;
+        var channels = exp.channels;
+    }
+
     self.id = id;
     self.name = ko.observable(name);
     self.user = ko.observable(user);
@@ -659,7 +671,7 @@ function getFactors(exp) {
 var Level = function(name){
     var self = this;
     self.name = name;
-    self.value = 1;
+    self.value = name;
 }
 
 // ========================================================================
@@ -681,6 +693,7 @@ var createSetting = function(nWell, fixRow){
     }
     self.startRows = nRow;
     self.minRows = nRow;
+    self.maxRows = nRow;
     if (fixRow) {
         self.maxRows = nRow;
     }
@@ -689,12 +702,15 @@ var createSetting = function(nWell, fixRow){
     self.minCols = nCol;
     self.maxCols = nCol;
 
+    self.colWidths = 750/(nCol+2);
+
     self.manualColumnResize = true;
     self.manualRowResize = true;
     self.contextMenu = true;
 
     self.rowHeaders = function(i) { return String.fromCharCode(65 + i); };
     self.colHeaders = function(i) { return i+1; };
+    self.className = 'htCenter';
 };
 
 // TODO oop setting, make it dynamic for all types of tables
