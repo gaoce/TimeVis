@@ -28,19 +28,22 @@
                     <tr>
                         <td>Select Layout</th>
                         <td>
-                            <select class="form-control auto-width" data-bind="options: layouts, value: current_layout, optionsText:'dispName', optionsCaption: 'Select Layout...'"></select>
+                            <select class="form-control auto-width"
+                                data-bind="disable: disable_layout, options: layouts, value: current_layout, optionsText:'dispName', optionsCaption: 'Select Layout...'"></select>
                         </td>
                     </tr>
                     <tr>
                         <td>Update Name</th>
                         <td>
-                            <input class="form-control" name="" data-bind="value: current_layout() ?  current_layout().name : '' ">
+                            <input class="form-control" name=""
+                            data-bind="disable: disable_layout, value: current_layout() ?  current_layout().name : '' ">
                         </td>
                     </tr>
                     <tr>
                         <td>Factor</th>
                         <td>
-                            <select class="form-control auto-width" data-bind="options: factors, value: current_factor, optionsText: 'name', optionsCaption: 'Select Factor...'"></select>
+                            <select class="form-control auto-width"
+                                data-bind="disable: disable_factor, options: factors, value: current_factor, optionsText: 'name', optionsCaption: 'Select Factor...'"></select>
                         </td>
                     </tr>
                 </tbody>

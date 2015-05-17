@@ -1,6 +1,6 @@
 // Set cookie
 function setCookie(cname, cvalue) {
- 	var exdays = 1;
+    var exdays = 1;
     var d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
     var expires = "expires="+d.toUTCString();
@@ -218,16 +218,30 @@ function LayoutVM() {
 
     self.layouts = ko.observableArray();
     self.current_layout = ko.observable();
+    self.disable_layout = ko.computed(function() {
+        if (!self.current_exp()) {
+            return true;
+        } else {
+            return false;
+        }
+    });
 
     self.factors = ko.observableArray();
     self.current_factor = ko.observable();
+    self.disable_factor = ko.computed(function() {
+        if (!self.current_exp() || !self.current_layout()) {
+            return true;
+        } else {
+            return false;
+        }
+    });
 
-	self.get_exps = function() {
+    self.get_exps = function() {
         $.ajax({
             url: self.exp_url,
             type: "GET",
             success: function(data) {
-                $.map(data.experiments, function(exp){
+                $.map(data.experiment, function(exp){
                     self.experiments.push(new Exp(exp));
                 });
             }
@@ -236,35 +250,35 @@ function LayoutVM() {
 
     self.get_exps();
 
-	self.get_layouts = function(eid) {
-	    $.ajax({
-	        url: self.layout_url + '?eid=' + eid,
-	        type: "GET",
-	        success: function(data) {
-	            layouts = data.layout;
+    self.get_layouts = function(eid) {
+        $.ajax({
+            url: self.layout_url + '?eid=' + eid,
+            type: "GET",
+            success: function(data) {
+                layouts = data.layout;
                 self.layouts.removeAll();
 
-	            $.map(layouts, function(layout){
-	                var layout_obj = new Layout(layout.id, layout.name);
-	                $.map(layout.factors, function(fact){
-	                    layout_obj.factors.push(
+                $.map(layouts, function(layout){
+                    var layout_obj = new Layout(layout.id, layout.name);
+                    $.map(layout.factors, function(fact){
+                        layout_obj.factors.push(
                             new Factor(fact.id, fact.name, '', fact.levels)
                         );
-	                });
-	                self.layouts.push(layout_obj);
-	            });
+                    });
+                    self.layouts.push(layout_obj);
+                });
 
                 // Create a place holder layout for adding new
                 var empty_layout = new Layout(0, '', 'Add New Layout');
                 empty_layout.factors(
-                	$.map(self.current_exp().factors(), function(f) {
+                    $.map(self.current_exp().factors(), function(f) {
                         return new Factor(f.id, f.name());
                     })
                 );
                 self.layouts.unshift(empty_layout);
-	        }
-	    });
-	}
+            }
+        });
+    }
 
     self.container = $('#layout')[0];
     self.table;
@@ -340,7 +354,7 @@ function LayoutVM() {
             // 1-based row and col num
             var col = ind % nCol + 1;
             var row = (ind - col + 1) / nCol + 1;
-    		var well = String.fromCharCode(64 + row) + (col < 10 ? '0' : '') + col;
+            var well = String.fromCharCode(64 + row) + (col < 10 ? '0' : '') + col;
             ret[well] = '' + lvl;
         })
 
@@ -358,7 +372,7 @@ function LayoutVM() {
         var data = self.decodeData(self.table.getData());
         var layout = ko.toJS(self.current_layout);
         var factor ={id: self.current_factor().id,
-            		name: self.current_factor().name(),
+                    name: self.current_factor().name(),
                     levels: data};
         layout.factors = [factor];
         var method;
@@ -507,8 +521,8 @@ function GeneVM() {
                         show_secondary_x_label: false,
                         mouseover: function(d, i) {
                             // custom format the rollover text, show days
-                			var timeFmt = d3.time.format('%H:%M');
-                    		var time = timeFmt(d.time);
+                            var timeFmt = d3.time.format('%H:%M');
+                            var time = timeFmt(d.time);
                             var val = d3.formatPrefix(d.value)
                                         .scale(d.value)
                                         .toFixed(2);
@@ -573,7 +587,7 @@ function Exp(id, name, user, well, factors, channels, dispName) {
 
     // Add a new factor
     self.add_fact = function() {
-		1// New Factor object should have a ID of 0
+        1// New Factor object should have a ID of 0
         self.factors.push(new Factor(0, '', null, []));
     };
 
