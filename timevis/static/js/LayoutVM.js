@@ -1,5 +1,5 @@
 // A View Model to control layout information interface
-define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'], 
+define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
     function($, ko, Exp, Layout, Factor, utils) {
         return function() {
             var self = this;
@@ -8,10 +8,11 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
             self.exp_url = '/api/v2/experiment';
             self.layout_url = '/api/v2/layout';
 
-            // Factor (independent variables)
+            // Array for Experiment obj and current obj
             self.experiments = ko.observableArray();
             self.current_exp = ko.observable();
 
+            // Layout
             self.layouts = ko.observableArray();
             self.current_layout = ko.observable();
             // Disable layout selection if no current_exp is available
@@ -19,6 +20,7 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
                 return self.current_exp()? false: true
             });
 
+            // Factor
             self.factors = ko.observableArray();
             self.current_factor = ko.observable();
             self.disable_factor = ko.computed(function() {
@@ -32,20 +34,61 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
             // current_exp().factors, but without levels)
             self.factors_prty = [];
 
+            // Handsontable obj
+            self.table;
+
+            self.disable_update = ko.computed(function() {
+                if (!self.current_exp() || !self.current_layout() || !self.current_factor()){
+                    return true;
+                }
+            });
+
             self.get_exps = function() {
                 $.ajax({
                     url: self.exp_url,
                     type: "GET",
                     success: function(data) {
-                        $.map(data.experiment, function(exp){
-                            self.experiments.push(new Exp(exp));
-                        });
-                    }
-                });
+                        self.experiments(
+                            $.map(data.experiment, function(exp){
+                                return new Exp(exp);
+                            })
+                        );
+                    }  /* success */
+                });  /* ajax */
             };
 
-            self.get_exps();
+            self.current_exp.subscribe(function(exp) {
+                if (!exp) {
+                    // Disable all following functionalities if exp is null
+                    self.current_layout(null);
+                    self.current_factor(null);
+                    return;
+                }
 
+                // Update factor prototypes
+                self.factors_prty = $.map(exp.factors(), function(fac) {
+                    return {id: fac.id, name: fac.name()};
+                });
+
+                // Update self.layouts
+                self.get_layouts(exp.id);
+
+                // Create the table
+                if (self.table) {
+                    // Destory existing table
+                    self.table.destroy();
+                }
+
+                var container = document.getElementById('layout');
+                var settings = new utils.createSetting(exp.well());
+                self.table = new Handsontable(container, settings);
+
+                // Set current layout to empty one
+                self.current_layout(self.layouts()[0]);
+                self.current_factor(null);
+            });
+
+            // Retrieve layout info given an experiment id
             self.get_layouts = function(eid) {
                 $.ajax({
                     url: self.layout_url + '?eid=' + eid,
@@ -58,6 +101,8 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
                             })
                         );
 
+                        self.layouts.sort(self.sort_layout);
+
                         // Create a place holder layout for adding new
                         self.layouts.unshift(
                             new Layout({factors: self.factors_prty})
@@ -66,40 +111,13 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
                 });
             }
 
-            self.container = $('#layout')[0];
-            self.table;
-            self.current_exp.subscribe(function(exp) {
-                if (!exp) {
-                    self.current_layout(null);
-                    self.current_factor(null);
-                    return;
-                }
-
-                // Update factor prototypes
-                self.factors_prty = $.map(exp.factors(), function(fac) {
-                    return {id: fac.id, name: fac.name()};
-                });
-                self.get_layouts(exp.id);
-
-                // Destory existing table
-                if (self.table) {
-                    self.table.destroy();
-                }
-
-                var settings = new utils.createSetting(exp.well());
-                self.table = new Handsontable(self.container, settings);
-
-                // Set current layout to empty one
-                self.current_layout(self.layouts()[0]);
-                self.current_factor(null);
-            });
-
             self.current_layout.subscribe(function(layout){
                 if (layout) {
                     self.factors(layout.factors());
                 }
             });
 
+            // Construct an array used by Handsontable based on factor levels
             self.encodeData = function(levels) {
                 var nWell = self.current_exp().well();
                 if (levels.length > 0) {
@@ -171,32 +189,67 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
                 }
             });
 
+            // Flash information on the page
+            self.flash = function(msg) {
+                $("#layout-notice").html(msg).show().delay(2000).fadeOut();
+            }
+
+            self.sort_layout = function(left, right) {
+                return left.dispName == right.dispName ? 0 :
+                    (left.dispName < right.dispName ? -1 : 1)
+            };
+
+            self.validate = function() {
+                if (self.current_layout().name() === '') {
+                    self.flash('Error: invalid layout name!');
+                    return 0;
+                }
+            };
+
             self.update_layout = function() {
+                // Validate fields on the page
+                if (self.validate() === 0){ return };
+
                 var data = self.decodeData(self.table.getData());
                 var layout = ko.toJS(self.current_layout);
                 var factor ={id: self.current_factor().id,
                             name: self.current_factor().name(),
                             levels: data};
                 layout.factors = [factor];
-                var method;
-                if (self.current_layout().id === 0) {
-                    method = "POST";
-                } else {
-                    method = "PUT";
-                }
+
+                // New exp's ID is 0
+                var http_method = self.current_layout().id === 0 ? 'POST' : 'PUT';
 
                 $.ajax({
                     url: self.layout_url + '?eid=' + self.current_exp().id,
-                    type: method,
+                    type: http_method,
                     dataType: "json",
                     data: JSON.stringify({layout: [layout]}),
                     contentType: "application/json; charset=utf-8",
                     success: function(data){
+                        var layout = new Layout(data.layout[0]);
+                        self.layouts.remove(self.current_layout());
+                        self.layouts.push(layout);
+                        self.layouts.sort(self.sort_layout);
+                        self.current_layout(layout);
+
+                        // Add a new empty exp obj
+                        if (http_method === "POST"){
+                            self.layouts.unshift(
+                                new Layout({factors: self.factors_prty})
+                            );
+                        }
+                        self.flash('Succeed!');
                     },
                     error: function(data){
+                        self.flash('Error: '+
+                                $.parseJSON(data.responseText)['Error']);
                     }
                 });
             };
+
+            // Initialize
+            self.get_exps();
         };
     }
 );

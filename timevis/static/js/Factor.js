@@ -17,10 +17,17 @@ define(['jquery', 'knockout', 'Level'], function($, ko, Level) {
         self.id = fac.id ? fac.id : 0;
         self.name = ko.observable(fac.name ? fac.name : '');
         self.type = ko.observable(fac.type ? fac.type : null);
+
+        lvls = fac.levels ? fac.levels : [];
+        if (typeof lvls === 'object') {
+            var arr = []
+            $.map(Object.keys(lvls), function(k){
+                arr.push(lvls[k]);
+            });
+            lvls = arr;
+        }
         self.levels = ko.observableArray(
-            $.map(fac.levels ? fac.levels : [], function(lvl){
-                return new Level(lvl);
-            })
+            $.map(lvls, function(lvl){ return new Level(lvl); })
         );
 
         // Make sure input factor type is valid

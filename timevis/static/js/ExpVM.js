@@ -122,7 +122,6 @@ define(['jquery', 'knockout', 'Exp'], function($, ko, Exp) {
     	            if (http_method === "POST"){
     	                self.experiments.unshift(new Exp({}));
     	            }
-    	            // self.current_exp(self.experiments.slice(-1)[0]);
     	            self.flash('Succeed!');
     	        },
     	        error: function(data){
