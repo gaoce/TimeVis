@@ -22,12 +22,13 @@
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+    <script src="{{ url_for('static', filename='js/require.js') }}" data-main="{{ url_for('static', filename='js/app.js') }}"></script>
 </head>
 <body>
     <div class='container clear'>
         {% block content -%}
         {%- endblock %}
     </div>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
