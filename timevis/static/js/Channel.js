@@ -1,7 +1,8 @@
-// Organizational classes
-define(function() {
+define(['knockout'], function(ko) {
     return function(id, name) {
-        this.id = id;
-        this.name = ko.observable(name);
-    }
+        var self = this;
+
+        self.id = id;
+        self.name = ko.observable(name);
+    };
 });
