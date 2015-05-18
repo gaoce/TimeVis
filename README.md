@@ -19,10 +19,12 @@ variables) and channels (dependent variables).
 
 ![Experiment Information](/docs/images/experiment.png)
 
+<!--
 Interface to define experimental conditions, namely the levels of factors for
 each well in the plates.
 
 ![Layout Information](/docs/images/layout.png)
+-->
 
 Interface to query and visualize time series data based on conditions of
 interest.
