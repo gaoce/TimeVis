@@ -1,6 +1,6 @@
 // A View Model to control layout information interface
-define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
-    function($, ko, Exp, Layout, Factor, utils) {
+define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'Level', 'utils'],
+    function($, ko, Exp, Layout, Factor, Level, utils) {
         return function() {
             var self = this;
 
@@ -216,6 +216,10 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
                             name: self.current_factor().name(),
                             levels: data};
                 layout.factors = [factor];
+                // Maybe we should move the following 3 lines into ajax
+                self.current_factor().levels($.map(data, function(d) {
+                    return new Level(d);
+                }));
 
                 // New exp's ID is 0
                 var http_method = self.current_layout().id === 0 ? 'POST' : 'PUT';
@@ -227,8 +231,6 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
                     data: JSON.stringify({layout: [layout]}),
                     contentType: "application/json; charset=utf-8",
                     success: function(data){
-                        self.current_factor(null);
-                        self.get_layouts(self.current_exp().id);
                         self.flash('Succeed!');
                     },
                     error: function(data){
