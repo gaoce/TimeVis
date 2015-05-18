@@ -1,4 +1,3 @@
-// Organizational classes
 define(['jquery', 'knockout', 'Level'], function($, ko, Level) {
     return function(id, name, type, levels) {
         var self = this;

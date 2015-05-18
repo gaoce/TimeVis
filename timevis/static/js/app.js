@@ -10,4 +10,5 @@ require.config({
 require(['knockout', 'ViewModel', 'domReady!'], function(ko, ViewModel){
 	var vm = new ViewModel();
     ko.applyBindings(vm);
+    window.vm = vm;
 });
