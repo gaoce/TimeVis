@@ -206,7 +206,7 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
                 }
             };
 
-            self.update_layout = function() {
+            self.update_factor = function() {
                 // Validate fields on the page
                 if (self.validate() === 0){ return };
 
@@ -227,18 +227,8 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'utils'],
                     data: JSON.stringify({layout: [layout]}),
                     contentType: "application/json; charset=utf-8",
                     success: function(data){
-                        var layout = new Layout(data.layout[0]);
-                        self.layouts.remove(self.current_layout());
-                        self.layouts.push(layout);
-                        self.layouts.sort(self.sort_layout);
-                        self.current_layout(layout);
-
-                        // Add a new empty exp obj
-                        if (http_method === "POST"){
-                            self.layouts.unshift(
-                                new Layout({factors: self.factors_prty})
-                            );
-                        }
+                        self.current_factor(null);
+                        self.get_layouts(self.current_exp().id);
                         self.flash('Succeed!');
                     },
                     error: function(data){

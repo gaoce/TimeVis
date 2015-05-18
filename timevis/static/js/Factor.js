@@ -21,7 +21,7 @@ define(['jquery', 'knockout', 'Level'], function($, ko, Level) {
         lvls = fac.levels ? fac.levels : [];
         if (typeof lvls === 'object') {
             var arr = []
-            $.map(Object.keys(lvls), function(k){
+            $.map(Object.keys(lvls).sort(), function(k){
                 arr.push(lvls[k]);
             });
             lvls = arr;
