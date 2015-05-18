@@ -16,7 +16,7 @@ define({
 	    }
 	    return "";
 	},
-    createSetting: function() {
+    createSetting: function(nWell, fixRow) {
     	var self = this;
     	switch (nWell) {
     	    case 96:

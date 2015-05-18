@@ -3,11 +3,10 @@ require.config({
         jquery: 'lib/jquery.min',
         knockout: 'lib/knockout.min',
 		domReady: 'lib/domReady',
-		handsontable: 'lib/handsontable.full.min'
     }
 });
 
-require(['knockout', 'ViewModel', 'domReady!'], function(ko, ViewModel){
+require(['knockout', 'ViewModel', 'domReady!'], function(ko, ViewModel, h){
 	var vm = new ViewModel();
     ko.applyBindings(vm);
     window.vm = vm;

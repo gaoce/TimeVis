@@ -51,9 +51,14 @@
         </div> <!-- col-md-x -->
     </div> <!-- row -->
 
-    <div class="row">
+    <div class="row" data-bind="visible: current_factor()">
         <div class="col-md-8 fix-400">
-            <div id="layout" data-bind="visible: current_factor()"></div>
+            <div id="layout"></div>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+
+    <div class="row">
+        <div class="col-md-8">
             <div class="sep"></div>
             <button class="btn btn-primary" data-bind="click: update_layout">Update</button>
             <button class="btn btn-primary">Refresh</button>

@@ -1,12 +1,39 @@
 define(['jquery', 'knockout', 'Level'], function($, ko, Level) {
-    return function(id, name, type, levels) {
-        var self = this;
-        self.id = id;
-        self.name = ko.observable(name);
-        self.type = ko.observable(type);
-        self.query = ko.observable();
+    return function(fac) {
+        /* Parameters:
+         *   fac: factor object, returned from API, w/ the following properties:
+         *     id: factor id
+         *     name: factor name
+         *     type: type should be within self.factor_types
+         *     levels: unique levels of the factor
+         */
 
+        var self = this;
+
+        /*
+         * Basic information of a factor object: id, name, type and levels if
+         * provided
+         */
+        self.id = fac.id ? fac.id : 0;
+        self.name = ko.observable(fac.name ? fac.name : '');
+        self.type = ko.observable(fac.type ? fac.type : null);
+        self.levels = ko.observableArray(
+            $.map(fac.levels ? fac.levels : [], function(lvl){
+                return new Level(lvl);
+            })
+        );
+
+        // Make sure input factor type is valid
+        self.factor_types = ['Category', 'Integer', 'Decimal', null];
+        if (self.factor_types.indexOf(self.type()) == -1){
+            throw new Error(self.type() + ' is not allowed!');
+        }
+
+        /*
+         * Helper function to select levels in factor
+         */
         //TODO keep the selection status while hidden
+        self.query = ko.observable();
         self.query.subscribe(function(val){
             // check if string is empty
             if (val){
@@ -24,18 +51,11 @@ define(['jquery', 'knockout', 'Level'], function($, ko, Level) {
             }
             self.levels.valueHasMutated();
         }, self);
-
-        self.levels = ko.observableArray();
-        for (var i in levels){
-            self.levels.push(new Level(levels[i]))
-        }
-
         self.chosen_levels = ko.observableArray();
 
         self.get_chosen_levels = function(){
             return $.map(self.chosen_levels(), function(l){return l.name})
         }
 
-        self.factor_types = ['Category', 'Integer', 'Decimal'];
     };
 });
