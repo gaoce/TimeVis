@@ -1,5 +1,5 @@
 define(['knockout', 'utils', 'ExpVM', 'LayoutVM', 'PlateVM', 'GeneVM'], 
-    function(ko, utils, ExpVM, LayoutVM, GeneVM) {
+    function(ko, utils, ExpVM, LayoutVM, PlateVM, GeneVM) {
         return function() {
 	    	var self = this;
 	
@@ -41,6 +41,7 @@ define(['knockout', 'utils', 'ExpVM', 'LayoutVM', 'PlateVM', 'GeneVM'],
 	
 	    	// Layout subpage
 	    	self.layout = new LayoutVM();
+	    	self.layouts = [];
 
             // Plate import subpage
             self.plate = new PlateVM();

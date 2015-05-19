@@ -16,31 +16,48 @@
                     <tr>
                         <td>Experiment</th>
                         <td>
-                            <select class="form-control auto-width" data-bind="options: experiments, optionsText: 'dispName', optionsCaption: 'Select Experiment...'"></select>
+                            <select class="form-control auto-width"
+                                data-bind="value: current_exp,
+                                options: experiments,
+                                optionsText: 'dispName',
+                                optionsCaption: 'Select Experiment...'">
+                            </select>
                         </td>
                     </tr>
                     <tr>
                         <td>Layout</th>
                         <td>
                             <select class="form-control auto-width"
-                                data-bind="disable: disable_layout, options:
-                                layouts, optionsText: 'dispName',  optionsCaption: 'Select Layout...'"></select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Channel</th>
-                        <td>
-                            <select class="form-control auto-width"
-                                data-bind="disable: disable_channel, options:
-                                channels, optionsText: 'dispName', optionsCaption: 'Select Channel...'"></select>
+                                data-bind="disable: disable_layout,
+                                value: current_layout,
+                                options: layouts,
+                                optionsText: 'dispName',
+                                optionsCaption: 'Select Layout...'">
+                            </select>
                         </td>
                     </tr>
                     <tr>
                         <td>Plate</th>
                         <td>
                             <select class="form-control auto-width"
-                                data-bind="disable: disable_plate, options:
-                                plates, optionsText: 'dispName', optionsCaption: 'Select Plate...'"></select>
+                                data-bind="disable: disable_plate,
+                                value: current_plate,
+                                options: plates,
+                                optionsText: 'dispName',
+                                optionsCaption: 'Select Plate...'">
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Channel</th>
+                        <td>
+                            <select class="form-control auto-width"
+                                data-bind="disable: disable_channel,
+                                value: current_channel,
+                                options: channels,
+                                optionsText: 'dispName',
+                                optionsCaption: 'Select Channel...'">
+                            </select>
                         </td>
                     </tr>
                 </tbody>
@@ -48,17 +65,15 @@
         </div> <!-- col-md-x -->
     </div> <!-- row -->
     {# Manual paste data #}
-    <div class="row" data-bind="visible: current_plate()">
-        <div class="col-md-8">
-            <div id="data_table"></div>
-        </div> <!-- col-md-x -->
+    <div class="row" data-bind="visible: current_channel()">
+        <div id="data_table" class="handsontable"></div>
     </div> <!-- row -->
     {# Upload button #}
     <div class="row">
         <div class="col-md-8">
             <div class="sep"></div>
-            <button class="btn btn-primary" data-bind="click: update_factor, disable: disable_update">Update</button>
-            <button class="btn btn-primary" data-bind="click: get_exps">Refresh</button>
+            <button class="btn btn-primary">Update</button>
+            <button class="btn btn-primary">Refresh</button>
             <div id="plate-notice"></div>
         </div> <!-- col-md-x -->
     </div> <!-- row -->

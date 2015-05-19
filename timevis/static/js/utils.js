@@ -16,7 +16,7 @@ define({
 	    }
 	    return "";
 	},
-    createSetting: function(nWell, fixRow) {
+    createSetting: function(nWell, flexRow) {
     	var self = this;
     	switch (nWell) {
     	    case 96:
@@ -32,8 +32,7 @@ define({
     	}
     	self.startRows = nRow;
     	self.minRows = nRow;
-    	self.maxRows = nRow;
-    	if (fixRow) {
+    	if (!fixRow) {
     	    self.maxRows = nRow;
     	}
 
@@ -49,6 +48,45 @@ define({
 
     	self.rowHeaders = function(i) { return String.fromCharCode(65 + i); };
     	self.colHeaders = function(i) { return i+1; };
+    	self.className = 'htCenter';
+    },
+    createDataSetting: function(nWell) {
+    	var self = this;
+    	switch (nWell) {
+    	    case 96:
+    	        var nRow = 8;
+    	        var nCol = 12;
+    	        break;
+    	    case 384:
+    	        var nRow = 16;
+    	        var nCol = 24;
+    	        break;
+    	    default:
+    	        return
+    	}
+    	self.startRows = 4;
+
+    	self.startCols = nWell + 1;
+    	self.minCols = nWell + 1;
+    	self.maxCols = nWell + 1;
+
+    	// self.colWidths = 750/(nCol+2);
+
+    	self.manualColumnResize = true;
+    	self.manualRowResize = true;
+    	self.contextMenu = true;
+
+    	self.colHeaders = function(i) { 
+            console.log(i);
+            if (i > 0){
+                var col = (i - 1) % nCol + 1;
+                var row = (i - col) / nCol + 1;
+                return String.fromCharCode(64 + row) + (col < 10 ? '0' : '') + 
+                    col;
+            } else {
+                return 'time';
+            }
+        };
     	self.className = 'htCenter';
     }
 });
