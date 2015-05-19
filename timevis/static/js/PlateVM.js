@@ -174,6 +174,28 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Channel', 'Plate', 'utils'],
             }
 
             self.update_plate = function() {
+                // TODO validate table empty rows
+                var plate = ko.toJS(self.current_plate);
+                $.map(plate.channels, function(chnl){
+                    $.map(chnl.value, function(ts){ts.shift()});
+                });
+
+                var http_method = self.current_plate().id === 0 ? 'POST' : 'PUT';
+                $.ajax({
+                    url: self.plate_url + '?lid=' + self.current_layout().id,
+                    type: http_method,
+                    dataType: "json",
+                    data: JSON.stringify({plate: [plate]}),
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data){
+                        self.flash('Succeed!');
+                    },
+                    error: function(data){
+                        self.flash('Error: '+
+                                $.parseJSON(data.responseText)['Error']);
+                    }
+                });
+
             };
 
             // Initialize
