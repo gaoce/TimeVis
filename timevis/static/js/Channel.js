@@ -4,5 +4,6 @@ define(['knockout'], function(ko) {
 
         self.id = chnl.id ? chnl.id : 0;
         self.name = ko.observable(chnl.name ? chnl.name : '');
+        self.dispName = self.name();
     };
 });

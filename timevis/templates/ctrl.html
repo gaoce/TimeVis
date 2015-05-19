@@ -11,16 +11,16 @@
         <div id="collapse1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading1">
             <ul class='list-group plain'>
                 {# Options -#}
-                <li class='plain' data-bind="css:{highlight:opt()=='exp'}, click:function(){opt('exp'), fun('exp_old')}"><a class='plain option' href="#">Experiment</a></li>
-                <li class='plain' data-bind="css:{highlight:opt()=='lay'}, click:function(){opt('lay'), fun('lay_old')}"><a class='plain option' href="#">Layout</a></li>
-                <li class='plain' data-bind="css:{highlight:opt()=='imp'}, click:function(){opt('imp'), fun('imp_file')}"><a class='plain option' href="#">Plate</a></li>
+                <li class='plain' data-bind="css:{highlight:opt()=='exp'}, click:function(){opt('exp')}"><a class='plain option' href="#">Experiment</a></li>
+                <li class='plain' data-bind="css:{highlight:opt()=='lay'}, click:function(){opt('lay')}"><a class='plain option' href="#">Layout</a></li>
+                <li class='plain' data-bind="css:{highlight:opt()=='plt'}, click:function(){opt('plt')}"><a class='plain option' href="#">Plate</a></li>
             </ul>
         </div>
     </div> <!-- div.panel -->
 
     {# 2. Visualizatoin Section -#}
     <div class="panel panel-primary">
-        {# Section title -#}
+        {# Section title #}
         <div class="panel-heading plain" role="tab" id="heading2">
             <a class='panel-title plain section' data-toggle="collapse" data-parent="#accordion" href="#collapse2" aria-expanded="true" aria-controls="collapse2">Visualization</a>
         </div>
@@ -28,7 +28,9 @@
         {# Section options -#}
         <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
             <ul class='list-group plain'>
+                {#
                 <li class='plain' data-bind="css:{highlight:opt()=='plate'}, click:function(){opt('plate')}"><a class='plain option' href="#">Plate</a></li>
+                #}
                 <li class='plain' data-bind="css:{highlight:opt()=='genes'}, click:function(){opt('genes')}"><a class='plain option' href="#">Genes</a></li>
             </ul>
         </div>

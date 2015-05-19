@@ -1,11 +1,9 @@
-<div class="container" data-bind="visible: opt()=='plate'">
+<div class="container" data-bind="with:plate, visible: $root.opt()=='plt'">
     {# Tabs -#}
     <div class="row">
         <div class="col-md-6">
-          <ul class="nav nav-tabs" role="tablist" id="import-tabs">
-              <li role="presentation" class="active">
-                  <a aria-controls="well" role="tab" data-toggle="tab" href="#">Plate View</a>
-              </li>
+          <ul class="nav nav-tabs" role="tablist" id="plate-tabs">
+              <li role="presentation" class="active"><a role="tab" data-toggle="tab" href="#">Plate</a></li>
           </ul>
         </div>
     </div> <!-- row -->
@@ -18,34 +16,50 @@
                     <tr>
                         <td>Experiment</th>
                         <td>
-                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Experiment...'"></select>
+                            <select class="form-control auto-width" data-bind="options: experiments, optionsText: 'dispName', optionsCaption: 'Select Experiment...'"></select>
                         </td>
                     </tr>
                     <tr>
                         <td>Layout</th>
                         <td>
-                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Layout...'"></select>
+                            <select class="form-control auto-width"
+                                data-bind="disable: disable_layout, options:
+                                layouts, optionsText: 'dispName',  optionsCaption: 'Select Layout...'"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Channel</th>
+                        <td>
+                            <select class="form-control auto-width"
+                                data-bind="disable: disable_channel, options:
+                                channels, optionsText: 'dispName', optionsCaption: 'Select Channel...'"></select>
                         </td>
                     </tr>
                     <tr>
                         <td>Plate</th>
                         <td>
-                            <select class="form-control auto-width" data-bind="options: layouts, optionsCaption: 'Select Plate...'"></select>
+                            <select class="form-control auto-width"
+                                data-bind="disable: disable_plate, options:
+                                plates, optionsText: 'dispName', optionsCaption: 'Select Plate...'"></select>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div> <!-- col-md-x -->
     </div> <!-- row -->
-    {# Start Visualization #}
-    <button class="btn btn-primary" data-bind="click: function(){vis_plate(true);}">Visualize</button>
-    {# Canvas #}
-    <div class="row">
-        <div class="col-md-4">
-            <div class="sep"></div>
-            <div id="time-slider"></div>
-            <div class="sep"></div>
-            <div id="canvas"></div>
+    {# Manual paste data #}
+    <div class="row" data-bind="visible: current_plate()">
+        <div class="col-md-8">
+            <div id="data_table"></div>
         </div> <!-- col-md-x -->
-    </div>  <!-- row -->
+    </div> <!-- row -->
+    {# Upload button #}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="sep"></div>
+            <button class="btn btn-primary" data-bind="click: update_factor, disable: disable_update">Update</button>
+            <button class="btn btn-primary" data-bind="click: get_exps">Refresh</button>
+            <div id="plate-notice"></div>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
 </div>

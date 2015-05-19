@@ -1,4 +1,4 @@
-define(['knockout', 'utils', 'ExpVM', 'LayoutVM', 'GeneVM'], 
+define(['knockout', 'utils', 'ExpVM', 'LayoutVM', 'PlateVM', 'GeneVM'], 
     function(ko, utils, ExpVM, LayoutVM, GeneVM) {
         return function() {
 	    	var self = this;
@@ -11,7 +11,7 @@ define(['knockout', 'utils', 'ExpVM', 'LayoutVM', 'GeneVM'],
 	    	* | -------- | ------- | --------- | --------- |
 	    	* | design   |  exp    |           |           |
 	    	* |          |  lay    |           |           |
-	    	* |          |  imp    |           |           |
+	    	* |          |  plt    |           |           |
 	    	* | vis      |  plate  |           |           |
 	    	* |          |  genes  |           |           |
 	    	* | analysis |  norm   |           |           |
@@ -41,7 +41,9 @@ define(['knockout', 'utils', 'ExpVM', 'LayoutVM', 'GeneVM'],
 	
 	    	// Layout subpage
 	    	self.layout = new LayoutVM();
-	    	self.layouts = [];
+
+            // Plate import subpage
+            self.plate = new PlateVM();
 	
 	    	// Experiment subpage
 	    	self.gene = new GeneVM();
