@@ -16,7 +16,7 @@ define({
         }
         return "";
     },
-    createSetting: function(nWell, flexRow) {
+    createSetting: function(nWell) {
         var self = this;
         switch (nWell) {
             case 96:
@@ -32,9 +32,7 @@ define({
         }
         self.startRows = nRow;
         self.minRows = nRow;
-        if (!fixRow) {
-            self.maxRows = nRow;
-        }
+        self.maxRows = nRow;
 
         self.startCols = nCol;
         self.minCols = nCol;
@@ -70,13 +68,15 @@ define({
         self.minCols = nWell + 1;
         self.maxCols = nWell + 1;
         self.stretchH = 'all';
-        self.colWidths = 750/(nCol+2);
-
-        // self.colWidths = 750/(nCol+2);
 
         self.manualColumnResize = true;
         self.manualRowResize = true;
         self.contextMenu = true;
+
+        self.columns = [{}];
+        for (var i = 0; i < nWell; i++) {
+            self.columns.push({type: 'numeric', format: '0.00'});
+        }
 
         self.colHeaders = function(i) {
             if (i > 0){
@@ -85,7 +85,7 @@ define({
                 return String.fromCharCode(64 + row) + (col < 10 ? '0' : '') +
                     col;
             } else {
-                return 'time';
+                return 'Time';
             }
         };
         self.className = 'htCenter';
