@@ -17,17 +17,17 @@
             <table class="table table-striped" data-bind="with: current_exp">
                 <tbody>
                     <tr>
-                        <td>Select</td>
+                        <td>Select Experiment</td>
                         <td>
                             <select class="form-control" data-bind="options: $parent.experiments, optionsText: 'dispName', value: $parent.current_exp"></select>
                         </td>
                     </tr>
                     <tr>
-                        <td>Experiment Name (need to be unique)</td>
+                        <td>Update Name</td>
                         <td><input class="form-control" data-bind="value: name" /></td>
                     </tr>
                     <tr>
-                        <td>User (comma separated)</td>
+                        <td>User Names</td>
                         <td><input type="text" class="form-control" data-bind="value: user" /></td>
                     </tr>
                     <tr>
@@ -88,7 +88,9 @@
                         <td>
                             <p class="plain"><input type="text" class="form-control" data-bind="value: name" /></p>
                         </td>
-                        <td> Decimal </td>
+                        <td>
+                            <select class="form-control" data-bind="options: ['Decimal'], disable: true"> </select>
+                        </td>
                         <td>
                             <a href='#' data-bind='click: $parent.del_chnl'>Remove</a>
                         </td>

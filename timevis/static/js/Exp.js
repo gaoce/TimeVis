@@ -56,6 +56,9 @@ define(['jquery', 'knockout', 'Factor', 'Channel'],
 
             // Remove a channel
             self.del_chnl = function(chnl) { self.channels.remove(chnl) };
+
+            // TODO: validate experiment name, user name
+            self.validate = function() {};
         };
     }
 );
