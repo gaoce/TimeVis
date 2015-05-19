@@ -178,7 +178,3 @@ select {
 #exp-notice {
     color: blue;
 }
-.handsontable th,
-.handsontable td {
-    line-height: 35px;
-}
