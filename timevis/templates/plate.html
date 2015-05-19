@@ -65,8 +65,8 @@
         </div> <!-- col-md-x -->
     </div> <!-- row -->
     {# Manual paste data #}
-    <div class="row" data-bind="visible: current_channel()">
-        <div id="data_table" class="handsontable"></div>
+    <div class="row" data-bind="visible: current_channel()" style="overflow: hidden;">
+        <div id="data_table" style="width=300px; heigh=400px; overflow: auto;"></div>
     </div> <!-- row -->
     {# Upload button #}
     <div class="row">
