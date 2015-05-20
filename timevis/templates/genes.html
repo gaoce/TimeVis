@@ -29,7 +29,7 @@
                     </tr>
                     <tr>
                         <td>
-                            <button class="btn btn-primary" data-bind="click: add_panel">Add Factor</button>
+                            <button class="btn btn-primary" data-bind="enable: factor_chosen(), click: add_panel">Add Factor</button>
                         </td>
                         <td>
                             <select class="form-control" data-bind="options: factors, value: factor_chosen, optionsText:'name', optionsCaption: 'Select Factor...'"></select>
@@ -50,7 +50,10 @@
                 <h3 class="plain" data-bind="text: name"></h3>
                 {# Search box to filter levels -#}
                 <input class="form-control" placeholder="Search…" type="search" autocomplete="off" data-bind="value: query, valueUpdate: 'keyup'">
-                <select class="form-control" multiple="multiple" data-bind="options: levels, optionsText:'name', selectedOptions: chosen_levels"></select>
+                <select class="form-control" multiple="multiple"
+                    data-bind="options: levels, optionsText: 'name',  
+                    selectedOptions: chosen_levels">
+                </select>
                 {# Delete button -#}
                 <button class="btn btn-primary center-block" data-bind='click: $parent.del_panel'>Remove</button>
             </div> <!-- col-md-x -->
