@@ -15,6 +15,9 @@ class MyInstall(install):
     def run(self):
         import timevis.models as m
         print('initalizing built-in database')
+        path = os.path.dirname(m.db_path)
+        if not os.path.exists(path):
+                os.makedirs(path)
         m.Base.metadata.create_all(m.engine)
         install.run(self)
 

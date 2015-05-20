@@ -10,4 +10,4 @@ build/
 *.log
 
 # Database file
-# *.db
+*.db
