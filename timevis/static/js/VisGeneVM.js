@@ -39,7 +39,9 @@ define(['jquery', 'knockout', 'Exp', 'Factor', 'Channel'],
 
             self.get_exps();
 
-            self.current_exp.subscribe(function(exp){
+            self.validate = function() {};
+
+            self.current_exp.subscribe(function(exp) {
                 // Fill in self.factors
                 if (exp){
                     self.factors(exp.factors());

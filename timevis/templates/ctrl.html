@@ -8,7 +8,9 @@
         </div>
 
         {# Section options -#}
-        <div id="collapse1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading1">
+        <div id="collapse1" class="panel-collapse collapse in" role="tabpanel"
+            aria-labelledby="heading1" 
+            data-bind="css:{in: opt()=='exp' || opt()=='lay' || opt()=='plt'}">
             <ul class='list-group plain'>
                 {# Options -#}
                 <li class='plain' data-bind="css:{highlight:opt()=='exp'}, click:function(){opt('exp')}"><a class='plain option' href="#">Experiment</a></li>
@@ -26,12 +28,17 @@
         </div>
 
         {# Section options -#}
-        <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+        <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2"
+            data-bind="css:{in: opt()=='vis_gene'}">
             <ul class='list-group plain'>
                 {#
-                <li class='plain' data-bind="css:{highlight:opt()=='plate'}, click:function(){opt('plate')}"><a class='plain option' href="#">Plate</a></li>
+                <li class='plain' data-bind="css:{highlight:opt()=='vis_plate'},
+                click:function(){opt('vis_plate')}"><a class='plain option' href="#">Plate</a></li>
                 #}
-                <li class='plain' data-bind="css:{highlight:opt()=='genes'}, click:function(){opt('genes')}"><a class='plain option' href="#">Genes</a></li>
+                <li class='plain' data-bind="css:{highlight:opt()=='vis_gene'}, 
+                           click:function(){opt('vis_gene')}">
+                    <a class='plain option' href="#">Genes</a>
+                </li>
             </ul>
         </div>
     </div> <!-- div.panel -->
