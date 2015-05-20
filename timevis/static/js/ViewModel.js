@@ -1,5 +1,5 @@
-define(['knockout', 'utils', 'ExpVM', 'LayoutVM', 'PlateVM', 'GeneVM'], 
-    function(ko, utils, ExpVM, LayoutVM, PlateVM, GeneVM) {
+define(['knockout', 'utils', 'ExpVM', 'LayoutVM', 'PlateVM', 'GeneVisVM'], 
+    function(ko, utils, ExpVM, LayoutVM, PlateVM, GeneVisVM) {
         return function() {
 	    	var self = this;
 	
@@ -25,7 +25,8 @@ define(['knockout', 'utils', 'ExpVM', 'LayoutVM', 'PlateVM', 'GeneVM'],
 	    	} else {
 	    	    self.opt = ko.observable('exp');     // Active option
 	    	}
-	    	self.opt.subscribe(function(newOpt){utils.setCookie('opt', newOpt)});
+	    	self.opt.subscribe(function(newOpt){
+                utils.setCookie('opt', newOpt)});
 	
 	    	// TODO: implement this at option level
 	    	var fun = utils.getCookie('fun');
@@ -34,7 +35,8 @@ define(['knockout', 'utils', 'ExpVM', 'LayoutVM', 'PlateVM', 'GeneVM'],
 	    	} else {
 	    	    self.fun = ko.observable('exp');     // Active funion
 	    	}
-	    	self.fun.subscribe(function (newFun){utils.setCookie('fun', newFun)})
+	    	self.fun.subscribe(function (newFun){
+                utils.setCookie('fun', newFun)})
 	
 	    	// Experiment subpage
 	    	self.exp = new ExpVM();
@@ -47,7 +49,7 @@ define(['knockout', 'utils', 'ExpVM', 'LayoutVM', 'PlateVM', 'GeneVM'],
             self.plate = new PlateVM();
 	
 	    	// Experiment subpage
-	    	self.gene = new GeneVM();
+	    	self.gene_vis = new GeneVisVM();
 	
 	    	// Visualize plate
 	    	self.vis_plate = ko.observable(false);
