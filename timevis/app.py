@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 from flask import Flask
 import webbrowser
+import argparse
 
 # app = Flask('timevis')
 app = Flask('timevis')
@@ -8,7 +9,9 @@ app = Flask('timevis')
 
 def parse_args():
     args = {}
-    args.browser = None
+    parser = argparse.ArgumentParser(description='TimeVis')
+    parser.add_argument('-b', '--browser', help='Enable browser')
+    args = parser.parse_args()
 
     return args
 
