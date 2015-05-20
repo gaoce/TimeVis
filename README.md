@@ -7,11 +7,20 @@ A visualization tool to visualize gene expression time series data.
 
 Documentation can be seen from [Github Page](http://gaoce.github.io/TimeVis)
 
-# Installation
+# Installation and start
 
 We recommend you install the package under virtualenv
 
     pip install git+https://github.com/gaoce/TimeVis
+
+The application depends on numpy/scipy, if it is a problem for you, try 
+![Anaconda](http://continuum.io/downloads) python distribution.
+
+After installation, try
+	
+    timevis -b
+
+at the command line.
 
 # User Interface
 Interface to define experiment information, including factors (independent
