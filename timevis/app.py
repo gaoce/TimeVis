@@ -23,10 +23,11 @@ def main(port=8000):
 
     # Open a window
     if args.browser:
-        webbrowser.open("http://localhost:{}/".format(port), new=2)
+        webbrowser.open("http://localhost:{}".format(port))
 
     # Begin the server
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(host='0.0.0.0', port=8000, debug=False)
+
 
 if __name__ == '__main__':
     main()
