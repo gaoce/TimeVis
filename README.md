@@ -14,7 +14,7 @@ We recommend you install the package under virtualenv
     pip install git+https://github.com/gaoce/TimeVis
 
 The application depends on numpy/scipy, if it is a problem for you, try 
-![Anaconda](http://continuum.io/downloads) python distribution.
+[Anaconda](http://continuum.io/downloads) python distribution.
 
 After installation, try
 	
