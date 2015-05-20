@@ -21,12 +21,12 @@ def main(port=8000):
     # Parse args
     args = parse_args()
 
-    # Begin the server
-    app.run(host='0.0.0.0', port=8000, debug=True)
-
     # Open a window
     if args.browser:
         webbrowser.open("http://localhost:{}/".format(port), new=2)
+
+    # Begin the server
+    app.run(host='0.0.0.0', port=8000, debug=True)
 
 if __name__ == '__main__':
     main()
