@@ -14,12 +14,11 @@ class MyInstall(install):
     """
     def run(self):
         import timevis.models as m
-        print('Initalizing built-in database')
+        print('initalizing built-in database')
         m.Base.metadata.create_all(m.engine)
-        print('Done initalizing built-in database')
         install.run(self)
 
-# Setup, some thing to note
+# Setup
 #   1. zip_safe needs to be False since we need access to templates
 setup(
     name="TimeVis",

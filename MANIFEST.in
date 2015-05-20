@@ -1,2 +1,4 @@
-recursive-include static *
-recursive-include templates *
+include README.md LICENSE Makefile
+recursive-include docs *
+recursive-include timevis/static *
+recursive-include timevis/templates *

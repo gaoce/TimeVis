@@ -10,7 +10,7 @@ clean:
 install: clean
 	@ if [ -e timevis/db/*.db ]; then rm timevis/db/*.db; fi
 	@ touch timevis/db/timevis.db
-	python setup.py install
+	python setup.py install -q
 
 uninstall:
 	pip uninstall -y timevis
