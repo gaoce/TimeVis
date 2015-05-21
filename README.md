@@ -11,16 +11,14 @@ Documentation can be seen from [Github Page](http://gaoce.github.io/TimeVis)
 
 We recommend you install the package under virtualenv
 
-    pip install git+https://github.com/gaoce/TimeVis
+    $ pip install git+https://github.com/gaoce/TimeVis
 
 The application depends on numpy/scipy, if it is a problem for you, try 
-[Anaconda](http://continuum.io/downloads) python distribution.
+[Anaconda](http://continuum.io/downloads).
 
-After installation, try
+After installation, start the application at command line.
 	
-    timevis -b
-
-at the command line.
+    $ timevis -b
 
 # User Interface
 Interface to define experiment information, including factors (independent
