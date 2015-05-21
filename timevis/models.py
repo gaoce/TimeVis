@@ -19,7 +19,7 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 Base = declarative_base()
 db_path = os.path.join(os.path.dirname(__file__), 'db', 'timevis.db')
 db_url = 'sqlite:///{}'.format(db_path)
-engine = create_engine(db_url, echo=True)
+engine = create_engine(db_url)
 Session = sessionmaker(bind=engine)
 session = Session()
 
