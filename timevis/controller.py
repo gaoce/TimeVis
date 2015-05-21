@@ -191,28 +191,34 @@ def uni_lvl(fid):
     return res
 
 
+def construct_layout(layout_rec, eid):
+    """Given a layout rec, construct layout obj for output
+    """
+    layout_out = {"id": layout_rec.id,
+                  "name": layout_rec.name,
+                  "factors": []}
+
+    for fac_rec in session.query(Factor).filter_by(id_experiment=eid).all():
+        fac_out = {"id": fac_rec.id,
+                   "name": fac_rec.name,
+                   "levels": {}}
+
+        for well, level in session.query(Level.well, Level.level).\
+                filter(Level.id_factor == fac_rec.id).\
+                filter(Level.id_layout == layout_rec.id).all():
+            fac_out['levels'][well] = level
+
+        layout_out['factors'].append(fac_out)
+
+    return layout_out
+
+
 def get_layouts(eid):
     """
     """
-
     layouts_out = []
     for layout_rec in session.query(Layout).filter_by(id_experiment=eid).all():
-        layout_out = {"id": layout_rec.id,
-                      "name": layout_rec.name,
-                      "factors": []}
-
-        for fac_rec in session.query(Factor).filter_by(id_experiment=eid).all():
-            fac_out = {"id": fac_rec.id,
-                       "name": fac_rec.name,
-                       "levels": {}}
-
-            for well, level in session.query(Level.well, Level.level).\
-                    filter(Level.id_factor == fac_rec.id).\
-                    filter(Level.id_layout == layout_rec.id).all():
-                fac_out['levels'][well] = level
-
-            layout_out['factors'].append(fac_out)
-
+        layout_out = construct_layout(layout_rec, eid)
         layouts_out.append(layout_out)
 
     return layouts_out
@@ -245,19 +251,24 @@ def post_layouts(layouts_in, eid):
         session.rollback()
         return err.message
 
-    for idx, layout in enumerate(layouts_rec):
-        # Only Layout id is changed (a new one is given)
-        layouts_in[idx]['id'] = layout.id
+    # Prepare return value
+    layouts_out = []
+    for layout_rec in layouts_rec:
+        layout_out = construct_layout(layout_rec, eid)
+        layouts_out.append(layout_out)
 
-    return layouts_in
+    return layouts_out
 
 
 def put_layouts(layouts_in):
+    """
+    """
+    layouts_rec = []
     # Get layout id and data
     for layout_in in layouts_in:
         # Got layout obj and modify it
         lid = layout_in['id']
-        layout_rec = session.query(Layout).filter_by(id=lid)
+        layout_rec = session.query(Layout).filter_by(id=lid).one()
         layout_rec.name = layout_in['name']
 
         # Update level records
@@ -266,19 +277,37 @@ def put_layouts(layouts_in):
             fid = fac_rec['id']
             flvl = fac_rec['levels']
             # levels = []
-            for level in session.query(Level).\
-                    filter(Level.id_layout == lid).\
-                    filter(Level.id_factor == fid).all():
-                level.level = flvl[level.well]
+            # for level in session.query(Level).\
+            #         filter(Level.id_layout == lid).\
+            #         filter(Level.id_factor == fid).all():
+            #     level.level = flvl[level.well]
+            try:
+                for level in layout_rec.levels:
+                    if level.id_factor == fid:
+                        level.level = flvl.pop(level.well)
+            except KeyError as err:
+                return err.message
+
+            for well, lvl in flvl.items():
+                Level(well=well, level=lvl, id_factor=fid, layout=layout_rec)
+
+        layouts_rec.append(layout_rec)
 
     # Commit the changes
+    session.add_all(layouts_rec)
     try:
         session.commit()
     except SQLAlchemyError as err:
         session.rollback()
         return err.message
 
-    return layouts_in
+    # Prepare return value
+    layouts_out = []
+    for layout_rec in layouts_rec:
+        layout_out = construct_layout(layout_rec, layout_rec.id_experiment)
+        layouts_out.append(layout_out)
+
+    return layouts_out
 
 
 def get_plates(lid):
@@ -457,7 +486,7 @@ def get_ret_query(json):
         {
           "experiment": ename,
           "channel"   : cname,
-          "factor1"	  : levels,
+          "factor1"   : levels,
           ...
         }
 

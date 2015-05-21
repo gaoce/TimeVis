@@ -53,6 +53,8 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'Level', 'utils'],
                                 return new Exp(exp);
                             })
                         );
+                        self.current_layout(null);
+                        self.current_factor(null);
                     }  /* success */
                 });  /* ajax */
             };
@@ -231,6 +233,22 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Factor', 'Level', 'utils'],
                     data: JSON.stringify({layout: [layout]}),
                     contentType: "application/json; charset=utf-8",
                     success: function(data){
+                        // Keep a record of factor id
+                        var fid = self.current_factor().id;
+
+                        var layout = data.layout[0];
+                        self.layouts.remove(self.current_layout());
+                        self.layouts.push(new Layout(layout));
+                        self.current_layout(self.layouts().slice(-1)[0]);
+                        self.layouts.sort(self.sort_layout);
+
+                        // Re-organize factors
+                        self.factors(self.current_layout().factors());
+                        $.map(self.factors(), function(factor){
+                            if (factor.id === fid) {
+                                self.current_factor(factor);
+                            }
+                        });
                         self.flash('Succeed!');
                     },
                     error: function(data){
