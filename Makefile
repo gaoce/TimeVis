@@ -1,47 +1,38 @@
-.PHONY: init-db clean install uninstall run devserver stop-devserver restart-devserver local stop-local restart-local
-
-init-db:
-	cp test/timevis.db timevis/db/
+.PHONY: clean install uninstall init-db devserver stop-devserver restart-devserver test github
 
 clean:
 	rm -rf TimeVis.egg-info/ build/ dist/ *.log
 	find . -name '*.pyc' -delete
 
+# Install the application (locally)
 install: clean
-	@ if [ -e timevis/db/*.db ]; then rm timevis/db/*.db; fi
-	@ touch timevis/db/timevis.db
+	@if [ -e timevis/db/*.db ]; then rm timevis/db/*.db; fi
 	python setup.py install -q
 
+# Uninstall the application
 uninstall:
 	pip uninstall -y timevis
 
-run: install
-	timevis &>timevis.log &
+# Copy existing database file
+init-db:
+	cp test/timevis.db timevis/db/
 
-devserver:
-	python timevis/app.py
-
-stop-devserver:
-	pkill timevis
-	pkill python
-
-restart-devserver: stopdevserver run
-
-# Run without deployment
-local: init-db
+# Run developmental server
+devserver: init-db
 	python run.py
 
-local-bg: init-db
-	python run.py &
-
-stop-local:
+# Stop developmental server
+stop-devserver:
 	pkill python
 
-restart-local: stop-local local
+# Restart
+restart-devserver: stop-devserver devserver
 
-local-test:
+# Test API
+test:
 	cd test; make -f Makefile all
 
+# Publish documentation to github page
 github:
 	@echo "Issue this command after checking out to gh-pages branch"
 	git checkout master -- docs
