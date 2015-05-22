@@ -244,7 +244,8 @@ class Layout(Base):
         json = {"id": self.id, "name": self.name, "factors": []}
 
         # This can be done by a single layer for loop thru join
-        for fact_rec in session.query(Factor).filter_by(experiment=self).all():
+        for fact_rec in session.query(Factor).\
+                filter_by(experiment=self.experiment).all():
             fact_json = {"id": fact_rec.id, "name": fact_rec.name, "levels": {}}
 
             for well, level in session.query(Level.well, Level.level).\
@@ -255,10 +256,11 @@ class Layout(Base):
 
         return json
 
-    def update_layout(self, json):
+    def update_layout(self, json, eid):
         """Update Layout record based on input Layout json object
         """
         self.name = json['name']
+        self.id_experiment = eid
         self.update_facts(json['factors'])
 
     def update_facts(self, factors):

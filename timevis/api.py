@@ -97,8 +97,13 @@ class LayoutEP(Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
+        parser = reqparse.RequestParser()
+        parser.add_argument('eid', type=int, help="experiment id")
+        args = parser.parse_args()
+        eid = args.eid
+
         try:
-            layouts = ctrl.put_layouts(json['layout'])
+            layouts = ctrl.put_layouts(json['layout'], eid)
         except Exception as e:
             return {"Error": e.message}, 500
 

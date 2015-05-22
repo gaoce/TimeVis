@@ -103,7 +103,7 @@ def post_layouts(jsons, eid):
     for json in jsons:
         # Create a new Layout record
         layout_rec = Layout()
-        layout_rec.update_layout(json)
+        layout_rec.update_layout(json, eid)
         layout_recs.append(layout_rec)
 
     # Commit the changes
@@ -114,7 +114,7 @@ def post_layouts(jsons, eid):
     return [layout.json for layout in layout_recs]
 
 
-def put_layouts(jsons):
+def put_layouts(jsons, eid):
     """
     """
     layout_recs = []
@@ -122,7 +122,7 @@ def put_layouts(jsons):
     for json in jsons:
         # Got layout obj and modify it
         layout_rec = session.query(Layout).filter_by(id=json['id']).one()
-        layout_rec.update_layout(json)
+        layout_rec.update_layout(json, eid)
         layout_recs.append(layout_rec)
 
     # Commit the changes
