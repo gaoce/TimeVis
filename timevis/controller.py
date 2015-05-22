@@ -298,6 +298,6 @@ def get_ret_query(json):
 
     for fac_in in json['factors']:
         fname = session.query(Factor.name).filter_by(id=fac_in['id']).one()[0]
-        query[fname] = fac_in['levels']
+        query[fname] = " | ".join(fac_in['levels'])
 
     return query
