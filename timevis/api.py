@@ -27,7 +27,10 @@ class ExperimentEP(Resource):
         json = request.get_json(force=True)
 
         # Insert each experiment obj to table, and get list of exps inserted
-        exps = ctrl.post_exps(json['experiment'])
+        try:
+            exps = ctrl.post_exps(json['experiment'])
+        except Exception as e:
+            return {"Error": e.message}, 500
 
         # Return the updated experiment obj
         return {"experiment": exps}
@@ -79,7 +82,10 @@ class LayoutEP(Resource):
         # need to include "Content-type: application/json"
         json = request.get_json(force=True)
 
-        layouts = ctrl.post_layouts(json['layout'], eid)
+        try:
+            layouts = ctrl.post_layouts(json['layout'], eid)
+        except Exception as e:
+            return {"Error": e.message}, 500
 
         # Return newly create obj
         return {'layout': layouts}
@@ -91,7 +97,10 @@ class LayoutEP(Resource):
         # TODO check input validity
         json = request.get_json(force=True)
 
-        layouts = ctrl.put_layouts(json['layout'])
+        try:
+            layouts = ctrl.put_layouts(json['layout'])
+        except Exception as e:
+            return {"Error": e.message}, 500
 
         # Nothing to change, really
         return {'layout': layouts}
@@ -126,7 +135,10 @@ class PlateEP(Resource):
         # need to include "Content-type: application/json"
         json = request.get_json(force=True)
 
-        plates = ctrl.post_plates(json['plate'], lid)
+        try:
+            plates = ctrl.post_plates(json['plate'], lid)
+        except Exception as e:
+            return {"Error": e.message}, 500
 
         return {'plate': plates}
 
@@ -136,7 +148,10 @@ class PlateEP(Resource):
         # need to include "Content-type: application/json"
         json = request.get_json(force=True)
 
-        plates = ctrl.put_plates(json['plate'])
+        try:
+            plates = ctrl.put_plates(json['plate'])
+        except Exception as e:
+            return {"Error": e.message}, 500
 
         # Nothing to change
         return {'plate': plates}
