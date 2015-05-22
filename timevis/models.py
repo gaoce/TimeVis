@@ -26,6 +26,18 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 
+def commit():
+    """Commit the changes.
+    If error occurs, rollback session and re-throw the exception, which will be
+    bubbled up and handled by ``api`` module
+    """
+    try:
+        session.commit()
+    except:
+        session.rollback()
+        raise
+
+
 class Experiment(Base):
     """Experiment table contains information describing experiments
     Additional attributes:

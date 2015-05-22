@@ -1,24 +1,12 @@
 """Transcations that facilitate interaction between views and models.
 """
-from timevis.models import session
+from timevis.models import session, commit
 from timevis.models import (Experiment, Layout, Channel, Factor, Level, Value,
                             Plate)
 from sqlalchemy.orm import aliased
 import pandas
 from scikits.bootstrap import ci
 from numpy import mean
-
-
-def commit():
-    """Commit the changes.
-    If error occurs, rollback session and re-throw the exception, which will be
-    bubbled up and handled by ``api`` module
-    """
-    try:
-        session.commit()
-    except:
-        session.rollback()
-        raise
 
 
 def get_exps():
@@ -28,9 +16,10 @@ def get_exps():
     exps_out = []
     # Get Experiment instance and fill in the result dict
     for exp_rec in session.query(Experiment).all():
-        exps_out.append(exp_rec.json)
+        exps_out.append(exp_rec)
 
-    return exps_out
+    # Return a list of experiment json object
+    return [exp.json for exp in exp_recs]
 
 
 def post_exps(exp_jsons):
