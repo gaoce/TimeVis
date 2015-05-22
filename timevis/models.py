@@ -26,6 +26,18 @@ Session = sessionmaker(bind=engine)
 session = Session()
 
 
+def commit():
+    """Commit the changes.
+    If error occurs, rollback session and re-throw the exception, which will be
+    bubbled up and handled by ``api`` module
+    """
+    try:
+        session.commit()
+    except:
+        session.rollback()
+        raise
+
+
 class Experiment(Base):
     """Experiment table contains information describing experiments
     Additional attributes:
@@ -51,30 +63,24 @@ class Experiment(Base):
 
     @property
     def json(self):
-        """Convert Experiment records to a json object (a dict really)
-
-        Parameters
-        ----------
-        exp_rec : Experiment record
-            an experiment record
+        """Convert a Experiment record to a json object (a dict really)
 
         Returns
         -------
         ret : dict
             an experiment object
         """
-        ret = {"id": self.id,
-               "name": self.name,
-               "user": self.user,
-               "well": self.well,
-               "channels": [{"id": c.id,
-                             "name": c.name} for c in self.channels],
-               "factors": [{"id": f.id,
-                            "name": f.name,
-                            "type": f.type,
-                            "levels": f.uniq_lvls} for f in self.factors]
-               }
-        return ret
+        return {"id": self.id,
+                "name": self.name,
+                "user": self.user,
+                "well": self.well,
+                "channels": [{"id": c.id,
+                              "name": c.name} for c in self.channels],
+                "factors": [{"id": f.id,
+                             "name": f.name,
+                             "type": f.type,
+                             "levels": f.uniq_lvls} for f in self.factors]
+                }
 
     def update_exp(self, json):
         """Update experiment record given experiment json obj
@@ -86,9 +92,14 @@ class Experiment(Base):
         self.name = json['name']
         self.user = json['user']
         self.well = json['well']
+        self.update_facts(json['factors'])
+        self.update_chnls(json['channels'])
 
     def update_chnls(self, chnls):
         """Update Channel records associated with the Experiment record
+        Update existing Channel records contained in the input, delete existing
+        channels not contained in the input. Add new Channels not in the
+        existing.
 
         Parameters
         ----------
@@ -225,6 +236,48 @@ class Layout(Base):
     # Relationship
     experiment = relationship("Experiment",
                               backref=backref('layouts', order_by=id))
+
+    @property
+    def json(self):
+        """Given a layout rec, construct layout obj for output
+        """
+        json = {"id": self.id, "name": self.name, "factors": []}
+
+        # This can be done by a single layer for loop thru join
+        for fact_rec in session.query(Factor).\
+                filter_by(experiment=self.experiment).all():
+            fact_json = {"id": fact_rec.id, "name": fact_rec.name, "levels": {}}
+
+            for well, level in session.query(Level.well, Level.level).\
+                    filter_by(factor=fact_rec).filter_by(layout=self).all():
+                fact_json['levels'][well] = level
+
+            json['factors'].append(fact_json)
+
+        return json
+
+    def update_layout(self, json, eid):
+        """Update Layout record based on input Layout json object
+        """
+        self.name = json['name']
+        self.id_experiment = eid
+        self.update_facts(json['factors'])
+
+    def update_facts(self, factors):
+        # Update level records
+        # Only update factor provided
+        for fact_json in factors:
+            fid = fact_json['id']
+            flvl = fact_json['levels']
+            try:
+                for level in self.levels:
+                    if level.id_factor == fid:
+                        level.level = flvl.pop(level.well)
+            except KeyError as err:
+                return err.message
+
+            for well, lvl in flvl.items():
+                Level(well=well, level=lvl, id_factor=fid, layout=self)
 
     def __repr__(self):
         return "<Layout({}, {})>".format(self.id, self.name)
