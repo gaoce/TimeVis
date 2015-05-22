@@ -1,7 +1,5 @@
 """Transcations that facilitate interaction between views and models.
 """
-from sqlalchemy.exc import SQLAlchemyError
-
 from timevis.models import session
 from timevis.models import (Experiment, Layout, Channel, Factor, Level, Value,
                             Plate)
@@ -25,170 +23,93 @@ def commit():
 
 
 def get_exps():
-    """
+    """Retrieve experiment records in the database and return them in an array
+    of json objects.
     """
     exps_out = []
     # Get Experiment instance and fill in the result dict
     for exp_rec in session.query(Experiment).all():
-        exps_out.append(construct_exp(exp_rec))
+        exps_out.append(exp_rec.json)
 
     return exps_out
 
 
-def post_exps(exps_in):
+def post_exps(exp_jsons):
     """Insert experiment objects into database.
 
     Parameters
     ----------
-    exps_in : list
-        input list of experiment objs
+    exp_jsons : list
+        list of experiment json objs
 
     Returns
     -------
-    exps_out: list or str
-        output list of experiemnt objs that have just been inserted, if error
-        occurs, return error message
+    list
+        list of (uploaded) experiment json objs
     """
-    # Experiment objs list to be returned
-    exps_out = []
+
+    # List of experiment records for committing and output formatting
+    exp_recs = []
 
     # Loop thru input Experiment obj and insert them into db. Create and insert
     # associated Channel and Factor records in the meantime
-    for exp_in in exps_in:
+    for exp_json in exp_jsons:
         # The new experiment obj should have a exp_id of 0
-        if str(exp_in['id']) != '0':
+        if str(exp_json['id']) != '0':
             return "New experiment ID should be '0'"
 
         # New experiment record
-        exp_rec = Experiment(name=exp_in['name'], user=exp_in['user'],
-                             well=exp_in['well'])
+        exp_rec = Experiment(name=exp_json['name'], user=exp_json['user'],
+                             well=exp_json['well'])
 
         # Create a Channel object, associate it with exp_rec, it will be
         # inserted when we add exp_rec to Experiment table through cascading
-        for cha in exp_in['channels']:
+        for cha in exp_json['channels']:
             Channel(name=cha['name'], experiment=exp_rec)
 
         # Insert new factors
-        for fac in exp_in['factors']:
+        for fac in exp_json['factors']:
             Factor(name=fac['name'], type=fac['type'], experiment=exp_rec)
 
-        # Commit the changes for experiment, channels and factors
-        session.add(exp_rec)
-        try:
-            session.commit()
-        except SQLAlchemyError as err:
-            session.rollback()
-            return err.message
+        exp_recs.append(exp_rec)
 
-        # Append the inserted Experiment obj into returning list
-        exps_out.append(construct_exp(exp_rec))
+    # Commit the changes
+    session.add_all(exp_recs)
+    commit()
 
-    return exps_out
+    # Return a list of experiment json object
+    return [exp.json for exp in exp_recs]
 
 
-def put_exps(exps_in):
+def put_exps(jsons):
     """Update Experiment records according input experiment objs
 
     Parameters
     ----------
-    exps_in : list
+    jsons : list
         input list of experiment objs
 
     Returns
     -------
-    exps_out: list or str
-        output list of experiemnt objs that have just been inserted, if error
-        occurs, return error message
+    list
+        list of (updated) experiment json objs
     """
-    exps_out = []
+    exp_recs = []
 
-    for exp_in in exps_in:
-        eid = exp_in['id']
+    for json in jsons:
+        eid = json['id']
         # Exp record must exist and be only one
         exp_rec = session.query(Experiment).filter_by(id=eid).one()
-        exp_rec.name = exp_in['name']
-        exp_rec.user = exp_in['user']
-        exp_rec.well = exp_in['well']
+        exp_rec.update_exp(json)                 # Update record itsefl
+        exp_rec.update_chnls(json['channels'])   # Update associate Channels
+        exp_rec.update_facts(json['factors'])    # Update associate Factors
+        exp_recs.append(exp_rec)
 
-        # Update Channel record in database, delete un-associated channel
-        chs_update = {}  # Channels to be updated
-        chs_upload = []  # Newly created channels
-        for ch_in in exp_in['channels']:
-            if ch_in['id'] != 0:
-                chs_update[ch_in['id']] = ch_in
-            else:
-                chs_upload.append(ch_in)
+    # Commit the changes
+    commit()
 
-        for ch_rec in session.query(Channel).filter_by(id_experiment=eid).all():
-            cid = ch_rec.id
-            if cid in chs_update:
-                ch_rec.name = chs_update[cid]['name']
-            else:
-                # Delete those not included in chs_update
-                session.delete(ch_rec)
-
-        for ch_in in chs_upload:
-            Channel(name=ch_in['name'], experiment=exp_rec)
-
-        # Update Factor record in database, delete un-associated channel
-        facs_update = {}
-        facs_upload = []
-        for fac_in in exp_in['factors']:
-            if fac_in['id'] != 0:
-                facs_update[fac_in['id']] = fac_in
-            else:
-                facs_upload.append(fac_in)
-
-        for fac_rec in session.query(Factor).filter_by(id_experiment=eid).all():
-            fid = fac_rec.id
-            if fid in facs_update:
-                fac_rec.name = facs_update[fid]['name']
-                fac_rec.type = facs_update[fid]['type']
-            else:
-                session.delete(fac_rec)
-
-        for fac_in in facs_upload:
-            Factor(name=fac_in['name'], type=fac_in['type'], experiment=exp_rec)
-
-        # Commit the changes
-        commit()
-
-        exps_out.append(construct_exp(exp_rec))
-
-    return exps_out
-
-
-def construct_exp(exp_rec):
-    """Helper function. Construct experiment obj using an experiment record.
-
-    Parameters
-    ----------
-    exp_rec : Experiment record
-        an experiment record
-
-    Returns
-    -------
-    ret : dict
-        an experiment object
-    """
-    ret = {"id": exp_rec.id,
-           "name": exp_rec.name,
-           "user": exp_rec.user,
-           "well": exp_rec.well,
-           "channels": [{"id": c.id, "name": c.name} for c in exp_rec.channels],
-           "factors": [{"id": f.id, "name": f.name, "type": f.type,
-                        "levels": uni_lvl(f.id)} for f in exp_rec.factors]}
-    return ret
-
-
-def uni_lvl(fid):
-    """Helper function. Get unique levels given a factor ID.
-    """
-    res = []
-    for row in session.query(Level.level).filter_by(id_factor=fid).\
-            distinct().all():
-        res.append(row[0])
-    return res
+    # Return a list of experiment json object
+    return [exp.json for exp in exp_recs]
 
 
 def construct_layout(layout_rec, eid):
@@ -245,11 +166,7 @@ def post_layouts(layouts_in, eid):
 
     # Commit the changes
     session.add_all(layouts_rec)
-    try:
-        session.commit()
-    except SQLAlchemyError as err:
-        session.rollback()
-        return err.message
+    commit()
 
     # Prepare return value
     layouts_out = []
@@ -295,11 +212,7 @@ def put_layouts(layouts_in):
 
     # Commit the changes
     session.add_all(layouts_rec)
-    try:
-        session.commit()
-    except SQLAlchemyError as err:
-        session.rollback()
-        return err.message
+    commit()
 
     # Prepare return value
     layouts_out = []
@@ -375,11 +288,7 @@ def post_plates(plates_in, lid):
                           channel=cha_rec)
 
     session.add_all(plates_rec)
-    try:
-        session.commit()
-    except SQLAlchemyError as err:
-        session.rollback()
-        return err.message
+    commit()
 
     # The plate id is now available, update json obj with it
     for idx, plate_rec in enumerate(plates_rec):
@@ -413,11 +322,7 @@ def put_plates(plates_in):
                                       plate=plate_rec, channel=cha_rec))
 
     session.add_all(plates_rec)
-    try:
-        session.commit()
-    except SQLAlchemyError as err:
-        session.rollback()
-        return err.message
+    commit()
 
     return plates_in
 

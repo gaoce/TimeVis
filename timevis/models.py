@@ -47,6 +47,99 @@ class Experiment(Base):
     # Date of measurement
     # data = Column(Date)
 
+    @property
+    def json(self):
+        """Convert Experiment records to a json object (a dict really)
+
+        Parameters
+        ----------
+        exp_rec : Experiment record
+            an experiment record
+
+        Returns
+        -------
+        ret : dict
+            an experiment object
+        """
+        ret = {"id": self.id,
+               "name": self.name,
+               "user": self.user,
+               "well": self.well,
+               "channels": [{"id": c.id,
+                             "name": c.name} for c in self.channels],
+               "factors": [{"id": f.id,
+                            "name": f.name,
+                            "type": f.type,
+                            "levels": f.uniq_lvls} for f in self.factors]
+               }
+        return ret
+
+    def update_exp(self, json):
+        """Update experiment record given experiment json obj
+
+        Parameters:
+            json: dict
+                an experiment json object
+        """
+        self.name = json['name']
+        self.user = json['user']
+        self.well = json['well']
+
+    def update_chnls(self, chnls):
+        """Update Channel records associated with the Experiment record
+
+        Parameters
+        ----------
+        chnls: list of dict
+            a list of Channel json objs
+        """
+        chs_update = {}  # Channels to be updated
+        chs_upload = []  # Newly created channels
+        for ch_in in chnls:
+            if ch_in['id'] != 0:
+                chs_update[ch_in['id']] = ch_in
+            else:
+                chs_upload.append(ch_in)
+
+        for ch_rec in self.channels:
+            cid = ch_rec.id
+            if cid in chs_update:
+                ch_rec.name = chs_update[cid]['name']
+            else:
+                # Delete those not included in chs_update
+                session.delete(ch_rec)
+
+        for ch_in in chs_upload:
+            Channel(name=ch_in['name'], experiment=self)
+
+    def update_facts(self, factors):
+        """Update Factor records associated with Experiment record
+
+        Parameters
+        ----------
+        factors: list of dict
+            a list of Factor json objs
+        """
+
+        facs_update = {}
+        facs_upload = []
+        for fac_in in factors:
+            if fac_in['id'] != 0:
+                facs_update[fac_in['id']] = fac_in
+            else:
+                facs_upload.append(fac_in)
+
+        for fac_rec in session.query(Factor).filter_by(experiment=self).all():
+            fid = fac_rec.id
+            if fid in facs_update:
+                fac_rec.name = facs_update[fid]['name']
+                fac_rec.type = facs_update[fid]['type']
+            else:
+                session.delete(fac_rec)
+
+        for fac_in in facs_upload:
+            Factor(name=fac_in['name'], type=fac_in['type'], experiment=self)
+
     def __repr__(self):
         return "<Experiment({}, {}, {})>".format(self.id, self.name, self.well)
 
@@ -74,6 +167,14 @@ class Factor(Base):
     # Relationship, a factor record must have an associate experiment record
     experiment = relationship("Experiment",
                               backref=backref('factors', order_by=id))
+
+    @property
+    def uniq_lvls(self):
+        res = []
+        for row in session.query(Level.level).filter_by(factor=self).\
+                distinct().all():
+            res.append(row[0])
+        return res
 
     def __repr__(self):
         return "<Factor({}, {})>".format(self.id, self.name)
