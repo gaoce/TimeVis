@@ -7,6 +7,8 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 
+from datetime import datetime
+
 
 # Enable sqlite foreign key support
 @event.listens_for(Engine, "connect")
@@ -241,6 +243,33 @@ class Plate(Base):
 
     # Relationship
     layout = relationship("Layout", backref=backref('plates', order_by=id))
+
+    def update_chnls(self, chnls):
+        """Update Channel records associated with plate
+        """
+        for chnl in chnls:
+            chnl_rec = session.query(Channel).filter_by(id=chnl['id']).first()
+
+            # Data structure
+            #        well1 well2 ...
+            # time1 [[val1, val2, ... ],
+            # time2  [...,            ],
+            #        [...,            ],
+            # ...    [...,            ]]
+            t_fmt = "%H:%M:%S"  # Time string format
+            times = [datetime.strptime(t, t_fmt).time() for t in chnl['time']]
+            wells = chnl['well']
+            vals = chnl['value']
+            for time, vals in zip(times, vals):
+                for well, val in zip(wells, vals):
+                    Value(well=well, time=time, value=val, plate=self,
+                          channel=chnl_rec)
+
+    def delete_values(self):
+        """Delete all values associated with Plate
+        """
+        for value in self.values:
+            session.delete(value)
 
     def __repr__(self):
         return "<Plate({})>".format(self.id)

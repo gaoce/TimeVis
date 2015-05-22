@@ -3,7 +3,6 @@
 from timevis.models import session
 from timevis.models import (Experiment, Layout, Channel, Factor, Level, Value,
                             Plate)
-from datetime import datetime
 from sqlalchemy.orm import aliased
 import pandas
 from scikits.bootstrap import ci
@@ -264,67 +263,51 @@ def get_plates(lid):
     return plates
 
 
-def post_plates(plates_in, lid):
+def post_plates(jsons, lid):
     """
     """
     # For commit purpose
     plates_rec = []
 
     # Get layout id and data
-    for plate_in in plates_in:
+    for json in jsons:
         plate_rec = Plate(id_layout=lid)
+        plate_rec.update_chnls(json['channels'])
         plates_rec.append(plate_rec)
-
-        for cha_in in plate_in['channels']:
-            cha_rec = session.query(Channel).filter_by(id=cha_in['id']).first()
-
-            # Parse time
-            time_array = [datetime.strptime(t, "%H:%M:%S").time()
-                          for t in cha_in['time']]
-            well_array = cha_in['well']
-            for t, val_array in zip(time_array, cha_in['value']):
-                for well, val in zip(well_array, val_array):
-                    Value(well=well, time=t, value=val, plate=plate_rec,
-                          channel=cha_rec)
 
     session.add_all(plates_rec)
     commit()
 
     # The plate id is now available, update json obj with it
     for idx, plate_rec in enumerate(plates_rec):
-        plates_in[idx]['id'] = plate_rec.id
+        jsons[idx]['id'] = plate_rec.id
 
-    return plates_in
+    return jsons
 
 
-def put_plates(plates_in):
-    # Newly created value
-    plates_rec = []
+def put_plates(jsons):
+    """Update all channels data on a plate
 
+    Parameters
+    ----------
+    jsons: list
+        list of plate json objects
+
+    Returns
+    -------
+    list of (updated) plate json objects
+    """
     # Get layout id and data
-    for plate_in in plates_in:
+    for json in jsons:
         # Plate id
-        pid = plate_in['id']
+        pid = json['id']
         plate_rec = session.query(Plate).filter_by(id=pid).first()
+        plate_rec.delete_values()
+        plate_rec.update_chnls(json['channels'])
 
-        session.query(Value).filter_by(id_plate=pid).delete()
-
-        for cha_in in plate_in['channels']:
-            cha_rec = session.query(Channel).filter_by(id=cha_in['id']).first()
-
-            # Parse time
-            time_array = [datetime.strptime(t, "%H:%M:%S").time()
-                          for t in cha_in['time']]
-            well_array = cha_in['well']
-            for t, val_array in zip(time_array, cha_in['value']):
-                for well, val in zip(well_array, val_array):
-                    plates_rec.append(Value(well=well, time=t, value=val,
-                                      plate=plate_rec, channel=cha_rec))
-
-    session.add_all(plates_rec)
     commit()
 
-    return plates_in
+    return jsons
 
 
 queries = []
