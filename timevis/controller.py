@@ -13,21 +13,19 @@ def get_exps():
     """Retrieve experiment records in the database and return them in an array
     of json objects.
     """
-    exps_out = []
     # Get Experiment instance and fill in the result dict
-    for exp_rec in session.query(Experiment).all():
-        exps_out.append(exp_rec)
+    exp_recs = session.query(Experiment).all()
 
     # Return a list of experiment json object
     return [exp.json for exp in exp_recs]
 
 
-def post_exps(exp_jsons):
+def post_exps(jsons):
     """Insert experiment objects into database.
 
     Parameters
     ----------
-    exp_jsons : list
+    jsons : list
         list of experiment json objs
 
     Returns
@@ -39,26 +37,14 @@ def post_exps(exp_jsons):
     # List of experiment records for committing and output formatting
     exp_recs = []
 
-    # Loop thru input Experiment obj and insert them into db. Create and insert
-    # associated Channel and Factor records in the meantime
-    for exp_json in exp_jsons:
+    # Loop thru input Experiment obj and insert them into db.
+    for json in jsons:
         # The new experiment obj should have a exp_id of 0
-        if str(exp_json['id']) != '0':
+        if str(json['id']) != '0':
             return "New experiment ID should be '0'"
-
-        # New experiment record
-        exp_rec = Experiment(name=exp_json['name'], user=exp_json['user'],
-                             well=exp_json['well'])
-
-        # Create a Channel object, associate it with exp_rec, it will be
-        # inserted when we add exp_rec to Experiment table through cascading
-        for cha in exp_json['channels']:
-            Channel(name=cha['name'], experiment=exp_rec)
-
-        # Insert new factors
-        for fac in exp_json['factors']:
-            Factor(name=fac['name'], type=fac['type'], experiment=exp_rec)
-
+        # Create new Experiment record and update it
+        exp_rec = Experiment()
+        exp_rec.update_exp(json)
         exp_recs.append(exp_rec)
 
     # Commit the changes
@@ -83,14 +69,11 @@ def put_exps(jsons):
         list of (updated) experiment json objs
     """
     exp_recs = []
-
     for json in jsons:
-        eid = json['id']
         # Exp record must exist and be only one
-        exp_rec = session.query(Experiment).filter_by(id=eid).one()
-        exp_rec.update_exp(json)                 # Update record itsefl
-        exp_rec.update_chnls(json['channels'])   # Update associate Channels
-        exp_rec.update_facts(json['factors'])    # Update associate Factors
+        exp_rec = session.query(Experiment).filter_by(id=json['id']).one()
+        # Update record
+        exp_rec.update_exp(json)
         exp_recs.append(exp_rec)
 
     # Commit the changes
@@ -100,115 +83,53 @@ def put_exps(jsons):
     return [exp.json for exp in exp_recs]
 
 
-def construct_layout(layout_rec, eid):
-    """Given a layout rec, construct layout obj for output
-    """
-    layout_out = {"id": layout_rec.id,
-                  "name": layout_rec.name,
-                  "factors": []}
-
-    for fac_rec in session.query(Factor).filter_by(id_experiment=eid).all():
-        fac_out = {"id": fac_rec.id,
-                   "name": fac_rec.name,
-                   "levels": {}}
-
-        for well, level in session.query(Level.well, Level.level).\
-                filter(Level.id_factor == fac_rec.id).\
-                filter(Level.id_layout == layout_rec.id).all():
-            fac_out['levels'][well] = level
-
-        layout_out['factors'].append(fac_out)
-
-    return layout_out
-
-
 def get_layouts(eid):
+    """Retrieve Layout records given Experiment ID
+
+    Returns
+    list
+        a list of Layout json objs
     """
-    """
-    layouts_out = []
-    for layout_rec in session.query(Layout).filter_by(id_experiment=eid).all():
-        layout_out = construct_layout(layout_rec, eid)
-        layouts_out.append(layout_out)
+    layout_recs = session.query(Layout).filter_by(id_experiment=eid).all()
 
-    return layouts_out
+    return [layout.json for layout in layout_recs]
 
 
-def post_layouts(layouts_in, eid):
+def post_layouts(jsons, eid):
     """
     """
     # Get layout id and data, lid should be 0
-    layouts_rec = []
-    for layout_in in layouts_in:
-
+    layout_recs = []
+    for json in jsons:
         # Create a new Layout record
-        layout_rec = Layout(name=layout_in['name'], id_experiment=eid)
-
-        # Update level records
-        for fac_in in layout_in['factors']:
-            # Factor ID
-            fid = fac_in['id']
-            for well, level in fac_in['levels'].items():
-                Level(well=well, level=level, layout=layout_rec, id_factor=fid)
-
-        layouts_rec.append(layout_rec)
+        layout_rec = Layout()
+        layout_rec.update_layout(json)
+        layout_recs.append(layout_rec)
 
     # Commit the changes
-    session.add_all(layouts_rec)
+    session.add_all(layout_recs)
     commit()
 
-    # Prepare return value
-    layouts_out = []
-    for layout_rec in layouts_rec:
-        layout_out = construct_layout(layout_rec, eid)
-        layouts_out.append(layout_out)
-
-    return layouts_out
+    # Return a list of Layout json objs
+    return [layout.json for layout in layout_recs]
 
 
-def put_layouts(layouts_in):
+def put_layouts(jsons):
     """
     """
-    layouts_rec = []
+    layout_recs = []
     # Get layout id and data
-    for layout_in in layouts_in:
+    for json in jsons:
         # Got layout obj and modify it
-        lid = layout_in['id']
-        layout_rec = session.query(Layout).filter_by(id=lid).one()
-        layout_rec.name = layout_in['name']
-
-        # Update level records
-        # Only update factor provided
-        for fac_rec in layout_in['factors']:
-            fid = fac_rec['id']
-            flvl = fac_rec['levels']
-            # levels = []
-            # for level in session.query(Level).\
-            #         filter(Level.id_layout == lid).\
-            #         filter(Level.id_factor == fid).all():
-            #     level.level = flvl[level.well]
-            try:
-                for level in layout_rec.levels:
-                    if level.id_factor == fid:
-                        level.level = flvl.pop(level.well)
-            except KeyError as err:
-                return err.message
-
-            for well, lvl in flvl.items():
-                Level(well=well, level=lvl, id_factor=fid, layout=layout_rec)
-
-        layouts_rec.append(layout_rec)
+        layout_rec = session.query(Layout).filter_by(id=json['id']).one()
+        layout_rec.update_layout(json)
+        layout_recs.append(layout_rec)
 
     # Commit the changes
-    session.add_all(layouts_rec)
     commit()
 
-    # Prepare return value
-    layouts_out = []
-    for layout_rec in layouts_rec:
-        layout_out = construct_layout(layout_rec, layout_rec.id_experiment)
-        layouts_out.append(layout_out)
-
-    return layouts_out
+    # Return a list of Layout json objs
+    return [layout.json for layout in layout_recs]
 
 
 def get_plates(lid):
