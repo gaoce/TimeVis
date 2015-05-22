@@ -62,7 +62,7 @@ define({
             default:
                 return
         }
-        self.startRows = 4;
+        self.minRows = 1;
         self.rowHeights = 30;
 
         self.startCols = nWell + 1;

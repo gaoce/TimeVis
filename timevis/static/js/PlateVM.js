@@ -150,7 +150,13 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Channel', 'Plate', 'utils'],
 
             self.current_plate.subscribe(function(plate){
                 if (plate) {
-                    self.channels(plate.channels());
+                    if (plate.id == 0) {
+                        self.channels($.map(self.channel_prty, function(chnl){
+                            return new Channel(chnl);
+                        }));
+                    } else {
+                        self.channels(plate.channels());
+                    }
                 }
             });
 
@@ -177,7 +183,7 @@ define(['jquery', 'knockout', 'Exp', 'Layout', 'Channel', 'Plate', 'utils'],
                 // TODO validate table empty rows
                 var plate = ko.toJS(self.current_plate);
                 $.map(plate.channels, function(chnl){
-                    $.map(chnl.value, function(ts){ts.shift()});
+                    chnl.time = $.map(chnl.value, function(ts){return ts.shift()});
                 });
 
                 var http_method = self.current_plate().id === 0 ? 'POST' : 'PUT';
