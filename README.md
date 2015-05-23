@@ -3,11 +3,11 @@ Time series visualization and analysis.
 
 A visualization tool to visualize gene expression time series data.
 
-# Documentation
+## Documentation
 
 Documentation can be seen from [Github Page](http://gaoce.github.io/TimeVis)
 
-# Installation and start
+## Installation and start
 
 We recommend you install the package under virtualenv
 
@@ -20,7 +20,7 @@ After installation, start the application at command line.
 	
     $ timevis -b
 
-# User Interface
+## User Interface
 Interface to define experiment information, including factors (independent
 variables) and channels (dependent variables).
 
@@ -38,6 +38,6 @@ interest.
 
 ![Visualization](/docs/images/gene_vis.png)
 
-# Software Structure
+## Software Structure
 
 ![Structure](/docs/images/arch.png)
