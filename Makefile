@@ -30,7 +30,7 @@ restart-devserver: stop-devserver devserver
 
 # Test API
 test:
-	cd test; make -f Makefile all
+	@python -m unittest discover
 
 # Publish documentation to github page
 github:
