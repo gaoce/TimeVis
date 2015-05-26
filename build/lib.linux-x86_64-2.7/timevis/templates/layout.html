@@ -1,0 +1,68 @@
+<div class="container" data-bind="with: layout, visible: $root.opt()=='lay'">
+    <div class="row">
+        <div class="col-md-6">
+          <ul class="nav nav-tabs" role="tablist" id="layout-tabs">
+              <li role="presentation" class="active">
+                  <a aria-controls="well" role="tab" data-toggle="tab" href="#">Layout</a>
+              </li>
+              {#-
+              <li role="presentation"><a aria-controls="well" role="tab" data-toggle="tab" href="#">New</a></li>
+              #}
+          </ul>
+        </div>
+    </div> <!-- row -->
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="sep"></div>
+            <table class="table table-striped">
+                <col style="width: 10%">
+                <col style="width: 30%">
+                <tbody>
+                    <tr>
+                        <td>Experiment</th>
+                        <td>
+                            <select class="form-control auto-width" data-bind="options: experiments, value: current_exp, optionsText:'dispName', optionsCaption: 'Select Experiment...'"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Select Layout</th>
+                        <td>
+                            <select class="form-control auto-width"
+                                data-bind="disable: disable_layout, options: layouts, value: current_layout, optionsText:'dispName', optionsCaption: 'Select Layout...'"></select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Update Name</th>
+                        <td>
+                            <input class="form-control" name=""
+                            data-bind="disable: disable_layout, value: current_layout() ?  current_layout().name : '' ">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Factor</th>
+                        <td>
+                            <select class="form-control auto-width"
+                                data-bind="disable: disable_factor, options: factors, value: current_factor, optionsText: 'name', optionsCaption: 'Select Factor...'"></select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+
+    <div class="row" data-bind="visible: current_factor()">
+        <div class="col-md-8">
+            <div id="layout"></div>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="sep"></div>
+            <button class="btn btn-primary" data-bind="click: update_factor, disable: disable_update">Update</button>
+            <button class="btn btn-primary" data-bind="click: get_exps">Refresh</button>
+            <div id="layout-notice"></div>
+        </div> <!-- col-md-x -->
+    </div> <!-- row -->
+</div>

@@ -1,0 +1,3 @@
+[console_scripts]
+timevis = timevis.app:main
+

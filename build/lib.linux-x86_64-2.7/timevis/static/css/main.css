@@ -1,0 +1,181 @@
+body {
+    font-size: 180%;
+}
+/*
+ * Clear the top of container
+ */
+div.clear {
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+div.sep {
+    margin-top: 10px;
+}
+
+div.plain {
+    padding: 0px;
+}
+
+/*
+ * Fix div height with scroll
+ */
+div.fix-100 {
+    height: 100px;
+    overflow-y: auto;
+}
+
+div.fix-200 {
+    height: 200px;
+    overflow-y: auto;
+}
+
+div.fix-300 {
+    height: 300px;
+    overflow-y: auto;
+}
+
+div.fix-500 {
+    height: 500px;
+    overflow-y: auto;
+}
+
+div.fix-600 {
+    height: 600px;
+    overflow-y: auto;
+}
+
+/*
+ * Float title
+ */
+h2.table-title, h3.table-title, p.table-title {
+    display: inline;
+}
+
+h3.plain {
+    margin: 0px;
+    text-align: center;
+}
+
+/*
+ * Plain link, without underline
+ */
+a.plain {
+    text-decoration: none;
+    display:block;
+    font-weight: bold;
+    width: 100%;
+    font-size: 1.3em;
+}
+
+a.plain:hover {
+    text-decoration: none;
+    display:block;
+}
+
+a.plain:active {
+    text-decoration: none;
+    background-color: #999;
+}
+
+/*
+ * Section title
+ */
+a.section {
+    padding: 15px 0 15px 25px;
+    color: white;
+}
+/*
+ * Options within section
+ */
+a.option {
+    padding: 5px 25px;
+}
+
+/*
+ * list
+ */
+ul.plain {
+    border-top: 0px;
+}
+
+li {
+    padding: 0px;
+}
+/*
+ * Plain list: without stars
+ */
+li.plain {
+    list-style-type: none;
+}
+
+/*
+ * Highlight an option when clicked
+ */
+li.highlight {
+    background-color: #D8D8D8;
+    color: white;
+}
+
+p.plain {
+    padding: 0px;
+    margin: 0px;
+}
+
+.no-padding {
+    padding: 0;
+}
+
+p.para-sep {
+    padding: 10px 0px 5px 0px;
+
+}
+
+/*
+ *
+ */
+select {
+    height: 26px;
+    padding: 1px 0px;
+    border-width: 1px;
+}
+
+.table > thead > tr > th {
+    vertical-align: middle;
+}
+
+.table > tbody > tr > td {
+    vertical-align: middle;
+}
+
+/*
+ * Metrics Graphics title popover description window size
+ */
+.popover {
+    width: 100%; /* Max Width of the popover (depending on the container!) */
+}
+
+/*
+ * Customize bootstrap behavior
+ */
+
+.form-control {
+    font-family: Tahoma, Geneva, sans-serif
+    font-size: 26px;
+    font-weight: bold;
+    color: #3353B7;
+}
+.panel-group .panel {
+    border-radius: 0px;
+}
+
+.panel-heading {
+    border-radius: 0px;
+}
+
+/*
+ *
+ */
+#exp-notice {
+    color: blue;
+}

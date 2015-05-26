@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="TimeVis 0.2 documentation" href="index.html" />
-    <link rel="next" title="Database Design" href="database.html" />
+    <link rel="next" title="Plugin System" href="plugins.html" />
     <link rel="prev" title="Software Architecture" href="arch.html" />
    
   
@@ -42,7 +42,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="database.html" title="Database Design"
+          <a href="plugins.html" title="Plugin System"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="arch.html" title="Software Architecture"
@@ -293,7 +293,7 @@ experiment should be zero.</p>
 <dd><p class="first">A JSON object with the same format as described in <code class="docutils literal"><span class="pre">GET</span></code>. Note update may
 cause loss of factor and channel.</p>
 <p>Here is an example:</p>
-<div class="last highlight-python"><div class="highlight"><pre><span class="p">{</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
   <span class="s">&quot;experiment&quot;</span><span class="p">:</span>
   <span class="p">[</span>
     <span class="p">{</span>
@@ -301,7 +301,7 @@ cause loss of factor and channel.</p>
       <span class="s">&quot;name&quot;</span>    <span class="p">:</span> <span class="s">&quot;Exp 1&quot;</span><span class="p">,</span>
       <span class="s">&quot;user&quot;</span>    <span class="p">:</span> <span class="s">&quot;user1&quot;</span><span class="p">,</span>
       <span class="s">&quot;well&quot;</span>    <span class="p">:</span> <span class="mi">96</span><span class="p">,</span>
-      <span class="s">&quot;channels&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">}],</span>
+      <span class="s">&quot;channels&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;GFP&quot;</span><span class="p">}],</span>
       <span class="s">&quot;factors&quot;</span> <span class="p">:</span>
       <span class="p">[</span>
         <span class="p">{</span><span class="s">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Dose&quot;</span><span class="p">,</span> <span class="s">&quot;type&quot;</span><span class="p">:</span> <span class="s">&quot;Decimal&quot;</span><span class="p">},</span>
@@ -312,6 +312,7 @@ cause loss of factor and channel.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p class="last">Note: <code class="docutils literal"><span class="pre">id</span></code> for newly created Channel or Factor should be 0</p>
 </dd>
 <dt><strong>Output</strong></dt>
 <dd><blockquote class="first">
@@ -899,8 +900,8 @@ series data</li>
   <p class="topless"><a href="arch.html"
                         title="previous chapter">Software Architecture</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="database.html"
-                        title="next chapter">Database Design</a></p>
+  <p class="topless"><a href="plugins.html"
+                        title="next chapter">Plugin System</a></p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
