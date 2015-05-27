@@ -16,10 +16,21 @@ We recommend you install the package under [virtualenv](https://virtualenv.pypa.
 The application depends on numpy/scipy, if it is a problem for you, try 
 [Anaconda](http://continuum.io/downloads).
 
+You can also use Docker
+
+	$ sudo docker pull gaoce/timevis
+
 ## 3. Start and stop
 Start the application using the following command
 	
     $ timevis -b
+
+If you are using Docker
+
+    $ sudo docker run -p 8000:8000 gaoce/timevis timevis
+
+The application can be accessed through `http://localhost:8000` inside your
+browser.
 
 To stop, use the keyboard shortcut `Ctrl+c`.
 
