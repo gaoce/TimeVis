@@ -33,7 +33,3 @@ Interface to query and visualize time series data based on conditions of
 interest.
 
 ![Visualization](/docs/images/gene_vis.png)
-
-## Software Structure
-
-![Structure](/docs/images/arch.png)
