@@ -43,8 +43,7 @@ stop-local:
 restart-local: stop-local local
 
 github:
-	@echo "!!NOTE: Issue this command after checking out to gh-pages branch"
-	git checkout docs -- docs
+	cd docs; make html
 	cp -r docs/_build/html/* .
 	git add .
 	git commit -m "Update github pages"
