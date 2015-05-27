@@ -3,11 +3,11 @@ Time series visualization and analysis.
 
 A visualization tool to visualize gene expression time series data.
 
-## Documentation
+## 1. Documentation
 
-Documentation can be seen from [Github Page](http://gaoce.github.io/TimeVis)
+Documentation can be seen from the project [Github Page](http://gaoce.github.io/TimeVis)
 
-## Installation
+## 2. Installation
 
 We recommend you install the package under virtualenv
 
@@ -16,14 +16,14 @@ We recommend you install the package under virtualenv
 The application depends on numpy/scipy, if it is a problem for you, try 
 [Anaconda](http://continuum.io/downloads).
 
-## Start and stop
+## 3. Start and stop
 Start the application using the following command
 	
     $ timevis -b
 
-To stop, use `C-c`.
+To stop, use the keyboard shortcut `Ctrl+c`.
 
-## User Interface
+## 4. User Interface
 Interface to define experiment information, including factors (independent
 variables) and channels (dependent variables).
 
