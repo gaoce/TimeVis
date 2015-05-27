@@ -3,4 +3,4 @@ timevis/*
 demo/*
 build/*
 TimeVis.egg-info/*
-
+test/*
