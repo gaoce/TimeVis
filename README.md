@@ -9,7 +9,7 @@ Documentation can be seen from the project [Github Page](http://gaoce.github.io/
 
 ## 2. Installation
 
-We recommend you install the package under virtualenv
+We recommend you install the package under [virtualenv](https://virtualenv.pypa.io/en/latest/)
 
     $ pip install git+https://github.com/gaoce/TimeVis
 
