@@ -58,13 +58,18 @@
             
   <div class="section" id="development">
 <h1>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h1>
-<p>This page describes the commands used during development.</p>
+<p>The development of this project is facilitated by several open source tools.
+This page describes the commands used for different automation jobs during
+development.</p>
 <div class="section" id="documentation">
 <h2>1. Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Documentation writing and revision happens at <cite>gh-pages</cite> branch. To merge the
+updated docs back the <cite>master</cite> branch, issue <cite>make update-doc</cite> there.</p>
 <div class="section" id="documentation-and-sphinx">
 <h3>1.1 Documentation and sphinx<a class="headerlink" href="#documentation-and-sphinx" title="Permalink to this headline">¶</a></h3>
 <p>All the documents are in docs/ folder under the root directory. The
-documentation of this project is using <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a>.</p>
+documentation of this project is in <cite>rst</cite> format and will be transformed into
+other formats like HTML using <a class="reference external" href="http://sphinx-doc.org/">Sphinx</a>.</p>
 <p>To convert the .rst file into visually appealling HTML files, issue the
 following commands.</p>
 <div class="highlight-python"><div class="highlight"><pre>$ cd docs
@@ -77,15 +82,40 @@ generated web pages can be access at <a class="reference external" href="http://
 $ make test
 </pre></div>
 </div>
-<p>1.2 Github pages</p>
+</div>
+<div class="section" id="github-pages">
+<h3>1.2 Github pages<a class="headerlink" href="#github-pages" title="Permalink to this headline">¶</a></h3>
 <p>To deploy the generated documentation to github pages, issue the following
-commands in the root directory. The documentation can be now visited from
+command in the root directory. The documentation can be now visited from
 <cite>&lt;username&gt;.github.io/&lt;project_name&gt;</cite>.</p>
-<div class="highlight-python"><div class="highlight"><pre># Switch to gh-pages branch
-$ git checkout gh-pages
-
-# Deploy
-$ make github
+<div class="highlight-python"><div class="highlight"><pre>$ make github
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="development-automation">
+<h2>2. Development Automation<a class="headerlink" href="#development-automation" title="Permalink to this headline">¶</a></h2>
+<p>Use the following make commands under the root directory for various automation
+jobs.</p>
+<div class="section" id="installation">
+<h3>2.1 Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<p>To install a local copy, use</p>
+<div class="highlight-python"><div class="highlight"><pre>$ make install
+</pre></div>
+</div>
+</div>
+<div class="section" id="test-run">
+<h3>2.2 Test run<a class="headerlink" href="#test-run" title="Permalink to this headline">¶</a></h3>
+<p>To start a test run, including installing a local copy of the package and start
+the server at <a class="reference external" href="http://localhost:8000">http://localhost:8000</a>, use</p>
+<div class="highlight-python"><div class="highlight"><pre>$ make devserver
+</pre></div>
+</div>
+</div>
+<div class="section" id="clean">
+<h3>2.3 Clean<a class="headerlink" href="#clean" title="Permalink to this headline">¶</a></h3>
+<p>To clean unnecessary files, use</p>
+<div class="highlight-python"><div class="highlight"><pre>$ make clean
 </pre></div>
 </div>
 </div>
@@ -103,6 +133,13 @@ $ make github
 <li><a class="reference internal" href="#">Development</a><ul>
 <li><a class="reference internal" href="#documentation">1. Documentation</a><ul>
 <li><a class="reference internal" href="#documentation-and-sphinx">1.1 Documentation and sphinx</a></li>
+<li><a class="reference internal" href="#github-pages">1.2 Github pages</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#development-automation">2. Development Automation</a><ul>
+<li><a class="reference internal" href="#installation">2.1 Installation</a></li>
+<li><a class="reference internal" href="#test-run">2.2 Test run</a></li>
+<li><a class="reference internal" href="#clean">2.3 Clean</a></li>
 </ul>
 </li>
 </ul>
