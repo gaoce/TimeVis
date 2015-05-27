@@ -32,11 +32,6 @@ restart-devserver: stop-devserver devserver
 test:
 	cd test; make -f Makefile all
 
-# Publish documentation to github page
-github:
-	@echo "Issue this command after checking out to gh-pages branch"
-	git checkout master -- docs
-	cp -r docs/_build/html/* .
-	git add .
-	git commit -m "Update github pages"
-	git push origin gh-pages
+# Update docs
+update-doc:
+	git checkout gh-pages -- docs
