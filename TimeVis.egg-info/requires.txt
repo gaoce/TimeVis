@@ -1,5 +1,0 @@
-Flask
-Flask-RESTful
-SQLAlchemy
-pandas
-scikits.bootstrap

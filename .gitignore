@@ -1,2 +1,6 @@
 # Ignore everything except docs, Makefile and all generated pages
 timevis/*
+demo/*
+build/*
+TimeVis.egg-info/*
+
