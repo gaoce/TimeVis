@@ -2,6 +2,7 @@ from __future__ import print_function
 import os
 from setuptools import setup
 from setuptools.command.install import install
+import timevis
 
 
 # Utility function to read the README file.
@@ -13,12 +14,7 @@ class MyInstall(install):
     """ Customized install class to initialize database during install
     """
     def run(self):
-        import timevis.models as m
-        print('initalizing built-in database')
-        path = os.path.dirname(m.db_path)
-        if not os.path.exists(path):
-                os.makedirs(path)
-        m.Base.metadata.create_all(m.engine)
+        timevis.models.init_db()
         install.run(self)
 
 # Setup
@@ -53,7 +49,7 @@ setup(
         ]
     },
     long_description=read('README.md'),
-    entry_points={'console_scripts': ['timevis = timevis.app:main']},
+    entry_points={'console_scripts': ['timevis = timevis.run:main']},
     zip_safe=False,
     cmdclass={'install': MyInstall}
 )

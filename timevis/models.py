@@ -1,13 +1,13 @@
-import os.path
 from sqlalchemy import ForeignKey, Column, Integer, String, Float, Time
 from sqlalchemy import create_engine
 from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 
 from datetime import datetime
+from timevis import app
+import os
 
 
 # Enable sqlite foreign key support
@@ -19,23 +19,9 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 # Create Base, Session and engine
 Base = declarative_base()
-db_path = os.path.join(os.path.dirname(__file__), 'db', 'timevis.db')
-db_url = 'sqlite:///{}'.format(db_path)
-engine = create_engine(db_url)
+engine = create_engine(app.config['DB_URL'])
 Session = sessionmaker(bind=engine)
 session = Session()
-
-
-def commit():
-    """Commit the changes.
-    If error occurs, rollback session and re-throw the exception, which will be
-    bubbled up and handled by ``api`` module
-    """
-    try:
-        session.commit()
-    except:
-        session.rollback()
-        raise
 
 
 class Experiment(Base):
@@ -388,3 +374,27 @@ class Value(Base):
         return "<Value({}\t{}\t{}\t{}\t{})>".format(self.id, self.plate.id,
                                                     self.channel.name,
                                                     self.well, self.value)
+
+
+def init_db():
+    # Retrieve db url from config
+    db_url = app.config['DB_URL']
+
+    if db_url.startswith('sqlite'):
+        db_dir = os.path.dirname(app.config['DB_PATH'])
+        # Create database file
+        if not os.path.exists(db_dir):
+            os.makedirs(db_dir)
+        Base.metadata.create_all(engine)
+
+
+def commit():
+    """Commit the changes.
+    If error occurs, rollback session and re-throw the exception, which will be
+    bubbled up and handled by ``api`` module
+    """
+    try:
+        session.commit()
+    except:
+        session.rollback()
+        raise
