@@ -11,3 +11,6 @@ build/
 
 # Database file
 *.db
+
+# IPython notebook checkpoint
+.ipynb_checkpoints/
