@@ -19,9 +19,33 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 # Create Base, Session and engine
 Base = declarative_base()
-engine = create_engine(app.config['DB_URL'])
-Session = sessionmaker(bind=engine)
-session = Session()
+
+db_url = app.config['DB_URL']
+if db_url.startswith('sqlite'):
+    db_dir = os.path.dirname(app.config['DB_DIR'])
+
+    # Create database file
+    if not os.path.exists(db_dir):
+        os.makedirs(db_dir)
+
+    engine = create_engine(db_url)
+    Base.metadata.create_all(engine)
+
+    # Create session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+
+
+def commit():
+    """Commit the changes.
+    If error occurs, rollback session and re-throw the exception, which will be
+    bubbled up and handled by ``api`` module
+    """
+    try:
+        session.commit()
+    except:
+        session.rollback()
+        raise
 
 
 class Experiment(Base):
@@ -374,27 +398,3 @@ class Value(Base):
         return "<Value({}\t{}\t{}\t{}\t{})>".format(self.id, self.plate.id,
                                                     self.channel.name,
                                                     self.well, self.value)
-
-
-def init_db():
-    # Retrieve db url from config
-    db_url = app.config['DB_URL']
-
-    if db_url.startswith('sqlite'):
-        db_dir = os.path.dirname(app.config['DB_PATH'])
-        # Create database file
-        if not os.path.exists(db_dir):
-            os.makedirs(db_dir)
-        Base.metadata.create_all(engine)
-
-
-def commit():
-    """Commit the changes.
-    If error occurs, rollback session and re-throw the exception, which will be
-    bubbled up and handled by ``api`` module
-    """
-    try:
-        session.commit()
-    except:
-        session.rollback()
-        raise

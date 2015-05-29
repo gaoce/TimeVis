@@ -5,7 +5,7 @@ clean:
 	find . -name '*.pyc' -delete
 
 # Install the application (locally)
-install: clean
+install:
 	@if [ -e timevis/db/*.db ]; then rm timevis/db/*.db; fi
 	python setup.py install -q
 
@@ -19,7 +19,7 @@ init-db:
 
 # Run developmental server
 devserver: init-db
-	python run.py
+	python timevis/run.py
 
 # Stop developmental server
 stop-devserver:
@@ -35,3 +35,6 @@ test:
 # Update docs
 update-doc:
 	git checkout gh-pages -- docs
+
+docker:
+	sudo docker build . -t gaoce/timevis:lastest
