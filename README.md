@@ -1,5 +1,5 @@
 # TimeVis
-Time series visualization and analysis. 
+Time series visualization and analysis.
 
 A visualization tool to visualize gene expression time series data.
 
@@ -13,7 +13,7 @@ We recommend you install the package under [virtualenv](https://virtualenv.pypa.
 
     $ pip install git+https://github.com/gaoce/TimeVis
 
-The application depends on numpy/scipy, if it is a problem for you, try 
+The application depends on numpy/scipy, if it is a problem for you, try
 [Anaconda](http://continuum.io/downloads).
 
 You can also use Docker
@@ -22,12 +22,12 @@ You can also use Docker
 
 ## 3. Start and stop
 Start the application using the following command
-    
+
     $ timevis  -h
     usage: timevis [-h] [-b] [-p PORT] [-s HOST] [-d DEBUG]
-    
+
     TimeVis
-    
+
     optional arguments:
       -h, --help            show this help message and exit
       -b, --browser         Enable browser
@@ -36,7 +36,7 @@ Start the application using the following command
       -d DEBUG, --debug DEBUG
                             Debug mode
 
-To use your own config file, set environment variable 
+To use your own config file, set environment variable
 `TIMEVIS_CONFIG=/path/to/config.py`.
 
 If you are using Docker
