@@ -19,7 +19,7 @@ init-db:
 
 # Run developmental server
 devserver: init-db
-	python timevis/run.py
+	python dev.py
 
 # Stop developmental server
 stop-devserver:
