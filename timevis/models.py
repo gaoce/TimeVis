@@ -20,21 +20,6 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 # Create Base, Session and engine
 Base = declarative_base()
 
-db_url = app.config['DB_URL']
-if db_url.startswith('sqlite'):
-    db_dir = os.path.dirname(app.config['DB_DIR'])
-
-    # Create database file
-    if not os.path.exists(db_dir):
-        os.makedirs(db_dir)
-
-    engine = create_engine(db_url)
-    Base.metadata.create_all(engine)
-
-    # Create session
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
 
 def commit():
     """Commit the changes.
@@ -56,7 +41,7 @@ class Experiment(Base):
         layouts
     """
 
-    __tablename__ = 'experiments'
+    __tablename__ = 'experiment'
     id = Column(Integer, primary_key=True)
 
     # Experiment name, must be unique
@@ -173,7 +158,7 @@ class Factor(Base):
     Additional attributes:
         levels
     """
-    __tablename__ = 'factors'
+    __tablename__ = 'factor'
     id = Column(Integer, primary_key=True)
 
     # Name of factor, usually a controlled condition, like dose
@@ -183,7 +168,7 @@ class Factor(Base):
     type = Column(String(8), nullable=False)
 
     # Foreign key
-    id_experiment = Column(Integer, ForeignKey('experiments.id',
+    id_experiment = Column(Integer, ForeignKey('experiment.id',
                                                onupdate="CASCADE",
                                                ondelete="CASCADE"))
 
@@ -208,14 +193,14 @@ class Channel(Base):
     Additional attributes:
         values
     """
-    __tablename__ = 'channels'
+    __tablename__ = 'channel'
     id = Column(Integer, primary_key=True)
 
     # Channel name
     name = Column(String(255), nullable=False)
 
     # Foreign key
-    id_experiment = Column(Integer, ForeignKey('experiments.id',
+    id_experiment = Column(Integer, ForeignKey('experiment.id',
                                                onupdate="CASCADE",
                                                ondelete="CASCADE"))
 
@@ -233,14 +218,14 @@ class Layout(Base):
         plates
         levels
     """
-    __tablename__ = 'layouts'
+    __tablename__ = 'layout'
     id = Column(Integer, primary_key=True)
 
     # Layout name
     name = Column(String, nullable=False)
 
     # Foreign key
-    id_experiment = Column(Integer, ForeignKey('experiments.id',
+    id_experiment = Column(Integer, ForeignKey('experiment.id',
                                                onupdate="CASCADE"))
 
     # Relationship
@@ -298,11 +283,11 @@ class Plate(Base):
     Additional attributes:
         values
     """
-    __tablename__ = 'plates'
+    __tablename__ = 'plate'
     id = Column(Integer, primary_key=True)
 
     # Foreign key
-    id_layout = Column(Integer, ForeignKey('layouts.id', onupdate="CASCADE"))
+    id_layout = Column(Integer, ForeignKey('layout.id', onupdate="CASCADE"))
 
     # Relationship
     layout = relationship("Layout", backref=backref('plates', order_by=id))
@@ -341,7 +326,7 @@ class Plate(Base):
 class Level(Base):
     """A table contains all factor levels for different layouts
     """
-    __tablename__ = 'levels'
+    __tablename__ = 'level'
     id = Column(Integer, primary_key=True)
 
     # Well name, eg, "A01" or "C04"
@@ -351,10 +336,10 @@ class Level(Base):
     level = Column(String(255), nullable=False)
 
     # Foreign keys
-    id_layout = Column(Integer, ForeignKey('layouts.id',
+    id_layout = Column(Integer, ForeignKey('layout.id',
                                            onupdate="CASCADE",
                                            ondelete="CASCADE"))
-    id_factor = Column(Integer, ForeignKey('factors.id',
+    id_factor = Column(Integer, ForeignKey('factor.id',
                                            onupdate="CASCADE",
                                            ondelete="CASCADE"))
 
@@ -371,7 +356,7 @@ class Level(Base):
 class Value(Base):
     """A table contains all time series data
     """
-    __tablename__ = 'values'
+    __tablename__ = 'value'
     id = Column(Integer, primary_key=True)
 
     # Well name, eg, "A01" or "C04"
@@ -383,11 +368,9 @@ class Value(Base):
     # Value of measurement
     value = Column(Float, nullable=False)
 
-    id_plate = Column(Integer, ForeignKey('plates.id',
-                                          onupdate="CASCADE",
+    id_plate = Column(Integer, ForeignKey('plate.id', onupdate="CASCADE",
                                           ondelete="CASCADE"))
-    id_channel = Column(Integer, ForeignKey('channels.id',
-                                            onupdate="CASCADE",
+    id_channel = Column(Integer, ForeignKey('channel.id', onupdate="CASCADE",
                                             ondelete="CASCADE"))
 
     # Relationships
@@ -398,3 +381,20 @@ class Value(Base):
         return "<Value({}\t{}\t{}\t{}\t{})>".format(self.id, self.plate.id,
                                                     self.channel.name,
                                                     self.well, self.value)
+
+
+db_url = app.config['DB_URL']
+if db_url.startswith('sqlite'):
+    db_dir = os.path.dirname(app.config['DB_DIR'])
+
+    # Create database file
+    if not os.path.exists(db_dir):
+        os.makedirs(db_dir)
+
+    engine = create_engine(db_url)
+    Base.metadata.create_all(engine)
+
+    # Create session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    session.commit()
