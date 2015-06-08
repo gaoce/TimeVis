@@ -1,7 +1,7 @@
 from timevis.models import session
 import pandas as pd
 from timevis.models import (Experiment, Layout, Factor, Level, Plate, Channel,
-                            Value)
+                            Measure)
 plugins = {}
 
 
@@ -63,9 +63,9 @@ class Plugin(object):
             A data frame with columns: pid, cid, channel, well, time, value
         """
         query = session.query(Plate.id.label('pid'), Channel.id.label('cid'),
-                              Channel.name.label('channel'), Value.well,
-                              Value.time, Value.value).\
-            join(Channel, Channel.id == Value.id_channel).\
-            join(Value, Value.id_plate == Plate.id)
+                              Channel.name.label('channel'), Measure.well,
+                              Measure.time, Measure.value).\
+            join(Channel, Channel.id == Measure.id_channel).\
+            join(Measure, Measure.id_plate == Plate.id)
         ret = pd.read_sql(query.statement, query.session.bind)
         return ret

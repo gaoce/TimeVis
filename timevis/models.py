@@ -1,13 +1,13 @@
-import os.path
 from sqlalchemy import ForeignKey, Column, Integer, String, Float, Time
 from sqlalchemy import create_engine
 from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-
 from sqlalchemy.engine import Engine
 from sqlalchemy import event
 
 from datetime import datetime
+from timevis import app
+import os
 
 
 # Enable sqlite foreign key support
@@ -19,11 +19,6 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 
 # Create Base, Session and engine
 Base = declarative_base()
-db_path = os.path.join(os.path.dirname(__file__), 'db', 'timevis.db')
-db_url = 'sqlite:///{}'.format(db_path)
-engine = create_engine(db_url)
-Session = sessionmaker(bind=engine)
-session = Session()
 
 
 def commit():
@@ -57,9 +52,6 @@ class Experiment(Base):
 
     # Well number, either 96 or 384
     well = Column(Integer, nullable=False)
-
-    # Date of measurement
-    # data = Column(Date)
 
     @property
     def json(self):
@@ -196,7 +188,7 @@ class Factor(Base):
 class Channel(Base):
     """Channel tables contains information describing measurement
     Additional attributes:
-        values
+        measures
     """
     __tablename__ = 'channels'
     id = Column(Integer, primary_key=True)
@@ -286,7 +278,7 @@ class Layout(Base):
 class Plate(Base):
     """Plate table describe invidual plate
     Additional attributes:
-        values
+        measures
     """
     __tablename__ = 'plates'
     id = Column(Integer, primary_key=True)
@@ -315,14 +307,14 @@ class Plate(Base):
             vals = chnl['value']
             for time, vals in zip(times, vals):
                 for well, val in zip(wells, vals):
-                    Value(well=well, time=time, value=val, plate=self,
-                          channel=chnl_rec)
+                    Measure(well=well, time=time, measure=val, plate=self,
+                            channel=chnl_rec)
 
-    def delete_values(self):
-        """Delete all values associated with Plate
+    def delete_measures(self):
+        """Delete all measures associated with Plate
         """
-        for value in self.values:
-            session.delete(value)
+        for measure in self.measures:
+            session.delete(measure)
 
     def __repr__(self):
         return "<Plate({})>".format(self.id)
@@ -358,10 +350,10 @@ class Level(Base):
                                                     self.level)
 
 
-class Value(Base):
+class Measure(Base):
     """A table contains all time series data
     """
-    __tablename__ = 'values'
+    __tablename__ = 'measures'
     id = Column(Integer, primary_key=True)
 
     # Well name, eg, "A01" or "C04"
@@ -371,20 +363,35 @@ class Value(Base):
     time = Column(Time, nullable=False)
 
     # Value of measurement
-    value = Column(Float, nullable=False)
+    measure = Column(Float, nullable=False)
 
-    id_plate = Column(Integer, ForeignKey('plates.id',
-                                          onupdate="CASCADE",
+    id_plate = Column(Integer, ForeignKey('plates.id', onupdate="CASCADE",
                                           ondelete="CASCADE"))
-    id_channel = Column(Integer, ForeignKey('channels.id',
-                                            onupdate="CASCADE",
+    id_channel = Column(Integer, ForeignKey('channels.id', onupdate="CASCADE",
                                             ondelete="CASCADE"))
 
     # Relationships
-    plate = relationship("Plate", backref=backref('values', order_by=id))
-    channel = relationship("Channel", backref=backref('values', order_by=id))
+    plate = relationship("Plate", backref=backref('measures', order_by=id))
+    channel = relationship("Channel", backref=backref('measures', order_by=id))
 
     def __repr__(self):
-        return "<Value({}\t{}\t{}\t{}\t{})>".format(self.id, self.plate.id,
-                                                    self.channel.name,
-                                                    self.well, self.value)
+        return "<Measure({}\t{}\t{}\t{}\t{})>".format(self.id, self.plate.id,
+                                                      self.channel.name,
+                                                      self.well, self.measure)
+
+
+db_url = app.config['DB_URL']
+if db_url.startswith('sqlite'):
+    db_dir = os.path.dirname(app.config['DB_DIR'])
+
+    # Create database file
+    if not os.path.exists(db_dir):
+        os.makedirs(db_dir)
+
+    engine = create_engine(db_url)
+    Base.metadata.create_all(engine)
+
+    # Create session
+    Session = sessionmaker(bind=engine)
+    session = Session()
+    session.commit()

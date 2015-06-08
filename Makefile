@@ -5,7 +5,7 @@ clean:
 	find . -name '*.pyc' -delete
 
 # Install the application (locally)
-install: clean
+install:
 	@if [ -e timevis/db/*.db ]; then rm timevis/db/*.db; fi
 	python setup.py install -q
 
@@ -18,8 +18,8 @@ init-db:
 	cp test/timevis.db timevis/db/
 
 # Run developmental server
-devserver: init-db
-	python run.py
+devserver:
+	python dev.py
 
 # Stop developmental server
 stop-devserver:
@@ -32,11 +32,9 @@ restart-devserver: stop-devserver devserver
 test:
 	@python -m unittest discover
 
-# Publish documentation to github page
-github:
-	@echo "Issue this command after checking out to gh-pages branch"
-	git checkout master -- docs
-	cp -r docs/_build/html/* .
-	git add .
-	git commit -m "Update github pages"
-	git push origin gh-pages
+# Update docs
+update-doc:
+	git checkout gh-pages -- docs
+
+docker:
+	sudo docker build . -t gaoce/timevis:lastest

@@ -1,7 +1,7 @@
 """Transcations that facilitate interaction between views and models.
 """
 from timevis.models import session, commit
-from timevis.models import (Experiment, Layout, Channel, Factor, Level, Value,
+from timevis.models import (Experiment, Layout, Channel, Factor, Level, Measure,
                             Plate)
 from sqlalchemy.orm import aliased
 import pandas
@@ -146,26 +146,26 @@ def get_plates(lid):
 
         for cha_rec in layout_rec.experiment.channels:
             cha_out = {"id": cha_rec.id, "name": cha_rec.name, "value": []}
-            cha_out['time'] = [str(t[0]) for t in session.query(Value.time).
-                               distinct().order_by(Value.time).all()]
-            cha_out['well'] = [val[0] for val in session.query(Value.well).
-                               distinct().order_by(Value.well).all()]
+            cha_out['time'] = [str(t[0]) for t in session.query(Measure.time).
+                               distinct().order_by(Measure.time).all()]
+            cha_out['well'] = [val[0] for val in session.query(Measure.well).
+                               distinct().order_by(Measure.well).all()]
             # Current time point
             curr_time = None
-            values = None
-            for val in session.query(Value).order_by(Value.time, Value.well).\
-                    all():
-                if curr_time != val.time:
-                    curr_time = val.time
+            measures = None
+            for measure in session.query(Measure).\
+                    order_by(Measure.time, Measure.well).all():
+                if curr_time != measure.time:
+                    curr_time = measure.time
                     # Just finish a loop
-                    if values is not None:
-                        cha_out['value'].append(values)
+                    if measures is not None:
+                        cha_out['value'].append(measures)
                     # Reset
-                    values = []
-                values.append(val.value)
+                    measures = []
+                measures.append(measure.measure)
 
             # Append the last time point
-            cha_out['value'].append(values)
+            cha_out['value'].append(measures)
             plate_out['channels'].append(cha_out)
 
         plates.append(plate_out)
@@ -212,7 +212,7 @@ def put_plates(jsons):
         # Plate id
         pid = json['id']
         plate_rec = session.query(Plate).filter_by(id=pid).first()
-        plate_rec.delete_values()
+        plate_rec.delete_measures()
         plate_rec.update_chnls(json['channels'])
 
     commit()
@@ -228,7 +228,7 @@ def post_time(json):
     """
 
     # Construct query
-    q = session.query(Value.time, Value.value).\
+    q = session.query(Measure.time, Measure.measure).\
         join(Plate).\
         join(Channel).\
         filter(Channel.id == json['channel'])
@@ -236,7 +236,7 @@ def post_time(json):
     for fac_in in json['factors']:
         Level_a = aliased(Level)
         Factor_a = aliased(Factor)
-        q = q.join(Level_a, Level_a.well == Value.well).\
+        q = q.join(Level_a, Level_a.well == Measure.well).\
             join(Factor_a, Factor_a.id == Level_a.id_factor).\
             filter(Level_a.level.in_(fac_in['levels'])).\
             filter(Factor_a.id == fac_in['id'])

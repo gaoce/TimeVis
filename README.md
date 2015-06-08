@@ -1,29 +1,73 @@
-# TimeVis
-Time series visualization and analysis. 
+TimeVis
+=======
+
+Time series visualization and analysis.
 
 A visualization tool to visualize gene expression time series data.
 
-## Documentation
+1. Documentation
+----------------
 
-Documentation can be seen from [Github Page](http://gaoce.github.io/TimeVis)
+Documentation can be seen from the project 
+[Github Page](http://gaoce.github.io/TimeVis)
 
-## Installation
+2. Installation
+---------------
 
-We recommend you install the package under virtualenv
+Install from GitHub using `pip`
 
-    $ pip install git+https://github.com/gaoce/TimeVis
+```sh
+$ pip install git+https://github.com/gaoce/TimeVis
+```
+We recommend you install the package under 
+[virtualenv](https://virtualenv.pypa.io/en/latest/).
 
-The application depends on numpy/scipy, if it is a problem for you, try 
+The application depends on numpy/scipy, if it is a problem for you, try
 [Anaconda](http://continuum.io/downloads).
 
-## Start and stop
-Start the application using the following command
-	
-    $ timevis -b
+You can also use Docker
 
-To stop, use `C-c`.
+```sh
+$ sudo docker pull gaoce/timevis
+```
 
-## User Interface
+3. Start and Stop
+-----------------
+
+Start the application using `timevis`, here are its arguments:
+
+```sh
+$ timevis  -h
+usage: timevis [-h] [-b] [-p PORT] [-s HOST] [-d DEBUG]
+
+TimeVis
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -b, --browser         Enable browser
+  -p PORT, --port PORT  Port
+  -s HOST, --host HOST  Host
+  -d DEBUG, --debug DEBUG
+                        Debug mode
+```
+
+To use your own config file, set environment variable
+`TIMEVIS_CONFIG=/path/to/config.py`.
+
+If you are using Docker
+
+```sh
+$ sudo docker run -p 8000:8000 gaoce/timevis timevis
+```
+
+The application can be accessed through `http://localhost:8000` inside your
+browser.
+
+To stop, use the keyboard shortcut `Ctrl+c`.
+
+4. User Interface
+-----------------
+
 Interface to define experiment information, including factors (independent
 variables) and channels (dependent variables).
 
@@ -33,7 +77,3 @@ Interface to query and visualize time series data based on conditions of
 interest.
 
 ![Visualization](/docs/images/gene_vis.png)
-
-## Software Structure
-
-![Structure](/docs/images/arch.png)
