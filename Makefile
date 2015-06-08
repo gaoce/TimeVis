@@ -18,7 +18,7 @@ init-db:
 	cp test/timevis.db timevis/db/
 
 # Run developmental server
-devserver: init-db
+devserver:
 	python dev.py
 
 # Stop developmental server

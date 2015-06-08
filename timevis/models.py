@@ -41,7 +41,7 @@ class Experiment(Base):
         layouts
     """
 
-    __tablename__ = 'experiment'
+    __tablename__ = 'experiments'
     id = Column(Integer, primary_key=True)
 
     # Experiment name, must be unique
@@ -52,9 +52,6 @@ class Experiment(Base):
 
     # Well number, either 96 or 384
     well = Column(Integer, nullable=False)
-
-    # Date of measurement
-    # data = Column(Date)
 
     @property
     def json(self):
@@ -158,7 +155,7 @@ class Factor(Base):
     Additional attributes:
         levels
     """
-    __tablename__ = 'factor'
+    __tablename__ = 'factors'
     id = Column(Integer, primary_key=True)
 
     # Name of factor, usually a controlled condition, like dose
@@ -168,7 +165,7 @@ class Factor(Base):
     type = Column(String(8), nullable=False)
 
     # Foreign key
-    id_experiment = Column(Integer, ForeignKey('experiment.id',
+    id_experiment = Column(Integer, ForeignKey('experiments.id',
                                                onupdate="CASCADE",
                                                ondelete="CASCADE"))
 
@@ -191,16 +188,16 @@ class Factor(Base):
 class Channel(Base):
     """Channel tables contains information describing measurement
     Additional attributes:
-        values
+        measures
     """
-    __tablename__ = 'channel'
+    __tablename__ = 'channels'
     id = Column(Integer, primary_key=True)
 
     # Channel name
     name = Column(String(255), nullable=False)
 
     # Foreign key
-    id_experiment = Column(Integer, ForeignKey('experiment.id',
+    id_experiment = Column(Integer, ForeignKey('experiments.id',
                                                onupdate="CASCADE",
                                                ondelete="CASCADE"))
 
@@ -218,14 +215,14 @@ class Layout(Base):
         plates
         levels
     """
-    __tablename__ = 'layout'
+    __tablename__ = 'layouts'
     id = Column(Integer, primary_key=True)
 
     # Layout name
     name = Column(String, nullable=False)
 
     # Foreign key
-    id_experiment = Column(Integer, ForeignKey('experiment.id',
+    id_experiment = Column(Integer, ForeignKey('experiments.id',
                                                onupdate="CASCADE"))
 
     # Relationship
@@ -281,13 +278,13 @@ class Layout(Base):
 class Plate(Base):
     """Plate table describe invidual plate
     Additional attributes:
-        values
+        measures
     """
-    __tablename__ = 'plate'
+    __tablename__ = 'plates'
     id = Column(Integer, primary_key=True)
 
     # Foreign key
-    id_layout = Column(Integer, ForeignKey('layout.id', onupdate="CASCADE"))
+    id_layout = Column(Integer, ForeignKey('layouts.id', onupdate="CASCADE"))
 
     # Relationship
     layout = relationship("Layout", backref=backref('plates', order_by=id))
@@ -310,14 +307,14 @@ class Plate(Base):
             vals = chnl['value']
             for time, vals in zip(times, vals):
                 for well, val in zip(wells, vals):
-                    Value(well=well, time=time, value=val, plate=self,
-                          channel=chnl_rec)
+                    Measure(well=well, time=time, measure=val, plate=self,
+                            channel=chnl_rec)
 
-    def delete_values(self):
-        """Delete all values associated with Plate
+    def delete_measures(self):
+        """Delete all measures associated with Plate
         """
-        for value in self.values:
-            session.delete(value)
+        for measure in self.measures:
+            session.delete(measure)
 
     def __repr__(self):
         return "<Plate({})>".format(self.id)
@@ -326,7 +323,7 @@ class Plate(Base):
 class Level(Base):
     """A table contains all factor levels for different layouts
     """
-    __tablename__ = 'level'
+    __tablename__ = 'levels'
     id = Column(Integer, primary_key=True)
 
     # Well name, eg, "A01" or "C04"
@@ -336,10 +333,10 @@ class Level(Base):
     level = Column(String(255), nullable=False)
 
     # Foreign keys
-    id_layout = Column(Integer, ForeignKey('layout.id',
+    id_layout = Column(Integer, ForeignKey('layouts.id',
                                            onupdate="CASCADE",
                                            ondelete="CASCADE"))
-    id_factor = Column(Integer, ForeignKey('factor.id',
+    id_factor = Column(Integer, ForeignKey('factors.id',
                                            onupdate="CASCADE",
                                            ondelete="CASCADE"))
 
@@ -353,10 +350,10 @@ class Level(Base):
                                                     self.level)
 
 
-class Value(Base):
+class Measure(Base):
     """A table contains all time series data
     """
-    __tablename__ = 'value'
+    __tablename__ = 'measures'
     id = Column(Integer, primary_key=True)
 
     # Well name, eg, "A01" or "C04"
@@ -366,21 +363,21 @@ class Value(Base):
     time = Column(Time, nullable=False)
 
     # Value of measurement
-    value = Column(Float, nullable=False)
+    measure = Column(Float, nullable=False)
 
-    id_plate = Column(Integer, ForeignKey('plate.id', onupdate="CASCADE",
+    id_plate = Column(Integer, ForeignKey('plates.id', onupdate="CASCADE",
                                           ondelete="CASCADE"))
-    id_channel = Column(Integer, ForeignKey('channel.id', onupdate="CASCADE",
+    id_channel = Column(Integer, ForeignKey('channels.id', onupdate="CASCADE",
                                             ondelete="CASCADE"))
 
     # Relationships
-    plate = relationship("Plate", backref=backref('values', order_by=id))
-    channel = relationship("Channel", backref=backref('values', order_by=id))
+    plate = relationship("Plate", backref=backref('measures', order_by=id))
+    channel = relationship("Channel", backref=backref('measures', order_by=id))
 
     def __repr__(self):
-        return "<Value({}\t{}\t{}\t{}\t{})>".format(self.id, self.plate.id,
-                                                    self.channel.name,
-                                                    self.well, self.value)
+        return "<Measure({}\t{}\t{}\t{}\t{})>".format(self.id, self.plate.id,
+                                                      self.channel.name,
+                                                      self.well, self.measure)
 
 
 db_url = app.config['DB_URL']
