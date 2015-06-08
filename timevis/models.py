@@ -21,14 +21,6 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
 Base = declarative_base()
 
 
-def init_db():
-    Base.metadata.create_all(engine)
-
-
-def clean_db():
-    os.remove(db_path)
-
-
 def commit():
     """Commit the changes.
     If error occurs, rollback session and re-throw the exception, which will be
@@ -133,6 +125,7 @@ class Experiment(Base):
         factors: list of dict
             a list of Factor json objs
         """
+
         facs_update = {}
         facs_upload = []
         for fac_in in factors:
@@ -141,21 +134,16 @@ class Experiment(Base):
             else:
                 facs_upload.append(fac_in)
 
+        for fac_rec in session.query(Factor).filter_by(experiment=self).all():
+            fid = fac_rec.id
+            if fid in facs_update:
+                fac_rec.name = facs_update[fid]['name']
+                fac_rec.type = facs_update[fid]['type']
+            else:
+                session.delete(fac_rec)
+
         for fac_in in facs_upload:
             Factor(name=fac_in['name'], type=fac_in['type'], experiment=self)
-
-        # Return if it is a new Experiment upload
-        if self.id is None:
-            return
-
-        # Otherwise, process to update or delete exisiting factors
-        for fact_rec in session.query(Factor).filter_by(experiment=self).all():
-            fid = fact_rec.id
-            if fid in facs_update:
-                fact_rec.name = facs_update[fid]['name']
-                fact_rec.type = facs_update[fid]['type']
-            else:
-                session.delete(fact_rec)
 
     def __repr__(self):
         return "<Experiment({}, {}, {})>".format(self.id, self.name, self.well)
