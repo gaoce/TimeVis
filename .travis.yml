@@ -8,6 +8,6 @@ virtualenv:
       system_site_packages: true
 # Install numpy and scipy
 before_install:
-   - sudo apt-get install -qq python-numpy python-scipy
+  - sudo apt-get install -qq python-numpy python-scipy python-pandas
 # command to run tests
 script: "python -m unittest discover"
