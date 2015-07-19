@@ -1,6 +1,8 @@
 TimeVis
 =======
 
+[![Build Status](https://travis-ci.org/gaoce/TimeVis.svg?branch=test)](https://travis-ci.org/gaoce/TimeVis)
+
 Time series visualization and analysis.
 
 A visualization tool to visualize gene expression time series data.
