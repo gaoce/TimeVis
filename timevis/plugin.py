@@ -64,7 +64,7 @@ class Plugin(object):
         """
         query = session.query(Plate.id.label('pid'), Channel.id.label('cid'),
                               Channel.name.label('channel'), Measure.well,
-                              Measure.time, Measure.value).\
+                              Measure.time, Measure.measure).\
             join(Channel, Channel.id == Measure.id_channel).\
             join(Measure, Measure.id_plate == Plate.id)
         ret = pd.read_sql(query.statement, query.session.bind)
