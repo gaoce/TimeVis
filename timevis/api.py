@@ -1,8 +1,8 @@
 from flask import request
 from flask.ext.restful import Api, Resource, reqparse
 
-from timevis import app
-import timevis.controller as ctrl
+from . import app
+from . import controller as ctrl
 
 
 __api_version__ = 2

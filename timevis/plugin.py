@@ -1,7 +1,6 @@
-from timevis.models import session
 import pandas as pd
-from timevis.models import (Experiment, Layout, Factor, Level, Plate, Channel,
-                            Measure)
+from .models import (Experiment, Layout, Factor, Level, Plate, Channel,
+                     Measure, session)
 plugins = {}
 
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import webbrowser
 import argparse
-import timevis
+from . import app
 
 
 def parse_args():
@@ -24,7 +24,7 @@ def main(port=8000):
         webbrowser.open("http://localhost:{}".format(port))
 
     # Begin the server
-    timevis.app.run(host=args.host, port=args.port, debug=args.debug)
+    app.run(host=args.host, port=args.port, debug=args.debug)
 
 
 if __name__ == '__main__':

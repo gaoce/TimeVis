@@ -1,5 +1,5 @@
-from timevis.app import app
-import views
-import api
-import models
-from plugin import Plugin
+from .app import app
+from . import views
+from . import api
+from . import models
+from .plugin import Plugin

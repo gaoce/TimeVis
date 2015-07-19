@@ -6,7 +6,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy import event
 
 from datetime import datetime
-from timevis import app
+from . import app
 import os
 
 

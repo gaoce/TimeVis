@@ -1,8 +1,8 @@
 """Transcations that facilitate interaction between views and models.
 """
-from timevis.models import session, commit
-from timevis.models import (Experiment, Layout, Channel, Factor, Level, Measure,
-                            Plate)
+from .models import session, commit
+from .models import (Experiment, Layout, Channel, Factor, Level, Measure,
+                     Plate)
 from sqlalchemy.orm import aliased
 import pandas
 from scikits.bootstrap import ci
