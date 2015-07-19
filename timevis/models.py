@@ -380,6 +380,7 @@ class Measure(Base):
                                                       self.well, self.measure)
 
 
+# Initialize db whenever this module is imported
 db_url = app.config['DB_URL']
 if db_url.startswith('sqlite'):
     db_dir = os.path.dirname(app.config['DB_DIR'])

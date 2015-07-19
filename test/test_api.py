@@ -12,8 +12,6 @@ class TestExperiment(unittest.TestCase):
     def setUp(self):
         self.app = timevis.app.test_client()
         self.url = '/api/v2/experiment'
-        # TODO create test db
-        timevis.models.init_db()
 
     def test_post(self):
         with open(test_path + '/post_exp.json') as file:
