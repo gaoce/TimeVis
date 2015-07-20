@@ -8,10 +8,10 @@ notifications:
 # Setup anaconda
 before_install:
   # Install conda
-  - pip install conda
+  - sudo pip install conda
   # install deps
-  - conda init
-  - conda update conda --yes
+  - sudo conda init
+  - sudo conda update conda --yes
   - deps='pip scipy numpy pandas'
   - conda create -p $HOME/conda --yes $deps "python=$TRAVIS_PYTHON_VERSION"
   - export PATH=$HOME/conda/bin:$PATH
