@@ -6,18 +6,24 @@ notifications:
   email: false
 
 # Setup anaconda
+# Based on http://dan-blanchard.roughdraft.io/7045057-quicker-travis-builds-that-rely-on-numpy-and-scipy-using-miniconda
 before_install:
   # Install conda
-  - sudo pip install conda
-  # install deps
-  - sudo conda init
-  - sudo conda update conda --yes
-  - deps='pip scipy numpy pandas'
-  - conda create -p $HOME/conda --yes $deps "python=$TRAVIS_PYTHON_VERSION"
-  - export PATH=$HOME/conda/bin:$PATH
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b
+  - export PATH=/home/travis/miniconda/bin:$PATH
+  - conda update --yes conda
+
+  # The next couple lines fix a crash with multiprocessing on Travis and are not specific to using Miniconda
+  - sudo rm -rf /dev/shm
+  - sudo ln -s /run/shm /dev/shm
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy pandas
 
 # Install dependencies
-install: "pip install -r requirements.txt"
+install: 
+  - pip install -r requirements.txt
+  - python -V
 
 # Run tests
 script: "python -m unittest discover"
