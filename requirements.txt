@@ -1,5 +1,6 @@
 Flask
 Flask-RESTful
 SQLAlchemy
+numpy
 pandas
 scikits.bootstrap

@@ -1,12 +1,14 @@
-from sqlalchemy import ForeignKey, Column, Integer, String, Float, Time
-from sqlalchemy import create_engine
+"""Module containing all the database models
+"""
+from . import app
+
+from sqlalchemy import (ForeignKey, Column, Integer, String, Float, Time,
+                        create_engine, event)
 from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.engine import Engine
-from sqlalchemy import event
 
 from datetime import datetime
-from . import app
 import os
 
 
@@ -134,13 +136,17 @@ class Experiment(Base):
             else:
                 facs_upload.append(fac_in)
 
-        for fac_rec in session.query(Factor).filter_by(experiment=self).all():
-            fid = fac_rec.id
-            if fid in facs_update:
-                fac_rec.name = facs_update[fid]['name']
-                fac_rec.type = facs_update[fid]['type']
-            else:
-                session.delete(fac_rec)
+        # Construct the query and test the existence of field first
+        # Otherwise there will be a warning
+        fac_query = session.query(Factor).filter_by(experiment=self)
+        if fac_query.exists():
+            for fac_rec in fac_query.all():
+                fid = fac_rec.id
+                if fid in facs_update:
+                    fac_rec.name = facs_update[fid]['name']
+                    fac_rec.type = facs_update[fid]['type']
+                else:
+                    session.delete(fac_rec)
 
         for fac_in in facs_upload:
             Factor(name=fac_in['name'], type=fac_in['type'], experiment=self)

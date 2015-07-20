@@ -1,3 +1,8 @@
+"""Module to control the web app (restful) API
+
+To understand how the API interacts with models (database), see also controller
+module.
+"""
 from flask import request
 from flask.ext.restful import Api, Resource, reqparse
 
@@ -53,11 +58,14 @@ class ExperimentEP(Resource):
 
 
 class LayoutEP(Resource):
-    """Layout endpoint
+    """Endpoint for layout information: namely the content of each well in a
+    microplate
+
     This endpoint mainly query Layout, Factor and Level tables, and modify Level
     and Layout tables
     """
     def get(self):
+        # Parse the request to get experiment id
         parser = reqparse.RequestParser()
         parser.add_argument('eid', type=int, help="experiment id")
         args = parser.parse_args()
