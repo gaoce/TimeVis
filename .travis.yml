@@ -27,3 +27,8 @@ install:
 
 # Run tests
 script: "python -m unittest discover"
+
+# Only build master branch
+branches:
+  only:
+    - master
