@@ -18,7 +18,7 @@ setup(
                  "time series gene expression data"),
     license="MIT",
     install_requires=[
-        "Flask",
+        "flask",
         "Flask-RESTful",
         "SQLAlchemy",
         "pandas",
