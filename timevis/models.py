@@ -138,8 +138,9 @@ class Experiment(Base):
 
         # Construct the query and test the existence of field first
         # Otherwise there will be a warning
-        fac_query = session.query(Factor).filter_by(experiment=self)
-        if fac_query.exists():
+        # Note: if self.id is None (new record), skip this part
+        if not self.id:
+            fac_query = session.query(Factor).filter_by(experiment=self)
             for fac_rec in fac_query.all():
                 fid = fac_rec.id
                 if fid in facs_update:
